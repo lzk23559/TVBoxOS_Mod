@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -115,6 +116,12 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void initView() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tvPlay.requestFocus();
+            }
+        },500);
         llLayout = findViewById(R.id.llLayout);
         llPlayerPlace = findViewById(R.id.previewPlayerPlace);
         llPlayerFragmentContainer = findViewById(R.id.previewPlayer);
@@ -279,6 +286,7 @@ public class DetailActivity extends BaseActivity {
                     seriesAdapter.getData().get(vodInfo.playIndex).selected = true;
                     seriesAdapter.notifyItemChanged(vodInfo.playIndex);
                     jumpToPlay();
+                    //选集全屏 此处取消注释
 //                    if (showPreview && !fullWindows) toggleFullPreview();
                 }
             }
