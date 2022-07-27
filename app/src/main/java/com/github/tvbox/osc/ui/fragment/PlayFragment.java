@@ -228,12 +228,19 @@ public class PlayFragment extends BaseLazyFragment {
                     if (url != null) {
                         try {
                             int playerType = mVodPlayerCfg.getInt("pl");
-                            if (playerType >= 10) {
+                             if (playerType >= 8) {
                                 VodInfo.VodSeries vs = mVodInfo.seriesMap.get(mVodInfo.playFlag).get(mVodInfo.playIndex);
                                 String playTitle = mVodInfo.name + " " + vs.name;
                                 setTip("调用外部播放器" + PlayerHelper.getPlayerName(playerType) + "进行播放", true, false);
                                 boolean callResult = false;
                                 switch (playerType) {
+                                    case 8: {
+                                        callResult = ucplayer.run(requireActivity(), url, playTitle, playSubtitle, headers);
+                                        break;
+                                    }
+                                    case 9: {
+                                        callResult = browser.run(requireActivity(), url, playTitle, playSubtitle, headers);
+                                        break;
                                     case 10: {
                                         callResult = MXPlayer.run(requireActivity(), url, playTitle, playSubtitle, headers);
                                         break;
