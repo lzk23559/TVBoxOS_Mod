@@ -327,12 +327,15 @@ public class VodController extends BaseController {
                 myHandle.removeCallbacks(myRunnable);
                 myHandle.postDelayed(myRunnable, myHandleSeconds);
                 try {
-                    int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
+                    //int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
                     int st = mPlayerConfig.getInt("st");
-                    st += step;
-                    //片头最大跳过时间10分钟
-                    if (st > 60 * 10)
+                    
+                    //跳过片头时间：当前时间
+                    if (st > 0)
                         st = 0;
+                    else
+                        st = (int)(mControlWrapper.getCurrentPosition() / 1000);
+                    
                     mPlayerConfig.put("st", st);
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
@@ -347,12 +350,15 @@ public class VodController extends BaseController {
                 myHandle.removeCallbacks(myRunnable);
                 myHandle.postDelayed(myRunnable, myHandleSeconds);
                 try {
-                    int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
+                    //int step = Hawk.get(HawkConfig.PLAY_TIME_STEP, 5);
                     int et = mPlayerConfig.getInt("et");
-                    et += step;
-                    //片尾最大跳过时间10分钟
-                    if (et > 60 * 10)
+                    
+                    //跳过片尾时间：总片长-当前时间
+                    if (et > 0)
                         et = 0;
+                    else
+                        et = (int)((mControlWrapper.getDuration() - mControlWrapper.getCurrentPosition()) / 1000);
+                    
                     mPlayerConfig.put("et", et);
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
