@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -38,7 +37,6 @@ import com.github.tvbox.osc.ui.dialog.QuickSearchDialog;
 import com.github.tvbox.osc.ui.fragment.PlayFragment;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
-import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.google.gson.Gson;
@@ -47,7 +45,6 @@ import com.google.gson.JsonElement;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
-import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
@@ -155,12 +152,6 @@ public class DetailActivity extends BaseActivity {
             getSupportFragmentManager().beginTransaction().show(playFragment).commitAllowingStateLoss();
             tvPlay.setText("全屏");
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tvPlay.requestFocus();
-            }
-        },500);
         tvSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +251,7 @@ public class DetailActivity extends BaseActivity {
 
             @Override
             public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
-                seriesSelect = false;
+
             }
 
             @Override
@@ -287,9 +278,9 @@ public class DetailActivity extends BaseActivity {
                     }
                     seriesAdapter.getData().get(vodInfo.playIndex).selected = true;
                     seriesAdapter.notifyItemChanged(vodInfo.playIndex);
-                    //选集全屏 想选集不全屏的注释下面一行
-                    if (showPreview && !fullWindows) toggleFullPreview();
                     jumpToPlay();
+                    if (showPreview && !fullWindows)
+                        toggleFullPreview();
                 }
             }
         });
@@ -682,10 +673,13 @@ public class DetailActivity extends BaseActivity {
     }
 
     // preview
-    boolean showPreview = Hawk.get(HawkConfig.SHOW_PREVIEW, true);; // true 开启 false 关闭
+    boolean showPreview = true; // true 开启 false 关闭
     boolean fullWindows = false;
     ViewGroup.LayoutParams windowsPreview = null;
     ViewGroup.LayoutParams windowsFull = null;
+    ViewGroup playerParent = null;
+    View playerRoot = null;
+    ViewGroup llLayoutParent = null;
 
     void toggleFullPreview() {
         if (windowsPreview == null) {
@@ -694,8 +688,26 @@ public class DetailActivity extends BaseActivity {
         if (windowsFull == null) {
             windowsFull = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+        if (playerRoot == null)
+            playerRoot = (View) llPlayerFragmentContainer.findViewById(R.id.mVideoView).getParent();
+
+        if (playerParent == null) {
+            playerParent = (ViewGroup) playerRoot.getParent();
+        }
+        if (llLayoutParent == null)
+            llLayoutParent = (ViewGroup) llLayout.getParent();
+
         fullWindows = !fullWindows;
-        llPlayerFragmentContainer.setLayoutParams(fullWindows ? windowsFull : windowsPreview);
-        llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        // llPlayerFragmentContainer.setLayoutParams(fullWindows ? windowsFull : windowsPreview);
+        // llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        if (fullWindows) {
+            playerParent.removeView(playerRoot);
+            ((ViewGroup) getWindow().getDecorView()).addView(playerRoot);
+            llLayoutParent.removeView(llLayout);
+        } else {
+            ((ViewGroup) getWindow().getDecorView()).removeView(playerRoot);
+            playerParent.addView(playerRoot);
+            llLayoutParent.addView(llLayout);
+        }
     }
 }
