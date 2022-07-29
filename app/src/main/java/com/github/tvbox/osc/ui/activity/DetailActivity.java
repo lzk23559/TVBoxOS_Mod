@@ -269,16 +269,19 @@ public class DetailActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
                 if (vodInfo != null && vodInfo.seriesMap.get(vodInfo.playFlag).size() > 0) {
+                    boolean reload = false;
                     if (vodInfo.playIndex != position) {
                         seriesAdapter.getData().get(vodInfo.playIndex).selected = false;
                         seriesAdapter.notifyItemChanged(vodInfo.playIndex);
                         seriesAdapter.getData().get(position).selected = true;
                         seriesAdapter.notifyItemChanged(position);
                         vodInfo.playIndex = position;
+                        reload = true;
                     }
                     seriesAdapter.getData().get(vodInfo.playIndex).selected = true;
                     seriesAdapter.notifyItemChanged(vodInfo.playIndex);
-                    jumpToPlay();
+                    if (reload || !showPreview)
+                        jumpToPlay();
                     if (showPreview && !fullWindows)
                         toggleFullPreview();
                 }
@@ -699,7 +702,7 @@ public class DetailActivity extends BaseActivity {
 
         fullWindows = !fullWindows;
         // llPlayerFragmentContainer.setLayoutParams(fullWindows ? windowsFull : windowsPreview);
-        // llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
         if (fullWindows) {
             playerParent.removeView(playerRoot);
             ((ViewGroup) getWindow().getDecorView()).addView(playerRoot);
