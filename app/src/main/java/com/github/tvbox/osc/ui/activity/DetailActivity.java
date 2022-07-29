@@ -646,9 +646,8 @@ public class DetailActivity extends BaseActivity {
     public void onBackPressed() {
         if (fullWindows) {
             if (playFragment.onBackPressed())
+                toggleFullPreview();
                 return;
-            toggleFullPreview();
-            return;
         }
         if (seriesSelect) {
             if (seriesFlagFocus != null && !seriesFlagFocus.isFocused()) {
@@ -697,5 +696,11 @@ public class DetailActivity extends BaseActivity {
         fullWindows = !fullWindows;
         llPlayerFragmentContainer.setLayoutParams(fullWindows ? windowsFull : windowsPreview);
         llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        mGridView.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        mGridViewFlag.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        tvPlay.setFocusable(!fullWindows);
+        tvSort.setFocusable(!fullWindows);
+        tvCollect.setFocusable(!fullWindows);
+        tvQuickSearch.setFocusable(!fullWindows);
     }
 }
