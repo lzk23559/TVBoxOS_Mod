@@ -80,7 +80,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "http://52bsj.vip:81/api/v3/file/get/11281/20220801.json?sign=BXdhMDb2S5euGpNDB4qoKsryMHnzsH66AqW_ifVW0QI%3D%3A0");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, "https://gitea.com/dabbing2019/TVBox/raw/branch/root/01.json");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
