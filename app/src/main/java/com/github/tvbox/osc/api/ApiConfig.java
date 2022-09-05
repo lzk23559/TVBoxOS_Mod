@@ -80,7 +80,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, "https://gitea.com/wwz09/ubuntu/raw/branch/master/666.json");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
