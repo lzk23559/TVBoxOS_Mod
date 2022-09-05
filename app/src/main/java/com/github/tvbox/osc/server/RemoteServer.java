@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.String;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -94,7 +95,7 @@ String getpath() {
             if (datapath == null || datapath == "") {
                 if (listFiles != null && listFiles.length > 0) {
                     for (File file: listFiles) {
-                        if (file.isDirectory() && file.length() == 9 && file.includes("-")) {
+                        if (file.isDirectory() && file.length() == 9 && file.indexOf("-") == 4) {
                             datapath = file.getAbsolutePath();
                             break;
                         }
