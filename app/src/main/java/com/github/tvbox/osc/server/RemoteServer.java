@@ -77,18 +77,25 @@ public class RemoteServer extends NanoHTTPD {
     }
     
 String getpath() {
-    String datapath="";
+    String datapath = "";
     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
         //内部存储
         datapath = Environment.getExternalStorageDirectory().getAbsolutePath();
     } else {
-        String[] strArr = new String[] {"/mnt/usb/","/storage/usb/"};
+        //支持U盘路径
+        String[] strArr = new String[] {
+            "/mnt/usb/",//mnt/usb/xxxx-xxxx
+            "/storage/usb/",//storage/usb/xxxx-xxxx
+            "/storage/",//storage/xxxx-xxxx
+            "/mnt/"//mnt/xxxx-xxxx
+        };
         for (int i = 0; i < 2; i++) {
             File[] listFiles = new File(strArr[i]).listFiles();
             if (datapath == null || datapath == "") {
-                if (listFiles != null && listFiles.length > 0) {
+                if (listFiles != null && listFiles.length == 9) {
                     for (File file: listFiles) {
-                        if (file.isDirectory()) {
+                        String checkpath = file.substring(4, 5);
+                        if (file.isDirectory() && checkpath == "-") {
                             datapath = file.getAbsolutePath();
                             break;
                         }
@@ -97,7 +104,7 @@ String getpath() {
             }
         }
         if (datapath == null || datapath == "") {
-            //系统存储
+            //系统存储，需给予读写权限
             datapath = "/data/local/tmp";
         }
     }
