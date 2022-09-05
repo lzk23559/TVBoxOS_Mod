@@ -92,9 +92,9 @@ String getpath() {
         for (int i = 0; i < 4; i++) {
             File[] listFiles = new File(strArr[i]).listFiles();
             if (datapath == null || datapath == "") {
-                if (listFiles != null && listFiles.length == 9) {
+                if (listFiles != null && listFiles.length > 0) {
                     for (File file: listFiles) {
-                        if (file.isDirectory() && file.indexOf("-") == 4) {
+                        if (file.isDirectory() && file.length() == 9 && file.includes("-")) {
                             datapath = file.getAbsolutePath();
                             break;
                         }
