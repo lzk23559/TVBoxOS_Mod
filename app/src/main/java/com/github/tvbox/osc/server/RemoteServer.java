@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,11 +78,31 @@ public class RemoteServer extends NanoHTTPD {
     }
     
 String getpath() {
+    String datapath;
     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
+        //内部存储
+        datapath = Environment.getExternalStorageDirectory().getAbsolutePath();
     } else {
-        return "/data/local/tmp";
+        String[] strArr = new String[] {"/mnt/usb/","/storage/usb/"};
+        for (int i = 0; i < 2; i++) {
+            File[] listFiles = new File(strArr[i]).listFiles();
+            if (datapath == null || datapath == "") {
+                if (listFiles != null && listFiles.length > 0) {
+                    for (File file: listFiles) {
+                        if (file.isDirectory()) {
+                            datapath = file.getAbsolutePath();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (datapath == null || datapath == "") {
+            //系统存储
+            datapath = "/data/local/tmp";
+        }
     }
+    return datapath;
 }
 
     @Override
