@@ -94,8 +94,7 @@ String getpath() {
             if (datapath == null || datapath == "") {
                 if (listFiles != null && listFiles.length == 9) {
                     for (File file: listFiles) {
-                        String checkpath = file.substring(4, 5);
-                        if (file.isDirectory() && checkpath == "-") {
+                        if (file.isDirectory() && file.indexOf("-") == 4) {
                             datapath = file.getAbsolutePath();
                             break;
                         }
