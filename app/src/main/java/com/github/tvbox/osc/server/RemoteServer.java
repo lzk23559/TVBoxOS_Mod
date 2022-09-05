@@ -77,7 +77,7 @@ public class RemoteServer extends NanoHTTPD {
     }
     
 String getpath() {
-    String datapath = new String("");
+    String datapath = "";
     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
         //内部存储
         datapath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -89,7 +89,7 @@ String getpath() {
             "/storage/", //storage/xxxx-xxxx
             "/mnt/" //mnt/xxxx-xxxx
         };
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < strArr.length; i++) {
             File[] listFiles = new File(strArr[i]).listFiles();
             if (datapath == null || datapath == "") {
                 if (listFiles != null && listFiles.length > 0) {
