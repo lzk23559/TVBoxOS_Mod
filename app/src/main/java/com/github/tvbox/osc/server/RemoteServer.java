@@ -22,7 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.String;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -78,7 +77,7 @@ public class RemoteServer extends NanoHTTPD {
     }
     
 String getpath() {
-    String datapath = "";
+    String datapath = new String("");
     if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
         //内部存储
         datapath = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -95,7 +94,7 @@ String getpath() {
             if (datapath == null || datapath == "") {
                 if (listFiles != null && listFiles.length > 0) {
                     for (File file: listFiles) {
-                        if (file.isDirectory() && file.length() == 9 && file.indexOf("-") == 4) {
+                        if (file.isDirectory() && file.getName().length() == 9 && file.getName().indexOf("-") == 4) {
                             datapath = file.getAbsolutePath();
                             break;
                         }
