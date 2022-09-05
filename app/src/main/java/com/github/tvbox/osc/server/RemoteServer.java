@@ -84,17 +84,17 @@ String getpath() {
     } else {
         //支持U盘路径
         String[] strArr = new String[] {
-            "/mnt/usb/",//mnt/usb/xxxx-xxxx
-            "/storage/usb/",//storage/usb/xxxx-xxxx
-            "/storage/",//storage/xxxx-xxxx
-            "/mnt/"//mnt/xxxx-xxxx
+            "/mnt/usb/", //mnt/usb/xxxx-xxxx
+            "/storage/usb/", //storage/usb/xxxx-xxxx
+            "/storage/", //storage/xxxx-xxxx
+            "/mnt/" //mnt/xxxx-xxxx
         };
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 4; i++) {
             File[] listFiles = new File(strArr[i]).listFiles();
             if (datapath == null || datapath == "") {
                 if (listFiles != null && listFiles.length == 9) {
                     for (File file: listFiles) {
-                        if (file.isDirectory() && file.indexOf("-") == 4) {
+                        if (file.isDirectory() && file.indexOf("-") == 4) {
                             datapath = file.getAbsolutePath();
                             break;
                         }
