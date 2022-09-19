@@ -84,7 +84,7 @@ public class FastSearchActivity extends BaseActivity {
     private FastListAdapter spListAdapter;
     private String searchTitle = "";
     private HashMap<String, String> spNames;
-    private boolean isFilterMode = false;
+    private boolean isFilterMode = true;
     private String searchFilterKey = "";    // 过滤的key
     private HashMap<String, ArrayList<Movie.Video> > resultVods; // 搜索结果
     private  int finishedCount=0;
