@@ -6,9 +6,12 @@ import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -16,6 +19,8 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 import tv.danmaku.ijk.media.player.misc.IjkTrackInfo;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
+import xyz.doikki.videoplayer.player.TrackInfo;
+import xyz.doikki.videoplayer.player.TrackInfoBean;
 import xyz.doikki.videoplayer.player.VideoViewManager;
 
 public class IjkPlayer extends AbstractPlayer implements IMediaPlayer.OnErrorListener,
@@ -209,6 +214,41 @@ public class IjkPlayer extends AbstractPlayer implements IMediaPlayer.OnErrorLis
     @Override
     public long getTcpSpeed() {
         return mMediaPlayer.getTcpSpeed();
+    }
+
+    @Override
+    public TrackInfo getTrackInfo() {
+        IjkTrackInfo[] trackInfo = mMediaPlayer.getTrackInfo();
+        if (trackInfo == null) return null;
+        TrackInfo data = new TrackInfo();
+        int subtitleSelected = mMediaPlayer.getSelectedTrack(ITrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT);
+        int audioSelected = mMediaPlayer.getSelectedTrack(ITrackInfo.MEDIA_TRACK_TYPE_AUDIO);
+        int index = 0;
+        for (IjkTrackInfo info : trackInfo) {
+            if (info.getTrackType() == ITrackInfo.MEDIA_TRACK_TYPE_AUDIO) {//音轨信息
+                TrackInfoBean t = new TrackInfoBean();
+                t.name = info.getInfoInline();
+                t.language = info.getLanguage();
+                t.index = index;
+                t.selected = index == audioSelected;
+                data.addAudio(t);
+            }
+            if (info.getTrackType() == ITrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {//内嵌字幕
+                TrackInfoBean t = new TrackInfoBean();
+                t.name = info.getInfoInline();
+                t.language = info.getLanguage();
+                t.index = index;
+                t.selected = index == subtitleSelected;
+                data.addSubtitle(t);
+            }
+            index++;
+        }
+        return data;
+    }
+
+    @Override
+    public void setTrack(int trackIndex) {
+        mMediaPlayer.selectTrack(trackIndex);
     }
 
     @Override

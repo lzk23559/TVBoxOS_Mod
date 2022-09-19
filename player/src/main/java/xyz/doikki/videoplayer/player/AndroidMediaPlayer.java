@@ -9,6 +9,8 @@ import android.os.Build;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -218,6 +220,16 @@ public class AndroidMediaPlayer extends AbstractPlayer implements MediaPlayer.On
     public long getTcpSpeed() {
         // no support
         return 0;
+    }
+
+    @Override
+    public TrackInfo getTrackInfo() {
+        return null;
+    }
+
+    @Override
+    public void setTrack(int trackIndex) {
+
     }
 
     @Override

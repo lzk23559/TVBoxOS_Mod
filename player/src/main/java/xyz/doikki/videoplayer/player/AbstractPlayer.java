@@ -4,6 +4,7 @@ import android.content.res.AssetFileDescriptor;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -149,6 +150,16 @@ public abstract class AbstractPlayer {
      * 获取当前缓冲的网速
      */
     public abstract long getTcpSpeed();
+
+    /**
+     * 获取音轨
+     */
+    public abstract TrackInfo getTrackInfo();
+    
+    /**
+     * 设置音轨
+     */
+    public abstract void setTrack(int trackIndex);
 
     /**
      * 绑定VideoView

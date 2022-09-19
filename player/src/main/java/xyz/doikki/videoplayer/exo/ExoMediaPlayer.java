@@ -24,9 +24,12 @@ import com.google.android.exoplayer2.util.Clock;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.video.VideoSize;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import xyz.doikki.videoplayer.player.AbstractPlayer;
+import xyz.doikki.videoplayer.player.TrackInfo;
 import xyz.doikki.videoplayer.player.VideoViewManager;
 
 
@@ -245,6 +248,16 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     public long getTcpSpeed() {
         // no support
         return 0;
+    }
+
+    @Override
+    public TrackInfo getTrackInfo() {
+        return null;
+    }
+
+    @Override
+    public void setTrack(int trackIndex) {
+
     }
 
     @Override

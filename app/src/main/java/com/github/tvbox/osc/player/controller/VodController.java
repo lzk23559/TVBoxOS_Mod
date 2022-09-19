@@ -19,11 +19,13 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.bean.IJKCode;
 import com.github.tvbox.osc.bean.ParseBean;
+import com.github.tvbox.osc.player.MyVideoView;
 import com.github.tvbox.osc.subtitle.widget.SimpleSubtitleView;
 import com.github.tvbox.osc.ui.adapter.ParseAdapter;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.PlayerHelper;
 import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
@@ -39,14 +41,19 @@ import java.util.List;
 
 import java.util.Date;
 
+import xyz.doikki.videoplayer.player.AbstractPlayer;
+import xyz.doikki.videoplayer.player.TrackInfo;
+import xyz.doikki.videoplayer.player.TrackInfoBean;
 import xyz.doikki.videoplayer.player.VideoView;
 import xyz.doikki.videoplayer.util.PlayerUtils;
 
 import static xyz.doikki.videoplayer.util.PlayerUtils.stringForTime;
 
 public class VodController extends BaseController {
-    public VodController(@NonNull @NotNull Context context) {
+    private MyVideoView mVideoView;
+    public VodController(@NonNull @NotNull Context context, MyVideoView videoView) {
         super(context);
+        mVideoView = videoView;
         mHandlerCallback = new HandlerCallback() {
             @Override
             public void callback(Message msg) {
@@ -121,6 +128,7 @@ public class VodController extends BaseController {
     TextView mVideoSize;
     public SimpleSubtitleView mSubtitleView;
     public TextView mZimuBtn;
+    public TextView mAudioTrackBtn;
 
     Handler myHandle;
     Runnable myRunnable;
@@ -180,6 +188,7 @@ public class VodController extends BaseController {
         mVideoSize = findViewById(R.id.tv_videosize);
         mSubtitleView = findViewById(R.id.subtitle_view);
         mZimuBtn = findViewById(R.id.zimu_select);
+        mAudioTrackBtn = findViewById(R.id.audioTrack_select);
 
         myHandle=new Handler();
         myRunnable = new Runnable() {
@@ -522,6 +531,54 @@ public class VodController extends BaseController {
                 hideBottom();
             }
         });
+        mAudioTrackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AbstractPlayer mediaPlayer = mVideoView.getMediaPlayer();
+                if (mediaPlayer == null || trackInfo == null) return;
+                List<TrackInfoBean> bean = trackInfo.getAudio();
+                if (bean.size() < 1) return;
+                SelectDialog<TrackInfoBean> dialog = new SelectDialog<>(getContext());
+                dialog.setTip("切换音轨");
+                dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
+                    @Override
+                    public void click(TrackInfoBean value, int pos) {
+                        try {
+                            for (TrackInfoBean audio : bean) audio.selected = audio.index == value.index;
+                            mediaPlayer.pause();
+                            long progress = mediaPlayer.getCurrentPosition();//保存当前进度，ijk 切换轨道 会有快进几秒
+                            mediaPlayer.setTrack(value.index);
+                            mAudioTrackBtn.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mediaPlayer.seekTo(progress);
+                                    mediaPlayer.start();
+                                }
+                            }, 800);
+                            dialog.dismiss();
+                        } catch (Exception e) {
+                            LOG.e("切换音道出错");
+                        }
+                    }
+
+                    @Override
+                    public String getDisplay(TrackInfoBean val) {
+                        return val.index + " : " + val.language;
+                    }
+                }, new DiffUtil.ItemCallback<TrackInfoBean>() {
+                    @Override
+                    public boolean areItemsTheSame(@NonNull @NotNull TrackInfoBean oldItem, @NonNull @NotNull TrackInfoBean newItem) {
+                        return oldItem.index == newItem.index;
+                    }
+
+                    @Override
+                    public boolean areContentsTheSame(@NonNull @NotNull TrackInfoBean oldItem, @NonNull @NotNull TrackInfoBean newItem) {
+                        return oldItem.index == newItem.index;
+                    }
+                }, bean, trackInfo.getAudioSelected(false));
+                dialog.show();
+            }
+        });
     }
 
     @Override
@@ -673,12 +730,14 @@ public class VodController extends BaseController {
         mHandler.removeMessages(1001);
         mHandler.sendEmptyMessageDelayed(1001, 1000);
     }
-
+    TrackInfo trackInfo;
     @Override
     protected void onPlayStateChanged(int playState) {
         super.onPlayStateChanged(playState);
         switch (playState) {
             case VideoView.STATE_IDLE:
+                trackInfo = null;
+                mAudioTrackBtn.setVisibility(GONE);
                 break;
             case VideoView.STATE_PLAYING:
                 startProgress();
@@ -694,6 +753,10 @@ public class VodController extends BaseController {
             case VideoView.STATE_PREPARED:
             case VideoView.STATE_BUFFERED:
                 mPlayLoadNetSpeed.setVisibility(GONE);
+                if (mVideoView.getMediaPlayer() != null) {
+                    trackInfo = mVideoView.getMediaPlayer().getTrackInfo();
+                    mAudioTrackBtn.setVisibility(trackInfo != null && trackInfo.getAudio().size() > 1 ? VISIBLE : GONE);
+                }
                 break;
             case VideoView.STATE_PREPARING:
             case VideoView.STATE_BUFFERING:
