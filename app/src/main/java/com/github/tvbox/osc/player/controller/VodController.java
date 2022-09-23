@@ -574,6 +574,7 @@ public class VodController extends BaseController {
             @Override
             public boolean onLongClick(View view) {
                 mSubtitleView.setVisibility(View.GONE);
+                mSubtitleView.clearSubtitleCache();
                 hideBottom();
                 Toast.makeText(getContext(), "外挂字幕已关闭", Toast.LENGTH_SHORT).show();
                 return true;
@@ -638,6 +639,8 @@ public class VodController extends BaseController {
         void playNext(boolean rmProgress);
 
         void playPre();
+
+        void prepared();
 
         void changeParse(ParseBean pb);
 
@@ -760,6 +763,9 @@ public class VodController extends BaseController {
                 listener.errReplay();
                 break;
             case VideoView.STATE_PREPARED:
+                mPlayLoadNetSpeed.setVisibility(GONE);
+                listener.prepared();
+                break;
             case VideoView.STATE_BUFFERED:
                 mPlayLoadNetSpeed.setVisibility(GONE);
                 break;
