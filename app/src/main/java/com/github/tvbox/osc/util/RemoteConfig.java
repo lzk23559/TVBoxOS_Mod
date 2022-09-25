@@ -29,7 +29,7 @@ public class RemoteConfig {
         if (ToolUtils.isApkInDebug(mContext)){
             remoteUrl = "https://raw.fastgit.org/hfr1107/HomeBox/main/ini/remote.ini";
         }else{
-            remoteUrl = "https://raw.fastgit.org/hfr1107/HomeBox/main/ini/remote.ini";
+            remoteUrl = "https://cdn.jsdelivr.net/gh/hfr1107/HomeBox@main/ini/remote.ini";
         }
         LOG.e("RemoteConfig",
                 ToolUtils.isApkInDebug(mContext) ? "当前处于【调试】模式":"当前处于【正式】模式",
