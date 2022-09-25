@@ -3,7 +3,6 @@ package com.github.tvbox.osc.util;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.github.other.xunfei.WebIATWS;
 import com.github.tvbox.osc.base.BaseActivity;
 import com.github.tvbox.osc.ui.activity.HomeActivity;
 import com.github.tvbox.osc.ui.dialog.UpdateDialog;
@@ -154,25 +153,7 @@ public class RemoteConfig {
         // endregion 默认配置
 
 
-        // region 语音搜索
-        String voiceAppID="",voiceApiSecret="",voiceApiKey ="";
-        // region 讯飞AppID
-        if (GetValue(RemoteConfigName.VoiceAppID)!=null) {
-            voiceAppID =  GetValue(RemoteConfigName.VoiceAppID).getAsString();
-        }
-        // endregion
-        // region 讯飞ApiSecret
-        if (GetValue(RemoteConfigName.VoiceApiSecret)!=null) {
-            voiceApiSecret =  GetValue(RemoteConfigName.VoiceApiSecret).getAsString();
-        }
-        // endregion
-        // region 讯飞ApiKey
-        if (GetValue(RemoteConfigName.VoiceApiKey)!=null) {
-            voiceApiKey =  GetValue(RemoteConfigName.VoiceApiKey).getAsString();
-        }
-        // endregion
-        WebIATWS.RemoteSetKey(voiceAppID, voiceApiSecret, voiceApiKey);
-        // endregion
+
 
         //region 默认直播配置
         if (GetValue(RemoteConfigName.Live)!=null) {
