@@ -66,7 +66,7 @@ public class FileUtils {
         }
         file.delete();
     }
-        public static void appendFile(File file, String content) {
+    public static void appendFile(File file, String content) {
             BufferedWriter out = null;
             try {
                 out = new BufferedWriter(new OutputStreamWriter(
