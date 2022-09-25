@@ -30,8 +30,7 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
-
-  LOG.OpenSaveLog();
+        RemoteConfig.Init();
         initParams();
         // OKGo
         OkGoHelper.init();
