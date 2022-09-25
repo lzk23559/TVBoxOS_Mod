@@ -3,6 +3,7 @@ package com.github.tvbox.osc.util;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.github.other.xunfei.WebIATWS;
 import com.github.tvbox.osc.base.BaseActivity;
 import com.github.tvbox.osc.ui.activity.HomeActivity;
 import com.github.tvbox.osc.ui.dialog.UpdateDialog;
@@ -27,9 +28,9 @@ public class RemoteConfig {
     public static void Init(Context mContext){
         RemoteConfig.mContext = mContext;
         if (ToolUtils.isApkInDebug(mContext)){
-            remoteUrl = "https://raw.fastgit.org/hfr1107/HomeBox/main/ini/remote.ini";
+            remoteUrl = "http://a.mayishidai.cn:7080/tv/apk/remote.ini";
         }else{
-            remoteUrl = "https://cdn.jsdelivr.net/gh/hfr1107/HomeBox@main/ini/remote.ini";
+            remoteUrl = "https://mayishidai.cn/tv/apk/remote.ini";
         }
         LOG.e("RemoteConfig",
                 ToolUtils.isApkInDebug(mContext) ? "当前处于【调试】模式":"当前处于【正式】模式",
@@ -152,6 +153,26 @@ public class RemoteConfig {
 
         // endregion 默认配置
 
+
+        // region 语音搜索
+        String voiceAppID="",voiceApiSecret="",voiceApiKey ="";
+        // region 讯飞AppID
+        if (GetValue(RemoteConfigName.VoiceAppID)!=null) {
+            voiceAppID =  GetValue(RemoteConfigName.VoiceAppID).getAsString();
+        }
+        // endregion
+        // region 讯飞ApiSecret
+        if (GetValue(RemoteConfigName.VoiceApiSecret)!=null) {
+            voiceApiSecret =  GetValue(RemoteConfigName.VoiceApiSecret).getAsString();
+        }
+        // endregion
+        // region 讯飞ApiKey
+        if (GetValue(RemoteConfigName.VoiceApiKey)!=null) {
+            voiceApiKey =  GetValue(RemoteConfigName.VoiceApiKey).getAsString();
+        }
+        // endregion
+        WebIATWS.RemoteSetKey(voiceAppID, voiceApiSecret, voiceApiKey);
+        // endregion
 
         //region 默认直播配置
         if (GetValue(RemoteConfigName.Live)!=null) {
