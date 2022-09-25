@@ -66,4 +66,20 @@ public class FileUtils {
         }
         file.delete();
     }
+        public static void appendFile(File file, String content) {
+            BufferedWriter out = null;
+            try {
+                out = new BufferedWriter(new OutputStreamWriter(
+                        new FileOutputStream(file, true)));
+                out.write(content);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 }
