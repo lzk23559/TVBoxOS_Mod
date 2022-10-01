@@ -582,6 +582,8 @@ public class PlayFragment extends BaseLazyFragment {
                         String flag = info.optString("flag");
                         String url = info.getString("url");
                         HashMap<String, String> headers = null;
+                        //web给个默认的UA
+                        webUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36";
                         webHeaderMap = null;
                         if (info.has("header")) {
                             try {
@@ -593,6 +595,9 @@ public class PlayFragment extends BaseLazyFragment {
                                         headers = new HashMap<>();
                                     }
                                     headers.put(key, hds.getString(key));
+                                    if (key.equalsIgnoreCase("user-agent")) {
+                                        webUserAgent = hds.getString(key).trim();
+                                    }
                                 }
                                 webHeaderMap = headers;
                             } catch (Throwable th) {
@@ -832,6 +837,7 @@ public class PlayFragment extends BaseLazyFragment {
     private String progressKey;
     private String parseFlag;
     private String webUrl;
+    private String webUserAgent;
     private Map<String, String > webHeaderMap;
 
     private void initParse(String flag, boolean useParse, String playUrl, final String url) {
@@ -1157,30 +1163,15 @@ public class PlayFragment extends BaseLazyFragment {
         }
     }
 
-//    void loadUrl(String url) {
-//        requireActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (mXwalkWebView != null) {
-//                    mXwalkWebView.stopLoading();
-//                    mXwalkWebView.clearCache(true);
-//                    mXwalkWebView.loadUrl(url);
-//                }
-//                if (mSysWebView != null) {
-//                    mSysWebView.stopLoading();
-//                    mSysWebView.clearCache(true);
-//                    mSysWebView.loadUrl(url);
-//                }
-//            }
-//        });
-//    }
-
     void loadUrl(String url) {
         requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mXwalkWebView != null) {
                     mXwalkWebView.stopLoading();
+                    if(webUserAgent != null) {
+                        mXwalkWebView.getSettings().setUserAgentString(webUserAgent);
+                    }
                     //mXwalkWebView.clearCache(true);
                     if(webHeaderMap != null){
                         mXwalkWebView.loadUrl(url,webHeaderMap);
@@ -1190,6 +1181,9 @@ public class PlayFragment extends BaseLazyFragment {
                 }
                 if (mSysWebView != null) {
                     mSysWebView.stopLoading();
+                    if(webUserAgent != null) {
+                        mSysWebView.getSettings().setUserAgentString(webUserAgent);
+                    }
                     //mSysWebView.clearCache(true);
                     if(webHeaderMap != null){
                         mSysWebView.loadUrl(url,webHeaderMap);
@@ -1330,7 +1324,7 @@ public class PlayFragment extends BaseLazyFragment {
         //设置编码
         settings.setDefaultTextEncodingName("utf-8");
         settings.setUserAgentString(webView.getSettings().getUserAgentString());
-        // settings.setUserAgentString(ANDROID_UA);
+//         settings.setUserAgentString(ANDROID_UA);
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -1373,6 +1367,9 @@ public class PlayFragment extends BaseLazyFragment {
         WebResourceResponse checkIsVideo(String url, HashMap<String, String> headers) {
             LOG.i("shouldInterceptRequest url:" + url);
             if (url.endsWith("/favicon.ico")) {
+                if (url.startsWith("http://127.0.0.1")) {
+                    return new WebResourceResponse("image/x-icon", "UTF-8", null);
+                }
                 return null;
             }
             boolean ad;
@@ -1385,6 +1382,7 @@ public class PlayFragment extends BaseLazyFragment {
 
             if (!ad) {
                 if (checkVideoFormat(url)) {
+                    LOG.i("checkVideoFormat:" + url );
                     if (loadFoundCount.incrementAndGet() == 1) {
                         mHandler.removeMessages(100);
                         if (headers != null && !headers.isEmpty()) {
@@ -1406,10 +1404,7 @@ public class PlayFragment extends BaseLazyFragment {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
             WebResourceResponse response = checkIsVideo(url, null);
-            if (response == null)
-                return super.shouldInterceptRequest(view, url);
-            else
-                return response;
+            return response;
         }
 
         @Nullable
@@ -1434,10 +1429,7 @@ public class PlayFragment extends BaseLazyFragment {
                 th.printStackTrace();
             }
             WebResourceResponse response = checkIsVideo(url, webHeaders);
-            if (response == null)
-                return super.shouldInterceptRequest(view, request);
-            else
-                return response;
+            return response;
         }
 
         @Override
@@ -1544,7 +1536,10 @@ public class PlayFragment extends BaseLazyFragment {
             String url = request.getUrl().toString();
             // suppress favicon requests as we don't display them anywhere
             if (url.endsWith("/favicon.ico")) {
-                return super.shouldInterceptLoadRequest(view, request);
+                if (url.startsWith("http://127.0.0.1")) {
+                    return createXWalkWebResourceResponse("image/x-icon", "UTF-8", null);
+                }
+                return null;
             }
             LOG.i("shouldInterceptLoadRequest url:" + url);
             boolean ad;
@@ -1556,6 +1551,7 @@ public class PlayFragment extends BaseLazyFragment {
             }
             if (!ad ) {
                 if (checkVideoFormat(url)) {
+                    LOG.i("checkVideoFormat:" + url );
                     if (loadFoundCount.incrementAndGet() == 1) {
                         mHandler.removeMessages(100);
                         HashMap<String, String> webHeaders = new HashMap<>();
@@ -1580,7 +1576,7 @@ public class PlayFragment extends BaseLazyFragment {
             }
             return ad || loadFoundCount.get() > 0 ?
                     createXWalkWebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes())) :
-                    super.shouldInterceptLoadRequest(view, request);
+                    null;
         }
 
         @Override
