@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.Uri;
+import android.util.Base64;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -47,6 +49,7 @@ import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.urlhttp.CallBackUtil;
 import com.github.tvbox.osc.util.urlhttp.UrlHttpUtil;
+import com.github.tvbox.osc.util.LOG;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -59,10 +62,6 @@ import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URLEncoder;
@@ -71,8 +70,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.lang.Boolean;
 
 import xyz.doikki.videoplayer.player.VideoView;
 
@@ -140,10 +141,6 @@ public class LivePlayActivity extends BaseActivity {
 
     private ObjectAnimator objectAnimator;
     public String epgStringAddress ="";
-
-
-
-
 
     @Override
     protected int getLayoutResID() {
@@ -1058,7 +1055,18 @@ public class LivePlayActivity extends BaseActivity {
     }
 
     public void loadProxyLives(String url) {
-        OkGo.<String>get(url).execute(new AbsCallback<String>() {
+        Uri parsedUrl = Uri.parse(url);
+        String extUrl = url;
+        try {
+            extUrl = new String(Base64.decode(parsedUrl.getQueryParameter("ext"), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), "UTF-8");
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+        String type = parsedUrl.getQueryParameter("type");
+        boolean useProxy = extUrl.startsWith("http");
+        LOG.i("url: " + url + " extUrl: " + extUrl + " proxy: " + Boolean.toString(useProxy));
+
+        OkGo.<String>get(useProxy ? extUrl : url).execute(new AbsCallback<String>() {
 
             @Override
             public String convertResponse(okhttp3.Response response) throws Throwable {
@@ -1067,7 +1075,14 @@ public class LivePlayActivity extends BaseActivity {
 
             @Override
             public void onSuccess(Response<String> response) {
-                JsonArray livesArray = new Gson().fromJson(response.body(), JsonArray.class);
+                JsonArray livesArray = null;
+                if (type.equals("txt") && useProxy) {
+                    LinkedHashMap map = new LinkedHashMap();
+                    ApiConfig.get().parseLiveTxt(map, response.body());
+                    livesArray = ApiConfig.get().jsonifyLiveMap(map);
+                } else {
+                    livesArray = new Gson().fromJson(response.body(), JsonArray.class);
+                }
                 ApiConfig.get().loadLives(livesArray);
                 List<LiveChannelGroup> list = ApiConfig.get().getChannelGroupList();
                 if (list.isEmpty()) {

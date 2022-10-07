@@ -1,7 +1,7 @@
 package com.github.tvbox.osc.util;
 
 import com.github.tvbox.osc.base.App;
-import com.github.tvbox.osc.util.SSL.SSLSocketFactoryCompat;
+import com.github.tvbox.osc.util.TLSSocketFactory;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
@@ -11,23 +11,36 @@ import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.security.Security;
+import java.security.Provider;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLContext;
+
+import org.conscrypt.Conscrypt;
 
 import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.dnsoverhttps.DnsOverHttps;
 import okhttp3.internal.Version;
+import okhttp3.ConnectionSpec;
 import xyz.doikki.videoplayer.exo.ExoMediaSourceHelper;
 
 public class OkGoHelper {
     public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
+    public static final Provider conscrypt = Conscrypt.newProvider();
+    static {
+        Security.insertProviderAt(conscrypt, 1);
+    }
 
     static void initExoOkHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -117,8 +130,8 @@ public class OkGoHelper {
 
     public static void init() {
         initDnsOverHttps();
-
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        List connectionSpecs = Arrays.asList(ConnectionSpec.RESTRICTED_TLS, ConnectionSpec.CLEARTEXT);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder().connectionSpecs(connectionSpecs);
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor("OkGo");
 
         if (Hawk.get(HawkConfig.DEBUG_OPEN, false)) {
@@ -183,7 +196,10 @@ public class OkGoHelper {
                             return new java.security.cert.X509Certificate[]{};
                         }
                     };
-            final SSLSocketFactory sslSocketFactory = new SSLSocketFactoryCompat(trustAllCert);
+            final SSLContext sslContext = SSLContext.getInstance("TLS", conscrypt);
+	        sslContext.init(null, new TrustManager[] { trustAllCert }, null);
+            
+            final SSLSocketFactory sslSocketFactory = new TLSSocketFactory(sslContext.getSocketFactory());
             builder.sslSocketFactory(sslSocketFactory, trustAllCert);
             builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
         } catch (Exception e) {
