@@ -85,7 +85,6 @@ public class ApiConfig {
     }
 
 
-
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
         String apiUrl = Hawk.get(HawkConfig.API_URL, "");
         if (apiUrl.isEmpty()) {
@@ -541,16 +540,13 @@ public class ApiConfig {
     }
 
     String clanToAddress(String lanLink) {
-        if (lanLink.startsWith("clan")) {
-            if (lanLink.startsWith("clan://localhost/")) {
-                return lanLink.replace("clan://localhost/", ControlManager.get().getAddress(true) + "file/");
-            } else {
-                String link = lanLink.substring(7);
-                int end = link.indexOf('/');
-                return "http://" + link.substring(0, end) + "/file/" + link.substring(end + 1);
-            }
+        if (lanLink.startsWith("clan://localhost/")) {
+            return lanLink.replace("clan://localhost/", ControlManager.get().getAddress(true) + "file/");
+        } else {
+            String link = lanLink.substring(7);
+            int end = link.indexOf('/');
+            return "http://" + link.substring(0, end) + "/file/" + link.substring(end + 1);
         }
-        return lanLink;
     }
 
     String clanContentFix(String lanLink, String content) {
