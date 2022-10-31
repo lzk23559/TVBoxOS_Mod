@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.github.catvod.crawler.SpiderNull;
+import com.undcover.freedom.pyramid.PythonLoader;
 
 /**
  * @author pj567
@@ -278,6 +280,7 @@ public class ApiConfig {
     }
 
     private void parseJson(String apiUrl, String jsonStr) {
+        PythonLoader.getInstance().setConfig(jsonStr);
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
@@ -493,6 +496,14 @@ public class ApiConfig {
     }
 
     public Spider getCSP(SourceBean sourceBean) {
+        if (sourceBean.getApi().startsWith("py_")) {
+            try {
+                return PythonLoader.getInstance().getSpider(sourceBean.getKey(), sourceBean.getExt());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new SpiderNull();
+            }
+        }
         return jarLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
     }
 
