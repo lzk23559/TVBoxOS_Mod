@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.player.controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Handler;
@@ -69,7 +70,7 @@ public class VodController extends BaseController {
                         mTopRoot1.setVisibility(VISIBLE);
                         mTopRoot2.setVisibility(VISIBLE);
                         mPlayTitle.setVisibility(GONE);
-                        mBottomRoot.requestFocus();
+                        mNextBtn.requestFocus();
                         break;
                     }
                     case 1003: { // 隐藏底部菜单
@@ -612,11 +613,11 @@ public class VodController extends BaseController {
     }
 
     public void initLandscapePortraitBtnInfo() {
-        if(mControlWrapper!=null){
+        if(mControlWrapper!=null && mActivity!=null){
             int width = mControlWrapper.getVideoSize()[0];
             int height = mControlWrapper.getVideoSize()[1];
             double screenSqrt = ScreenUtils.getSqrt(mActivity);
-            if (screenSqrt < 20.0 && width < height) {
+            if (screenSqrt < 10.0 && width < height) {
                 mLandscapePortraitBtn.setVisibility(View.VISIBLE);
                 mLandscapePortraitBtn.setText("竖屏");
             }
@@ -805,6 +806,7 @@ public class VodController extends BaseController {
             case VideoView.STATE_IDLE:
                 break;
             case VideoView.STATE_PLAYING:
+                initLandscapePortraitBtnInfo();
                 startProgress();
                 break;
             case VideoView.STATE_PAUSED:
@@ -901,7 +903,6 @@ public class VodController extends BaseController {
                 float speed = 3.0f;
                 mPlayerConfig.put("sp", speed);
                 updatePlayerCfgView();
-                mBottomRoot.setVisibility(VISIBLE);
                 listener.updatePlayerCfg();
                 mControlWrapper.setSpeed(speed);
             } catch (JSONException f) {
@@ -910,6 +911,7 @@ public class VodController extends BaseController {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_UP) {
@@ -919,7 +921,6 @@ public class VodController extends BaseController {
                     float speed = speed_old;
                     mPlayerConfig.put("sp", speed);
                     updatePlayerCfgView();
-                    mBottomRoot.setVisibility(GONE);
                     listener.updatePlayerCfg();
                     mControlWrapper.setSpeed(speed);
                 } catch (JSONException f) {
