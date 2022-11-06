@@ -12,7 +12,7 @@
         <item name="android:windowNoTitle">false</item>
         <item name="windowActionBar">true</item>
         <item name="android:windowFullscreen">false</item>//全屏即无通知栏
-     //   <item name="android:windowContentOverlay">@null</item>//是否有遮盖
+        <item name="android:windowContentOverlay">@null</item>//是否有遮盖
         <item name="windowNoTitle">false</item>
         <item name="android:keepScreenOn">true</item>
         <!--        <item name="android:windowBackground">@drawable/main_bg</item>-->
