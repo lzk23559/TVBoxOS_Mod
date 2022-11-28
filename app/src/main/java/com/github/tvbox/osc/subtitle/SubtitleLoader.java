@@ -33,6 +33,7 @@ import com.github.tvbox.osc.subtitle.exception.FatalParsingException;
 import com.github.tvbox.osc.subtitle.format.FormatASS;
 import com.github.tvbox.osc.subtitle.format.FormatSRT;
 import com.github.tvbox.osc.subtitle.format.FormatSTL;
+import com.github.tvbox.osc.subtitle.format.TimedTextFileFormat;
 import com.github.tvbox.osc.subtitle.model.TimedTextObject;
 import com.github.tvbox.osc.subtitle.runtime.AppTaskExecutor;
 import com.github.tvbox.osc.util.FileUtils;
@@ -160,7 +161,7 @@ public class SubtitleLoader {
             throws IOException, FatalParsingException, Exception {
         Log.d(TAG, "parseRemote: remoteSubtitlePath = " + remoteSubtitlePath);
         String referer = "";
-        if (remoteSubtitlePath.contains("alicloud")) {
+        if (remoteSubtitlePath.contains("alicloud") || remoteSubtitlePath.contains("aliyundrive")) {
             referer = "https://www.aliyundrive.com/";
         } else if (remoteSubtitlePath.contains("assrt.net")) {
             referer = "https://secure.assrt.net/";
@@ -232,7 +233,10 @@ public class SubtitleLoader {
     private static TimedTextObject loadAndParse(final InputStream is, final String filePath)
             throws IOException, FatalParsingException {
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-        String ext = fileName.substring(fileName.lastIndexOf("."));
+        String ext = "";
+        if (fileName.lastIndexOf(".") > 0) {
+            ext = fileName.substring(fileName.lastIndexOf("."));
+        }
         Log.d(TAG, "parse: name = " + fileName + ", ext = " + ext);
         Reader reader = new UnicodeReader(is); //处理有BOM头的utf8
         InputStream newInputStream = new ReaderInputStream(reader, Charset.defaultCharset());
@@ -245,7 +249,16 @@ public class SubtitleLoader {
         } else if (".ttml".equalsIgnoreCase(ext)) {
             return new FormatSTL().parseFile(fileName, newInputStream);
         }
-        return new FormatSRT().parseFile(fileName, newInputStream);
+        TimedTextFileFormat[] arr = {new FormatSRT(), new FormatASS(), new FormatSTL(), new FormatSTL()};
+        for(TimedTextFileFormat oneFormat : arr) {
+            try {
+                TimedTextObject obj = oneFormat.parseFile(fileName, newInputStream);
+                return obj;
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return null;
     }
 
     public interface Callback {
