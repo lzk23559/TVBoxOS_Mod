@@ -294,7 +294,7 @@ public class HomeActivity extends BaseActivity {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HomeActivity.this, "LLFX安排", Toast.LENGTH_SHORT).show();
                                 initData();
                             }
                         });
