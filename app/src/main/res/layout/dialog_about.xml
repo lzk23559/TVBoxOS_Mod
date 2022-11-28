@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/ts_50"
         android:lineSpacingMultiplier="0"
-        android:text="本软件根据协议只供本店测试使用，禁止复制！\n\n播放视频请自觉遵守法规\nLLFX：本软件免费使用，如遇要求扫码付费，请不要上当付费"
+        android:text="本软件根据协议只供本店测试使用，禁止复制！\n\n播放视频请自觉遵守法规\nLLFX：本软件免费使用"
         android:textColor="@color/color_CC000000"
         android:textSize="@dimen/ts_24" />
 
