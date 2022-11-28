@@ -68,7 +68,7 @@ public class VodController extends BaseController {
                     case 1002: { // 显示底部菜单
                         mBottomRoot.setVisibility(VISIBLE);
                         mTopRoot1.setVisibility(VISIBLE);
-                        mTopRoot2.setVisibility(VISIBLE);
+                        //mTopRoot2.setVisibility(VISIBLE);
                         mPlayTitle.setVisibility(GONE);
                         mNextBtn.requestFocus();
                         break;
@@ -76,7 +76,7 @@ public class VodController extends BaseController {
                     case 1003: { // 隐藏底部菜单
                         mBottomRoot.setVisibility(GONE);
                         mTopRoot1.setVisibility(GONE);
-                        mTopRoot2.setVisibility(GONE);
+                        //mTopRoot2.setVisibility(GONE);
                         break;
                     }
                     case 1004: { // 设置速度
@@ -130,6 +130,9 @@ public class VodController extends BaseController {
     TextView mZimuBtn;
     TextView mAudioTrackBtn;
     public TextView mLandscapePortraitBtn;
+
+    TextView seekTime;//右上角进度时间显示
+    TextView mScreendisplay;//增加屏显开关
 
     Handler myHandle;
     Runnable myRunnable;
@@ -194,6 +197,9 @@ public class VodController extends BaseController {
         mZimuBtn = findViewById(R.id.zimu_select);
         mAudioTrackBtn = findViewById(R.id.audio_track_select);
         mLandscapePortraitBtn = findViewById(R.id.landscape_portrait);
+
+        seekTime = findViewById(R.id.tv_seek_time);//右上角进度时间显示
+        mScreendisplay = findViewById(R.id.screen_display);//增加屏显开关
 
         initSubtitleInfo();
 
@@ -584,6 +590,15 @@ public class VodController extends BaseController {
                 hideBottom();
             }
         });
+        //屏显开关
+        mScreendisplay.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTopRoot2.setVisibility(mTopRoot2.getVisibility() == VISIBLE?GONE:VISIBLE);
+                hideBottom();
+                //Toast.makeText(getContext(), "点击显示网速 播放进度 时间", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void initLandscapePortraitBtnInfo() {
@@ -711,6 +726,7 @@ public class VodController extends BaseController {
         }
         mCurrentTime.setText(PlayerUtils.stringForTime(position));
         mTotalTime.setText(PlayerUtils.stringForTime(duration));
+        seekTime.setText((PlayerUtils.stringForTime(position)) + " | " + (PlayerUtils.stringForTime(duration)));//右上角进度条时间显示
         if (duration > 0) {
             mSeekBar.setEnabled(true);
             int pos = (int) (position * 1.0 / duration * mSeekBar.getMax());
@@ -766,7 +782,7 @@ public class VodController extends BaseController {
         } else {
             mProgressIcon.setImageResource(R.drawable.icon_back);
         }
-        mProgressText.setText(PlayerUtils.stringForTime(seekTo) + " / " + PlayerUtils.stringForTime(duration));
+        mProgressText.setText(PlayerUtils.stringForTime(seekTo) + " | " + PlayerUtils.stringForTime(duration));
         mHandler.sendEmptyMessage(1000);
         mHandler.removeMessages(1001);
         mHandler.sendEmptyMessageDelayed(1001, 1000);
@@ -780,12 +796,13 @@ public class VodController extends BaseController {
             case VideoView.STATE_IDLE:
                 break;
             case VideoView.STATE_PLAYING:
+                //mTopRoot2.setVisibility(View.VISIBLE);//播放视频默认屏显开
                 initLandscapePortraitBtnInfo();
                 startProgress();
                 break;
             case VideoView.STATE_PAUSED:
                 mTopRoot1.setVisibility(GONE);
-                mTopRoot2.setVisibility(GONE);
+                //mTopRoot2.setVisibility(GONE);
                 mPlayTitle.setVisibility(VISIBLE);
                 break;
             case VideoView.STATE_ERROR:
