@@ -25,7 +25,6 @@ import com.github.tvbox.osc.ui.adapter.FastSearchAdapter;
 import com.github.tvbox.osc.ui.adapter.SearchWordAdapter;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.SearchHelper;
-import com.github.tvbox.osc.util.js.JSEngine;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -194,7 +193,6 @@ public class FastSearchActivity extends BaseActivity {
                     try {
                         if (searchExecutorService != null) {
                             pauseRunnable = searchExecutorService.shutdownNow();
-                            JSEngine.getInstance().stopAll();
                             searchExecutorService = null;
                         }
                     } catch (Throwable th) {
@@ -221,7 +219,6 @@ public class FastSearchActivity extends BaseActivity {
                     try {
                         if (searchExecutorService != null) {
                             pauseRunnable = searchExecutorService.shutdownNow();
-                            JSEngine.getInstance().stopAll();
                             searchExecutorService = null;
                         }
                     } catch (Throwable th) {
@@ -380,7 +377,6 @@ public class FastSearchActivity extends BaseActivity {
         try {
             if (searchExecutorService != null) {
                 searchExecutorService.shutdownNow();
-                JSEngine.getInstance().stopAll();
                 searchExecutorService = null;
             }
         } catch (Throwable th) {
@@ -502,7 +498,6 @@ public class FastSearchActivity extends BaseActivity {
         try {
             if (searchExecutorService != null) {
                 searchExecutorService.shutdownNow();
-                JSEngine.getInstance().stopAll();
                 searchExecutorService = null;
             }
         } catch (Throwable th) {

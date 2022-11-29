@@ -435,8 +435,15 @@ public class DetailActivity extends BaseActivity {
                 currentSeriesGroupView.isSelected();
             }
         });
+        mGridView.setOnFocusChangeListener((view, b) -> onGridViewFocusChange(view, b));
+
 
         setLoadSir(llLayout);
+    }
+
+    private void onGridViewFocusChange(View view, boolean hasFocus) {
+        if (llPlayerFragmentContainerBlock.getVisibility() != View.VISIBLE) return;
+        llPlayerFragmentContainerBlock.setFocusable(!hasFocus);
     }
 
     private void initCheckedSourcesForSearch() {
@@ -666,7 +673,6 @@ public class DetailActivity extends BaseActivity {
                             jumpToPlay();
                             llPlayerFragmentContainer.setVisibility(View.VISIBLE);
                             llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
-                            llPlayerFragmentContainerBlock.requestFocus();
                             toggleSubtitleTextSize();
                         }
                         // startQuickSearch();
