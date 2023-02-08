@@ -127,7 +127,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "https://agit.ai/cyl518/yl/raw/branch/master/ml.json");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, "https://raw.iqiq.io/liu673cn/box/main/m.json");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
