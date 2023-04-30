@@ -334,6 +334,7 @@ public class ApiConfig {
                 firstSite = sb;
             sourceBeanList.put(siteKey, sb);
         }
+        addJellyfinToSourceBeanList(); //添加jellyfin
         if (sourceBeanList != null && sourceBeanList.size() > 0) {
             String home = Hawk.get(HawkConfig.HOME_API, "");
             SourceBean sh = getSource(home);
@@ -647,6 +648,32 @@ public class ApiConfig {
     public IJKCode getCurrentIJKCode() {
         String codeName = Hawk.get(HawkConfig.IJK_CODEC, "");
         return getIJKCodec(codeName);
+    }
+
+    public void addJellyfinToSourceBeanList(){
+        if(sourceBeanList == null){
+            return;
+        }
+
+        String serverUrl = Hawk.get(HawkConfig.Jellyfin.serverUrl,"");
+        String username = Hawk.get(HawkConfig.Jellyfin.username,"");
+        String password = Hawk.get(HawkConfig.Jellyfin.password,"");
+        String userid = Hawk.get(HawkConfig.Jellyfin.userid,"");
+        String token = Hawk.get(HawkConfig.Jellyfin.token,"");
+
+        if(sourceBeanList.containsKey(HawkConfig.Jellyfin.sourcebean_key)){
+            sourceBeanList.remove(HawkConfig.Jellyfin.sourcebean_key);
+        }
+
+        if(userid != "" && token != ""){
+            SourceBean sb = new SourceBean();
+            sb.setKey(HawkConfig.Jellyfin.sourcebean_key);
+            sb.setName(HawkConfig.Jellyfin.sourcebean_name);
+            sb.setType(3);
+            sb.setApi("assets://js/jellyfin.js?userid=" + userid + "&token=" + token);
+            sb.setSearchable(1);
+            sourceBeanList.put(HawkConfig.Jellyfin.sourcebean_key,sb);
+        }
     }
 
     public IJKCode getIJKCodec(String name) {

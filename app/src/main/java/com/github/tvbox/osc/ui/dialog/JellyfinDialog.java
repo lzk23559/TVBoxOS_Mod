@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
+import com.github.tvbox.osc.util.HawkConfig;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
@@ -48,12 +49,14 @@ public class JellyfinDialog extends BaseDialog {
                 validUrl(serverUrl, new CallBack() {
                     @Override
                     public void onSucc() {
-                        Hawk.put("tvbox_jellyfin_url",serverUrl);
+                        Hawk.put(HawkConfig.Jellyfin.serverUrl,serverUrl);
                         authenticateByName(serverUrl, username, password, new CallBack() {
                             @Override
                             public void onSucc() {
-                                Hawk.put("tvbox_jellyfin_username",username);
-                                Hawk.put("tvbox_jellyfin_password",password);
+                                Hawk.put(HawkConfig.Jellyfin.username,username);
+                                Hawk.put(HawkConfig.Jellyfin.password,password);
+                                ApiConfig.get().addJellyfinToSourceBeanList();
+                                ApiConfig.get().setSourceBean(ApiConfig.get().getSource(HawkConfig.Jellyfin.sourcebean_key));
                                 dismiss();
                             }
 
@@ -135,7 +138,9 @@ public class JellyfinDialog extends BaseDialog {
                             userObj = new JSONObject(response.body());
                             UserId = userObj.getJSONObject("User").getString("Id");
                             Token = userObj.getString("AccessToken");
-                            if (Token != null) {
+                            if (Token != null && UserId != null) {
+                                Hawk.put(HawkConfig.Jellyfin.userid,UserId);
+                                Hawk.put(HawkConfig.Jellyfin.token,Token);
                                 cb.onSucc();
                             }else{
                                 cb.onfaile("用户名或者密码错误！");
