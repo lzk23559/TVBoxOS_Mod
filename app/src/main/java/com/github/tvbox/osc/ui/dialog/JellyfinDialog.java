@@ -1,6 +1,7 @@
 package com.github.tvbox.osc.ui.dialog;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -127,15 +128,17 @@ public class JellyfinDialog extends BaseDialog {
     private void authenticateByName(String url,String username, String password,CallBack cb) {
         String reqjson = "{\"Username\":\"" + username + "\",\"Pw\":\"" + password + "\"}";
         OkGo.<String>post(url + "/Users/authenticatebyname")
+                .headers("X-Emby-Authorization","MediaBrowser Client=\"Jellyfin Web\", Device=\"Edge Chromium\", DeviceId=\"TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzExMi4wLjAuMCBTYWZhcmkvNTM3LjM2IEVkZy8xMTIuMC4xNzIyLjQ4fDE2ODE5MDQ1NTMwOTc1\", Version=\"10.8.9\"")
                 .upJson(reqjson)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
+                        String body = response.body();
                         JSONObject userObj = null;
                         String UserId = null;
                         String Token = null;
                         try {
-                            userObj = new JSONObject(response.body());
+                            userObj = new JSONObject(body);
                             UserId = userObj.getJSONObject("User").getString("Id");
                             Token = userObj.getString("AccessToken");
                             if (Token != null && UserId != null) {
