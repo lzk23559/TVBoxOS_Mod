@@ -6,7 +6,6 @@ export default {
     self: this,
 
     init: function (ext) {
-        console.log("ext:", ext);
         if (ext) {
             ext = JSON.parse(ext);
             this.serverurl = ext['url'] || '';
@@ -19,14 +18,11 @@ export default {
         var result = { "class": [] };
         var url = "/Users/" + this.userid + "/Views";
         var views = this.get(url);
-        console.log('jellyfin-js', views);
         views = views['Items'] || [];
-        console.log('jellyfin-js', views);
         views.forEach(function (element) {
             result["class"].push({ "type_id": element["Id"], "type_name": element["Name"] });
         });
         result = JSON.stringify(result);
-        console.log(result);
         return result
     },
 
@@ -53,25 +49,19 @@ export default {
         ItemsUrl += "&EnableImageTypes=Primary,Backdrop,Banner,Thumb";
         ItemsUrl += "&SortBy=DateCreated,SortName,ProductionYear&SortOrder=Descending";
 
-        console.log(Type);
         if (Type === "tvshows") {
-            console.log("这是电视");
             ItemsUrl += "&IncludeItemTypes=Series";
         } else if (Type === "movies") {
-            console.log("这是电影");
             ItemsUrl += "&IncludeItemTypes=Movie";
         } else {
-            console.log("这是电影电视");
             ItemsUrl += "&IncludeItemTypes=Movie,Series";
         }
         var startIndex = page * limit - limit;
         ItemsUrl += "&StartIndex=" + startIndex;
 
-        console.log(ItemsUrl);
         var Items = this.get(ItemsUrl);
         var totalCount = Items["TotalRecordCount"];
         Items = Items['Items'] || [];
-        console.log(Items);
         var videos = [];
         var superServerurl = this.serverurl;
         Items.forEach(function (ele) {
@@ -91,7 +81,6 @@ export default {
         result["total"] = totalCount;
         result["list"] = videos;
         result = JSON.stringify(result);
-        console.log(result);
         return result;
     },
 
@@ -133,7 +122,6 @@ export default {
             "list": [vod]
         };
         result = JSON.stringify(result);
-        console.log(result);
         return result;
     },
 
@@ -163,21 +151,24 @@ export default {
                 let EpisodeId = Episode["Id"];
                 let EpisodeName = Episode["Name"];
                 let PlayUrl = EpisodeId;
-                result.push(seasonName + "_" + EpisodeName + "$" + PlayUrl);
+                result.push(seasonName + "_第" + (j + 1) + "集_" + EpisodeName + "$" + PlayUrl);
             }
         });
 
         result = result.join("#")
-        console.log(result);
         return result;
     },
 
     search: function (key, quick) {
-        let searchUrl = JYFUrl + "/Users/" + this.userid + "/Items?searchTerm=" + key;
+        let searchUrl = "/Users/" + this.userid + "/Items?searchTerm=" + encodeURI(key);
         searchUrl += "&Limit=24&Fields=PrimaryImageAspectRatio,CanDelete,BasicSyncInfo,MediaSourceCount";
         searchUrl += "&Recursive=true&EnableTotalRecordCount=false&ImageTypeLimit=1&IncludePeople=false";
         searchUrl += "&IncludeMedia=true&IncludeGenres=false&IncludeStudios=false&IncludeArtists=false";
         searchUrl += "&IncludeItemTypes=Movie,Series";
+
+        searchUrl = '/Users/' + this.userid + '/Items?searchTerm=' + encodeURI(key);
+        searchUrl += '&Limit=24&IncludePeople=false&IncludeMedia=true&IncludeGenres=false&IncludeStudios=false&IncludeArtists=false';
+        searchUrl += '&IncludeItemTypes=Movie,Series';
 
         let searchResult = this.get(this.serverurl);
         let result = { "list": [] }
