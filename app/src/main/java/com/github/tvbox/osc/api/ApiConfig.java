@@ -673,6 +673,7 @@ public class ApiConfig {
             sb.setApi("assets://js/jellyfin.js");
             sb.setExt("{\"url\":\"" + serverUrl + "\",\"userid\":\"" + userid + "\",\"token\":\"" + token + "\"}");
             sb.setSearchable(1);
+            sb.setCategories(new ArrayList<>());
             sourceBeanList.put(HawkConfig.Jellyfin.sourcebean_key, sb);
         }
     }
