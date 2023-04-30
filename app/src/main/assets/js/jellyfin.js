@@ -13,7 +13,7 @@
         }
     };
 
-    this.home = function () {
+    this.home = function (filter) {
         var result = { "class": [] };
         var url = this.serverurl + "/Users/" + this.userid + "/Views";
         var views = this.get(url);
@@ -29,7 +29,7 @@
         return JSON.stringify(result);
     };
 
-    this.category = function(){
+    this.category = function(tid, pg, filter, obj){
         var result = {};
         return JSON.stringify(result);
     };
