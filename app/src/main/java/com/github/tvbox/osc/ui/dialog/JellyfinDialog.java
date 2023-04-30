@@ -3,6 +3,7 @@ package com.github.tvbox.osc.ui.dialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -57,14 +58,14 @@ public class JellyfinDialog extends BaseDialog {
 
                             @Override
                             public void onfaile(String msg) {
-
+                                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
                     public void onfaile(String msg) {
-
+                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -133,15 +134,14 @@ public class JellyfinDialog extends BaseDialog {
                             userObj = new JSONObject(response.body());
                             UserId = userObj.getJSONObject("User").getString("Id");
                             Token = userObj.getString("AccessToken");
-
+                            if (Token != null) {
+                                cb.onSucc();
+                            }else{
+                                cb.onfaile("用户名或者密码错误！");
+                            }
                         } catch (JSONException e) {
                             cb.onfaile(e.getMessage());
                             throw new RuntimeException(e);
-                        }
-                        if (Token != null) {
-                            cb.onSucc();
-                        }else{
-                            cb.onfaile("");
                         }
                     }
 
