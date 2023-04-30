@@ -1,5 +1,5 @@
 export default {
-    deviceid :'TVBox_TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXa',
+    deviceid: 'TVBox_TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXa',
     serverurl: '',
     userid: '',
     accesstoken: '',
@@ -51,7 +51,7 @@ export default {
         var ItemsUrl = "/Users/" + this.userid + "/Items?ParentId=" + tid + "&Limit=" + limit;
         ItemsUrl += "&Recursive=true&Fields=PrimaryImageAspectRatio,BasicSyncInfo,Seasons,Episodes&ImageTypeLimit=1";
         ItemsUrl += "&EnableImageTypes=Primary,Backdrop,Banner,Thumb";
-        ItemsUrl += "&SortBy=DateCreated,SortName,ProductionYear";
+        ItemsUrl += "&SortBy=DateCreated,SortName,ProductionYear&SortOrder=Descending";
 
         console.log(Type);
         if (Type === "tvshows") {
@@ -102,17 +102,28 @@ export default {
         if (!detail) return "{}"
 
         let vodid = detail["Id"];
-        let vodname = detail['Name']
+        let vodname = detail['Name'];
+        let People = detail['People'];
+        let actor = [];
+        let director = [];
+        if (People) {
+            People.forEach((ele) => {
+                let Name = ele['Name'];
+                let Type = ele['Type'];
+                if (Type === 'Director') director.push(Name);
+                else actor.push(Name);
+            });
+        }
         let vod = {
             "vod_id": vodid,
             "vod_name": vodname,
             "vod_pic": this.getPrimaryImgUrl(detail),
             "type_name": detail["Genres"] ? detail["Genres"].join(',') : '',
             "vod_year": detail["ProductionYear"] || '',
-            "vod_area": "",
+            "vod_area": detail['ProductionLocations'] ? detail['ProductionLocations'].join(',') : '',
             "vod_remarks": detail["CommunityRating"] || '',
-            "vod_actor": "", //演员
-            "vod_director": "",   //导演
+            "vod_actor": actor.join(','), //演员
+            "vod_director": director.join(','),   //导演
             "vod_content": detail["Overview"] || '',
             "vod_play_from": "Jellyfin",
             "vod_play_url": detail["Type"] === "Series" ? this.getEpisodes(vodid) : (vodname + "$" + vodid),
@@ -211,7 +222,7 @@ export default {
     },
 
     getXEmbyAuthorization: function () {
-        var XEmbyAuthorization = 'MediaBrowser Client="TVBox", Device="TVBox", DeviceId="'+this.deviceid+'", Version="1.0.0"';
+        var XEmbyAuthorization = 'MediaBrowser Client="TVBox", Device="TVBox", DeviceId="' + this.deviceid + '", Version="1.0.0"';
         XEmbyAuthorization += ', Token="' + this.accesstoken + '"';
         return XEmbyAuthorization;
     },
