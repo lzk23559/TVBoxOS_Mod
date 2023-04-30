@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="@dimen/vs_480"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,26 +28,24 @@
         android:layout_marginTop="@dimen/vs_30"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="center"
-            android:padding="@dimen/vs_10"
-            android:text="地 址："
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22"/>
-
         <EditText
-            android:id="@+id/input_url"
+            android:id="@+id/jellyfin_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="left"
-            android:padding="@dimen/vs_10"
-            android:text=""
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22" />
+            android:layout_weight="1"
+            android:background="@drawable/input_dialog_api_input"
+            android:imeOptions="actionDone"
+            android:hint="服务器地址"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/vs_2"
+            android:paddingTop="@dimen/vs_10"
+            android:paddingRight="@dimen/vs_2"
+            android:paddingBottom="@dimen/vs_10"
+            android:textColor="@color/color_CC000000"
+            android:textColorHint="@color/color_6C3D3D3D"
+            android:textSize="@dimen/ts_26" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -57,26 +55,23 @@
         android:layout_marginTop="@dimen/vs_30"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="center"
-            android:padding="@dimen/vs_10"
-            android:text="用户名："
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22"/>
-
         <EditText
-            android:id="@+id/input_username"
+            android:id="@+id/jellyfin_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="left"
-            android:padding="@dimen/vs_10"
-            android:text=""
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22" />
+            android:background="@drawable/input_dialog_api_input"
+            android:imeOptions="actionDone"
+            android:hint="用户名"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/vs_2"
+            android:paddingTop="@dimen/vs_10"
+            android:paddingRight="@dimen/vs_2"
+            android:paddingBottom="@dimen/vs_10"
+            android:textColor="@color/color_CC000000"
+            android:textColorHint="@color/color_6C3D3D3D"
+            android:textSize="@dimen/ts_26" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -86,26 +81,23 @@
         android:layout_marginTop="@dimen/vs_30"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="center"
-            android:padding="@dimen/vs_10"
-            android:text="密  码："
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22"/>
-
         <EditText
-            android:id="@+id/input_password"
+            android:id="@+id/jellyfin_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/vs_5"
-            android:gravity="left"
-            android:padding="@dimen/vs_10"
-            android:text=""
-            android:textColor="@color/color_FFFFFF"
-            android:textSize="@dimen/ts_22" />
+            android:background="@drawable/input_dialog_api_input"
+            android:imeOptions="actionDone"
+            android:hint="密  码"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/vs_2"
+            android:paddingTop="@dimen/vs_10"
+            android:paddingRight="@dimen/vs_2"
+            android:paddingBottom="@dimen/vs_10"
+            android:textColor="@color/color_CC000000"
+            android:textColorHint="@color/color_6C3D3D3D"
+            android:textSize="@dimen/ts_26" />
+
     </LinearLayout>
 
     <LinearLayout
