@@ -674,6 +674,7 @@ public class ApiConfig {
             sb.setExt("{\"url\":\"" + serverUrl + "\",\"userid\":\"" + userid + "\",\"token\":\"" + token + "\"}");
             sb.setSearchable(1);
             sb.setCategories(new ArrayList<>());
+            sb.setPlayerType(-1);
             sourceBeanList.put(HawkConfig.Jellyfin.sourcebean_key, sb);
         }
     }
