@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/ts_40"
+            android:lineSpacingMultiplier="0"
+            android:padding="@dimen/vs_20"
+            android:singleLine="true"
+            android:text="Jellyfin设置"
+            android:textColor="@color/color_CC000000"
+            android:textSize="@dimen/ts_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/vs_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="center"
+            android:padding="@dimen/vs_10"
+            android:text="地 址："
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22"/>
+
+        <EditText
+            android:id="@+id/input_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="left"
+            android:padding="@dimen/vs_10"
+            android:text=""
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/vs_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="center"
+            android:padding="@dimen/vs_10"
+            android:text="用户名："
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22"/>
+
+        <EditText
+            android:id="@+id/input_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="left"
+            android:padding="@dimen/vs_10"
+            android:text=""
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/vs_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="center"
+            android:padding="@dimen/vs_10"
+            android:text="密  码："
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22"/>
+
+        <EditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/vs_5"
+            android:gravity="left"
+            android:padding="@dimen/vs_10"
+            android:text=""
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/vs_30"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/submitBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="@dimen/vs_10"
+            android:text="确定"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22" />
+
+        <TextView
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="@dimen/vs_10"
+            android:text="取消"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_22" />
+    </LinearLayout>
+
+</LinearLayout>
