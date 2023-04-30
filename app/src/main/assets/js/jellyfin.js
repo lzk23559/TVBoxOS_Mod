@@ -1,4 +1,5 @@
 export default {
+    deviceid :'TVBox_TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXa',
     serverurl: '',
     userid: '',
     accesstoken: '',
@@ -106,23 +107,23 @@ export default {
             "vod_id": vodid,
             "vod_name": vodname,
             "vod_pic": this.getPrimaryImgUrl(detail),
-            "type_name": detail["Genres"],
+            "type_name": detail["Genres"] ? detail["Genres"].join(',') : '',
             "vod_year": detail["ProductionYear"] || '',
             "vod_area": "",
-            "vod_remarks": detail["CommunityRating"],
+            "vod_remarks": detail["CommunityRating"] || '',
             "vod_actor": "", //演员
             "vod_director": "",   //导演
-            "vod_content": detail["Overview"],
+            "vod_content": detail["Overview"] || '',
             "vod_play_from": "Jellyfin",
-            "vod_play_url": detail["Type"] === "Series" ? getEpisodes(vodid) : (vodname + "$" + vodid),
+            "vod_play_url": detail["Type"] === "Series" ? this.getEpisodes(vodid) : (vodname + "$" + vodid),
         }
 
         let result = {
-            'list': [vod]
-        }
+            "list": [vod]
+        };
         result = JSON.stringify(result);
         console.log(result);
-        return JSON.stringify(vod);
+        return result;
     },
 
     getEpisodes: function (SeriesId) {
@@ -146,8 +147,8 @@ export default {
             let Episodes = self.get(EpisodesUrl);
             if (!Episodes) return;
             Episodes = Episodes["Items"];
-            for (var j = 0; j < Episodes.length(); j++) {
-                Episode = Episodes[j];
+            for (var j = 0; j < Episodes.length; j++) {
+                let Episode = Episodes[j];
                 let EpisodeId = Episode["Id"];
                 let EpisodeName = Episode["Name"];
                 let PlayUrl = EpisodeId;
@@ -172,7 +173,7 @@ export default {
         if (!searchResult) return JSON.stringify(result);
         try {
             searchResult = searchResult["Items"];
-            for (var i = 0; i < searchResult.length(); i++) {
+            for (var i = 0; i < searchResult.length; i++) {
                 let v = searchResult(i);
                 result["list"].push({
                     "vod_id": v["Id"],
@@ -190,7 +191,8 @@ export default {
     },
 
     play: function (flag, id, vipFlags) {
-        let playUrl = this.serverurl + "/videos/" + id + "/stream.mp4?static=true&a";
+        let playUrl = this.serverurl + "/videos/" + id + "/stream.mp4?static=true&deviceId=" + this.deviceid;
+        playUrl += "&api_key=" + this.accesstoken //+ "&Tag=" + ETag
         let result = {
             "parse": 0,
             "playUrl": playUrl,
@@ -209,8 +211,8 @@ export default {
     },
 
     getXEmbyAuthorization: function () {
-        var XEmbyAuthorization = "MediaBrowser Client=\"CatTv\", Device=\"CatTv\", DeviceId=\"TW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXa\", Version=\"10.8.1\"";
-        XEmbyAuthorization += ", Token=\"" + this.accesstoken + "\"";
+        var XEmbyAuthorization = 'MediaBrowser Client="TVBox", Device="TVBox", DeviceId="'+this.deviceid+'", Version="1.0.0"';
+        XEmbyAuthorization += ', Token="' + this.accesstoken + '"';
         return XEmbyAuthorization;
     },
 
