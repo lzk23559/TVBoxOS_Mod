@@ -27,8 +27,21 @@ export default {
     },
 
     homeVod: function () {
-        var result = {};
-        return JSON.stringify(result);
+        let result = {"list":[]};
+        let homerec = this.GetLatest('');
+        if(homerec){
+            for(var i=0;i<homerec.length;i++){
+                let v = homerec[i];
+                result["list"].push({
+                    "vod_id": v["Id"],
+                    "vod_name": v["Name"],
+                    "vod_pic": this.getPrimaryImgUrl(v),
+                    "vod_remarks": ""
+                });
+            }
+        }
+        result = JSON.stringify(result);
+        return result;
     },
 
     category: function (tid, pg, filter, obj) {
@@ -95,6 +108,7 @@ export default {
         let People = detail['People'];
         let actor = [];
         let director = [];
+        let PartCount = detail['PartCount'] || 0;
         if (People) {
             People.forEach((ele) => {
                 let Name = ele['Name'];
@@ -103,6 +117,18 @@ export default {
                 else actor.push(Name);
             });
         }
+
+        let vod_play_url = detail["Type"] === "Series" ? this.getEpisodes(vodid) : (vodname + "$" + vodid);
+
+        if(PartCount > 0){
+            let addPart = this.GetAddPart(vodid);
+            addPart = addPart["Items"] || [];
+            addPart.forEach((ele)=>{
+                let apurl = ele["Name"] + "$" + ele["Id"];
+                vod_play_url += "#" + apurl;
+            });
+        }
+
         let vod = {
             "vod_id": vodid,
             "vod_name": vodname,
@@ -115,12 +141,13 @@ export default {
             "vod_director": director.join(','),   //导演
             "vod_content": detail["Overview"] || '',
             "vod_play_from": "Jellyfin",
-            "vod_play_url": detail["Type"] === "Series" ? this.getEpisodes(vodid) : (vodname + "$" + vodid),
+            "vod_play_url": vod_play_url
         }
 
         let result = {
             "list": [vod]
         };
+        
         result = JSON.stringify(result);
         return result;
     },
@@ -164,28 +191,20 @@ export default {
         searchUrl += "&Limit=24&Fields=PrimaryImageAspectRatio,CanDelete,BasicSyncInfo,MediaSourceCount";
         searchUrl += "&Recursive=true&EnableTotalRecordCount=false&ImageTypeLimit=1&IncludePeople=false";
         searchUrl += "&IncludeMedia=true&IncludeGenres=false&IncludeStudios=false&IncludeArtists=false";
-        searchUrl += "&IncludeItemTypes=Movie,Series";
+        searchUrl += "&IncludeItemTypes=Movie,Series" //,Episode";
 
-        searchUrl = '/Users/' + this.userid + '/Items?searchTerm=' + encodeURI(key);
-        searchUrl += '&Limit=24&IncludePeople=false&IncludeMedia=true&IncludeGenres=false&IncludeStudios=false&IncludeArtists=false';
-        searchUrl += '&IncludeItemTypes=Movie,Series';
-
-        let searchResult = this.get(this.serverurl);
+        let searchResult = this.get(searchUrl);
         let result = { "list": [] }
         if (!searchResult) return JSON.stringify(result);
-        try {
-            searchResult = searchResult["Items"];
-            for (var i = 0; i < searchResult.length; i++) {
-                let v = searchResult(i);
-                result["list"].push({
-                    "vod_id": v["Id"],
-                    "vod_name": v["Name"],
-                    "vod_pic": this.getPrimaryImgUrl(v),
-                    "vod_remarks": ""
-                });
-            }
-        } catch (e) {
-            console.log(e)
+        searchResult = searchResult["Items"] || [];
+        for (var i = 0; i < searchResult.length; i++) {
+            let v = searchResult[i];
+            result["list"].push({
+                "vod_id": v["Id"],
+                "vod_name": v["Name"],
+                "vod_pic": this.getPrimaryImgUrl(v),
+                "vod_remarks": ""
+            });
         }
 
         result = JSON.stringify(result);
@@ -203,6 +222,32 @@ export default {
 
         result = JSON.stringify(result);
         return result;
+    },
+
+     /**
+     * 获取最新项目
+     *
+     * @param parentId
+     * @param cb
+     */
+     GetLatest: function(parentId) {
+        let lastestUrl = "/Users/" + this.userid + "/Items/Latest?";
+        lastestUrl += "Limit=16&Fields=PrimaryImageAspectRatio%2CBasicSyncInfo%2CPath";
+        lastestUrl += "&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb";
+        lastestUrl += "&IncludeItemTypes=Movie,Series";
+
+        //lastestUrl += "&ParentId=" + parentId;
+        let latest = this.get(lastestUrl) || [];
+        return latest
+    },
+
+    /**
+     * 获取项目附加部分
+     */
+    GetAddPart:function(itemid) {
+        let AddPartUrl = "/Videos/" + itemid + "/AdditionalParts?userId=" + this.userid;
+        let addPart = this.get(AddPartUrl);
+        return addPart;
     },
 
     getPrimaryImgUrl: function (item) {
