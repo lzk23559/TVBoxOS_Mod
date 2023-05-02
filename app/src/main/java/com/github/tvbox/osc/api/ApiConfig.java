@@ -94,8 +94,8 @@ public class ApiConfig {
             if (AES.isJson(content)) return content;
             Pattern pattern = Pattern.compile("[A-Za-z0]{8}\\*\\*");
             Matcher matcher = pattern.matcher(content);
-            if(matcher.find()){
-                content=content.substring(content.indexOf(matcher.group()) + 10);
+            if (matcher.find()) {
+                content = content.substring(content.indexOf(matcher.group()) + 10);
                 content = new String(Base64.decode(content, Base64.DEFAULT));
             }
             if (content.startsWith("2423")) {
@@ -104,10 +104,9 @@ public class ApiConfig {
                 String key = AES.rightPadding(content.substring(content.indexOf("$#") + 2, content.indexOf("#$")), "0", 16);
                 String iv = AES.rightPadding(content.substring(content.length() - 13), "0", 16);
                 json = AES.CBC(data, key, iv);
-            }else if (configKey !=null && !AES.isJson(content)) {
+            } else if (configKey != null && !AES.isJson(content)) {
                 json = AES.ECB(content, configKey);
-            }
-            else{
+            } else {
                 json = content;
             }
         } catch (Exception e) {
@@ -116,10 +115,10 @@ public class ApiConfig {
         return json;
     }
 
-    private static byte[] getImgJar(String body){
+    private static byte[] getImgJar(String body) {
         Pattern pattern = Pattern.compile("[A-Za-z0]{8}\\*\\*");
         Matcher matcher = pattern.matcher(body);
-        if(matcher.find()){
+        if (matcher.find()) {
             body = body.substring(body.indexOf(matcher.group()) + 10);
             return Base64.decode(body, Base64.DEFAULT);
         }
@@ -146,11 +145,11 @@ public class ApiConfig {
         if (apiUrl.contains(pk)) {
             String[] a = apiUrl.split(pk);
             TempKey = a[1];
-            if (apiUrl.startsWith("clan")){
+            if (apiUrl.startsWith("clan")) {
                 configUrl = clanToAddress(a[0]);
-            }else if (apiUrl.startsWith("http")){
+            } else if (apiUrl.startsWith("http")) {
                 configUrl = a[0];
-            }else {
+            } else {
                 configUrl = "http://" + a[0];
             }
         } else if (apiUrl.startsWith("clan")) {
@@ -217,7 +216,7 @@ public class ApiConfig {
                             result = clanContentFix(clanToAddress(apiUrl), result);
                         }
                         //假相對路徑
-                        result = fixContentPath(apiUrl,result);
+                        result = fixContentPath(apiUrl, result);
                         return result;
                     }
                 });
@@ -248,45 +247,45 @@ public class ApiConfig {
                 .headers("Accept", requestAccept)
                 .execute(new AbsCallback<File>() {
 
-            @Override
-            public File convertResponse(okhttp3.Response response) throws Throwable {
-                File cacheDir = cache.getParentFile();
-                if (!cacheDir.exists())
-                    cacheDir.mkdirs();
-                if (cache.exists())
-                    cache.delete();
-                FileOutputStream fos = new FileOutputStream(cache);
-                if(isJarInImg) {
-                    String respData = response.body().string();
-                    byte[] imgJar = getImgJar(respData);
-                    fos.write(imgJar);
-                } else {
-                    fos.write(response.body().bytes());
-                }
-                fos.flush();
-                fos.close();
-                return cache;
-            }
+                    @Override
+                    public File convertResponse(okhttp3.Response response) throws Throwable {
+                        File cacheDir = cache.getParentFile();
+                        if (!cacheDir.exists())
+                            cacheDir.mkdirs();
+                        if (cache.exists())
+                            cache.delete();
+                        FileOutputStream fos = new FileOutputStream(cache);
+                        if (isJarInImg) {
+                            String respData = response.body().string();
+                            byte[] imgJar = getImgJar(respData);
+                            fos.write(imgJar);
+                        } else {
+                            fos.write(response.body().bytes());
+                        }
+                        fos.flush();
+                        fos.close();
+                        return cache;
+                    }
 
-            @Override
-            public void onSuccess(Response<File> response) {
-                if (response.body().exists()) {
-                    if (jarLoader.load(response.body().getAbsolutePath())) {
-                        callback.success();
-                    } else {
+                    @Override
+                    public void onSuccess(Response<File> response) {
+                        if (response.body().exists()) {
+                            if (jarLoader.load(response.body().getAbsolutePath())) {
+                                callback.success();
+                            } else {
+                                callback.error("");
+                            }
+                        } else {
+                            callback.error("");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<File> response) {
+                        super.onError(response);
                         callback.error("");
                     }
-                } else {
-                    callback.error("");
-                }
-            }
-
-            @Override
-            public void onError(Response<File> response) {
-                super.onError(response);
-                callback.error("");
-            }
-        });
+                });
     }
 
     private void parseJson(String apiUrl, File f) throws Throwable {
@@ -321,9 +320,9 @@ public class ApiConfig {
             sb.setQuickSearch(DefaultConfig.safeJsonInt(obj, "quickSearch", 1));
             sb.setFilterable(DefaultConfig.safeJsonInt(obj, "filterable", 1));
             sb.setPlayerUrl(DefaultConfig.safeJsonString(obj, "playUrl", ""));
-            if(obj.has("ext") && (obj.get("ext").isJsonObject() || obj.get("ext").isJsonArray())){
+            if (obj.has("ext") && (obj.get("ext").isJsonObject() || obj.get("ext").isJsonArray())) {
                 sb.setExt(obj.get("ext").toString());
-            }else {
+            } else {
                 sb.setExt(DefaultConfig.safeJsonString(obj, "ext", ""));
             }
             sb.setJar(DefaultConfig.safeJsonString(obj, "jar", ""));
@@ -334,6 +333,7 @@ public class ApiConfig {
                 firstSite = sb;
             sourceBeanList.put(siteKey, sb);
         }
+        addJellyfinToSourceBeanList(); //添加jellyfin
         if (sourceBeanList != null && sourceBeanList.size() > 0) {
             String home = Hawk.get(HawkConfig.HOME_API, "");
             SourceBean sh = getSource(home);
@@ -346,7 +346,7 @@ public class ApiConfig {
         vipParseFlags = DefaultConfig.safeJsonStringList(infoJson, "flags");
         // 解析地址
         parseBeanList.clear();
-        if(infoJson.has("parses")){
+        if (infoJson.has("parses")) {
             JsonArray parses = infoJson.get("parses").getAsJsonArray();
             for (JsonElement opt : parses) {
                 JsonObject obj = (JsonObject) opt;
@@ -385,9 +385,9 @@ public class ApiConfig {
                 String extUrl = Uri.parse(url).getQueryParameter("ext");
                 if (extUrl != null && !extUrl.isEmpty()) {
                     String extUrlFix;
-                    if(extUrl.startsWith("http") || extUrl.startsWith("clan://")){
+                    if (extUrl.startsWith("http") || extUrl.startsWith("clan://")) {
                         extUrlFix = extUrl;
-                    }else {
+                    } else {
                         extUrlFix = new String(Base64.decode(extUrl, Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), "UTF-8");
                     }
 //                    System.out.println("extUrlFix :"+extUrlFix);
@@ -400,32 +400,32 @@ public class ApiConfig {
 //                System.out.println("urlLive :"+url);
 
                 //设置epg
-                if(livesOBJ.has("epg")){
-                    String epg =livesOBJ.get("epg").getAsString();
-                    Hawk.put(HawkConfig.EPG_URL,epg);
+                if (livesOBJ.has("epg")) {
+                    String epg = livesOBJ.get("epg").getAsString();
+                    Hawk.put(HawkConfig.EPG_URL, epg);
                 }
 
                 LiveChannelGroup liveChannelGroup = new LiveChannelGroup();
                 liveChannelGroup.setGroupName(url);
                 liveChannelGroupList.add(liveChannelGroup);
             } else {
-                if(!lives.contains("type")){
+                if (!lives.contains("type")) {
                     loadLives(infoJson.get("lives").getAsJsonArray());
-                }else {
+                } else {
                     JsonObject fengMiLives = infoJson.get("lives").getAsJsonArray().get(0).getAsJsonObject();
-                    String type=fengMiLives.get("type").getAsString();
-                    if(type.equals("0")){
-                        String url =fengMiLives.get("url").getAsString();
+                    String type = fengMiLives.get("type").getAsString();
+                    if (type.equals("0")) {
+                        String url = fengMiLives.get("url").getAsString();
                         //设置epg
-                        if(fengMiLives.has("epg")){
-                            String epg =fengMiLives.get("epg").getAsString();
-                            Hawk.put(HawkConfig.EPG_URL,epg);
+                        if (fengMiLives.has("epg")) {
+                            String epg = fengMiLives.get("epg").getAsString();
+                            Hawk.put(HawkConfig.EPG_URL, epg);
                         }
 
-                        if(url.startsWith("http")){
+                        if (url.startsWith("http")) {
                             url = Base64.encodeToString(url.getBytes("UTF-8"), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP);
                         }
-                        url ="http://127.0.0.1:9978/proxy?do=live&type=txt&ext="+url;
+                        url = "http://127.0.0.1:9978/proxy?do=live&type=txt&ext=" + url;
                         LiveChannelGroup liveChannelGroup = new LiveChannelGroup();
                         liveChannelGroup.setGroupName(url);
                         liveChannelGroupList.add(liveChannelGroup);
@@ -438,13 +438,13 @@ public class ApiConfig {
         //video parse rule for host
         if (infoJson.has("rules")) {
             VideoParseRuler.clearRule();
-            for(JsonElement oneHostRule : infoJson.getAsJsonArray("rules")) {
+            for (JsonElement oneHostRule : infoJson.getAsJsonArray("rules")) {
                 JsonObject obj = (JsonObject) oneHostRule;
                 String host = obj.get("host").getAsString();
                 if (obj.has("rule")) {
                     JsonArray ruleJsonArr = obj.getAsJsonArray("rule");
                     ArrayList<String> rule = new ArrayList<>();
-                    for(JsonElement one : ruleJsonArr) {
+                    for (JsonElement one : ruleJsonArr) {
                         String oneRule = one.getAsString();
                         rule.add(oneRule);
                     }
@@ -455,7 +455,7 @@ public class ApiConfig {
                 if (obj.has("filter")) {
                     JsonArray filterJsonArr = obj.getAsJsonArray("filter");
                     ArrayList<String> filter = new ArrayList<>();
-                    for(JsonElement one : filterJsonArr) {
+                    for (JsonElement one : filterJsonArr) {
                         String oneFilter = one.getAsString();
                         filter.add(oneFilter);
                     }
@@ -466,17 +466,17 @@ public class ApiConfig {
             }
         }
 
-        String defaultIJKADS="{\"ijk\":[{\"options\":[{\"name\":\"opensles\",\"category\":4,\"value\":\"0\"},{\"name\":\"overlay-format\",\"category\":4,\"value\":\"842225234\"},{\"name\":\"framedrop\",\"category\":4,\"value\":\"1\"},{\"name\":\"soundtouch\",\"category\":4,\"value\":\"1\"},{\"name\":\"start-on-prepared\",\"category\":4,\"value\":\"1\"},{\"name\":\"http-detect-rangeupport\",\"category\":1,\"value\":\"0\"},{\"name\":\"fflags\",\"category\":1,\"value\":\"fastseek\"},{\"name\":\"skip_loop_filter\",\"category\":2,\"value\":\"48\"},{\"name\":\"reconnect\",\"category\":4,\"value\":\"1\"},{\"name\":\"enable-accurate-seek\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-auto-rotate\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-handle-resolution-change\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-hevc\",\"category\":4,\"value\":\"0\"},{\"name\":\"dns_cache_timeout\",\"category\":1,\"value\":\"600000000\"}],\"group\":\"软解码\"},{\"options\":[{\"name\":\"opensles\",\"category\":4,\"value\":\"0\"},{\"name\":\"overlay-format\",\"category\":4,\"value\":\"842225234\"},{\"name\":\"framedrop\",\"category\":4,\"value\":\"1\"},{\"name\":\"soundtouch\",\"category\":4,\"value\":\"1\"},{\"name\":\"start-on-prepared\",\"category\":4,\"value\":\"1\"},{\"name\":\"http-detect-rangeupport\",\"category\":1,\"value\":\"0\"},{\"name\":\"fflags\",\"category\":1,\"value\":\"fastseek\"},{\"name\":\"skip_loop_filter\",\"category\":2,\"value\":\"48\"},{\"name\":\"reconnect\",\"category\":4,\"value\":\"1\"},{\"name\":\"enable-accurate-seek\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-auto-rotate\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-handle-resolution-change\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-hevc\",\"category\":4,\"value\":\"1\"},{\"name\":\"dns_cache_timeout\",\"category\":1,\"value\":\"600000000\"}],\"group\":\"硬解码\"}],\"ads\":[\"mimg.0c1q0l.cn\",\"www.googletagmanager.com\",\"www.google-analytics.com\",\"mc.usihnbcq.cn\",\"mg.g1mm3d.cn\",\"mscs.svaeuzh.cn\",\"cnzz.hhttm.top\",\"tp.vinuxhome.com\",\"cnzz.mmstat.com\",\"www.baihuillq.com\",\"s23.cnzz.com\",\"z3.cnzz.com\",\"c.cnzz.com\",\"stj.v1vo.top\",\"z12.cnzz.com\",\"img.mosflower.cn\",\"tips.gamevvip.com\",\"ehwe.yhdtns.com\",\"xdn.cqqc3.com\",\"www.jixunkyy.cn\",\"sp.chemacid.cn\",\"hm.baidu.com\",\"s9.cnzz.com\",\"z6.cnzz.com\",\"um.cavuc.com\",\"mav.mavuz.com\",\"wofwk.aoidf3.com\",\"z5.cnzz.com\",\"xc.hubeijieshikj.cn\",\"tj.tianwenhu.com\",\"xg.gars57.cn\",\"k.jinxiuzhilv.com\",\"cdn.bootcss.com\",\"ppl.xunzhuo123.com\",\"xomk.jiangjunmh.top\",\"img.xunzhuo123.com\",\"z1.cnzz.com\",\"s13.cnzz.com\",\"xg.huataisangao.cn\",\"z7.cnzz.com\",\"xg.huataisangao.cn\",\"z2.cnzz.com\",\"s96.cnzz.com\",\"q11.cnzz.com\",\"thy.dacedsfa.cn\",\"xg.whsbpw.cn\",\"s19.cnzz.com\",\"z8.cnzz.com\",\"s4.cnzz.com\",\"f5w.as12df.top\",\"ae01.alicdn.com\",\"www.92424.cn\",\"k.wudejia.com\",\"vivovip.mmszxc.top\",\"qiu.xixiqiu.com\",\"cdnjs.hnfenxun.com\",\"cms.qdwght.com\"]}";
-        JsonObject defaultJson=new Gson().fromJson(defaultIJKADS, JsonObject.class);
+        String defaultIJKADS = "{\"ijk\":[{\"options\":[{\"name\":\"opensles\",\"category\":4,\"value\":\"0\"},{\"name\":\"overlay-format\",\"category\":4,\"value\":\"842225234\"},{\"name\":\"framedrop\",\"category\":4,\"value\":\"1\"},{\"name\":\"soundtouch\",\"category\":4,\"value\":\"1\"},{\"name\":\"start-on-prepared\",\"category\":4,\"value\":\"1\"},{\"name\":\"http-detect-rangeupport\",\"category\":1,\"value\":\"0\"},{\"name\":\"fflags\",\"category\":1,\"value\":\"fastseek\"},{\"name\":\"skip_loop_filter\",\"category\":2,\"value\":\"48\"},{\"name\":\"reconnect\",\"category\":4,\"value\":\"1\"},{\"name\":\"enable-accurate-seek\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-auto-rotate\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-handle-resolution-change\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec-hevc\",\"category\":4,\"value\":\"0\"},{\"name\":\"dns_cache_timeout\",\"category\":1,\"value\":\"600000000\"}],\"group\":\"软解码\"},{\"options\":[{\"name\":\"opensles\",\"category\":4,\"value\":\"0\"},{\"name\":\"overlay-format\",\"category\":4,\"value\":\"842225234\"},{\"name\":\"framedrop\",\"category\":4,\"value\":\"1\"},{\"name\":\"soundtouch\",\"category\":4,\"value\":\"1\"},{\"name\":\"start-on-prepared\",\"category\":4,\"value\":\"1\"},{\"name\":\"http-detect-rangeupport\",\"category\":1,\"value\":\"0\"},{\"name\":\"fflags\",\"category\":1,\"value\":\"fastseek\"},{\"name\":\"skip_loop_filter\",\"category\":2,\"value\":\"48\"},{\"name\":\"reconnect\",\"category\":4,\"value\":\"1\"},{\"name\":\"enable-accurate-seek\",\"category\":4,\"value\":\"0\"},{\"name\":\"mediacodec\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-auto-rotate\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-handle-resolution-change\",\"category\":4,\"value\":\"1\"},{\"name\":\"mediacodec-hevc\",\"category\":4,\"value\":\"1\"},{\"name\":\"dns_cache_timeout\",\"category\":1,\"value\":\"600000000\"}],\"group\":\"硬解码\"}],\"ads\":[\"mimg.0c1q0l.cn\",\"www.googletagmanager.com\",\"www.google-analytics.com\",\"mc.usihnbcq.cn\",\"mg.g1mm3d.cn\",\"mscs.svaeuzh.cn\",\"cnzz.hhttm.top\",\"tp.vinuxhome.com\",\"cnzz.mmstat.com\",\"www.baihuillq.com\",\"s23.cnzz.com\",\"z3.cnzz.com\",\"c.cnzz.com\",\"stj.v1vo.top\",\"z12.cnzz.com\",\"img.mosflower.cn\",\"tips.gamevvip.com\",\"ehwe.yhdtns.com\",\"xdn.cqqc3.com\",\"www.jixunkyy.cn\",\"sp.chemacid.cn\",\"hm.baidu.com\",\"s9.cnzz.com\",\"z6.cnzz.com\",\"um.cavuc.com\",\"mav.mavuz.com\",\"wofwk.aoidf3.com\",\"z5.cnzz.com\",\"xc.hubeijieshikj.cn\",\"tj.tianwenhu.com\",\"xg.gars57.cn\",\"k.jinxiuzhilv.com\",\"cdn.bootcss.com\",\"ppl.xunzhuo123.com\",\"xomk.jiangjunmh.top\",\"img.xunzhuo123.com\",\"z1.cnzz.com\",\"s13.cnzz.com\",\"xg.huataisangao.cn\",\"z7.cnzz.com\",\"xg.huataisangao.cn\",\"z2.cnzz.com\",\"s96.cnzz.com\",\"q11.cnzz.com\",\"thy.dacedsfa.cn\",\"xg.whsbpw.cn\",\"s19.cnzz.com\",\"z8.cnzz.com\",\"s4.cnzz.com\",\"f5w.as12df.top\",\"ae01.alicdn.com\",\"www.92424.cn\",\"k.wudejia.com\",\"vivovip.mmszxc.top\",\"qiu.xixiqiu.com\",\"cdnjs.hnfenxun.com\",\"cms.qdwght.com\"]}";
+        JsonObject defaultJson = new Gson().fromJson(defaultIJKADS, JsonObject.class);
         // 广告地址
-        if(AdBlocker.isEmpty()){
+        if (AdBlocker.isEmpty()) {
 //            AdBlocker.clear();
             //追加的广告拦截
-            if(infoJson.has("ads")){
+            if (infoJson.has("ads")) {
                 for (JsonElement host : infoJson.getAsJsonArray("ads")) {
                     AdBlocker.addAdHost(host.getAsString());
                 }
-            }else {
+            } else {
                 //默认广告拦截
                 for (JsonElement host : defaultJson.getAsJsonArray("ads")) {
                     AdBlocker.addAdHost(host.getAsString());
@@ -484,11 +484,11 @@ public class ApiConfig {
             }
         }
         // IJK解码配置
-        if(ijkCodes==null){
+        if (ijkCodes == null) {
             ijkCodes = new ArrayList<>();
             boolean foundOldSelect = false;
             String ijkCodec = Hawk.get(HawkConfig.IJK_CODEC, "");
-            JsonArray ijkJsonArray = infoJson.has("ijk")?infoJson.get("ijk").getAsJsonArray():defaultJson.get("ijk").getAsJsonArray();
+            JsonArray ijkJsonArray = infoJson.has("ijk") ? infoJson.get("ijk").getAsJsonArray() : defaultJson.get("ijk").getAsJsonArray();
             for (JsonElement opt : ijkJsonArray) {
                 JsonObject obj = (JsonObject) opt;
                 String name = obj.get("group").getAsString();
@@ -567,7 +567,8 @@ public class ApiConfig {
 
     public Spider getCSP(SourceBean sourceBean) {
         boolean js = sourceBean.getApi().endsWith(".js") || sourceBean.getApi().contains(".js?");
-        if (js) return jsLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
+        if (js)
+            return jsLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
         return jarLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
     }
 
@@ -649,6 +650,35 @@ public class ApiConfig {
         return getIJKCodec(codeName);
     }
 
+    public void addJellyfinToSourceBeanList() {
+        if (sourceBeanList == null) {
+            return;
+        }
+
+        String serverUrl = Hawk.get(HawkConfig.Jellyfin.serverUrl, "");
+        String username = Hawk.get(HawkConfig.Jellyfin.username, "");
+        String password = Hawk.get(HawkConfig.Jellyfin.password, "");
+        String userid = Hawk.get(HawkConfig.Jellyfin.userid, "");
+        String token = Hawk.get(HawkConfig.Jellyfin.token, "");
+
+        if (sourceBeanList.containsKey(HawkConfig.Jellyfin.sourcebean_key)) {
+            sourceBeanList.remove(HawkConfig.Jellyfin.sourcebean_key);
+        }
+
+        if (userid != "" && token != "") {
+            SourceBean sb = new SourceBean();
+            sb.setKey(HawkConfig.Jellyfin.sourcebean_key);
+            sb.setName(HawkConfig.Jellyfin.sourcebean_name);
+            sb.setType(3);
+            sb.setApi("assets://js/jellyfin.js");
+            sb.setExt("{\"url\":\"" + serverUrl + "\",\"userid\":\"" + userid + "\",\"token\":\"" + token + "\"}");
+            sb.setSearchable(1);
+            sb.setCategories(new ArrayList<>());
+            sb.setPlayerType(-1);
+            sourceBeanList.put(HawkConfig.Jellyfin.sourcebean_key, sb);
+        }
+    }
+
     public IJKCode getIJKCodec(String name) {
         for (IJKCode code : ijkCodes) {
             if (code.getName().equals(name))
@@ -674,11 +704,11 @@ public class ApiConfig {
 
     String fixContentPath(String url, String content) {
         if (content.contains("\"./")) {
-            if(!url.startsWith("http") && !url.startsWith("clan://")){
+            if (!url.startsWith("http") && !url.startsWith("clan://")) {
                 url = "http://" + url;
             }
-            if(url.startsWith("clan://"))url=clanToAddress(url);
-            content = content.replace("./", url.substring(0,url.lastIndexOf("/") + 1));
+            if (url.startsWith("clan://")) url = clanToAddress(url);
+            content = content.replace("./", url.substring(0, url.lastIndexOf("/") + 1));
         }
         return content;
     }

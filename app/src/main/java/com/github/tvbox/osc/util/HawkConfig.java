@@ -38,4 +38,14 @@ public class HawkConfig {
     public static final String NOW_DATE = "now_date"; //当前日期
     public static final String REMOTE_TVBOX = "remote_tvbox_host";
     public static final String IJK_CACHE_PLAY = "ijk_cache_play";
+
+    public static final class Jellyfin{
+        public static final String sourcebean_key = "tvbox_jellyfin";
+        public static final String sourcebean_name = "Jellyfin";
+        public static final String serverUrl = "tvbox_jellyfin_url";
+        public static final String username = "tvbox_jellyfin_username";
+        public static final String password = "tvbox_jellyfin_password";
+        public static final String userid = "tvbox_jellyfin_userid";
+        public static final String token = "tvbox_jellyfin_token";
+    }
 }
