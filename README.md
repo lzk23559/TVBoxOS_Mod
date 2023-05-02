@@ -1,5 +1,3 @@
-# TVBoxOS
-基于q215613905/TVBoxOS
 
 增加内置Jellyfin
 配置方法：
