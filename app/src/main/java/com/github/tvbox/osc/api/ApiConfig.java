@@ -127,7 +127,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "aHR0cDovL3d3dy50dmJveC5sbHR2OC50b3AvVFZCb3gvbGliL+eMjueLvFRW5ZCnLmpzb24=");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, "http://www.tvbox.lltv8.top/TVBox/lib/猎狼TV吧.json");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
