@@ -127,7 +127,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, " https://jihulab.com/chenlong622/1/-/raw/main/long.json");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, " https://jihulab.com/chenlong622/2/-/raw/main/a.json");
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;
