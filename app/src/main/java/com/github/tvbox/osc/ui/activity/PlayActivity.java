@@ -67,6 +67,7 @@ import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.util.PlayerHelper;
 import com.github.tvbox.osc.util.VideoParseRuler;
 import com.github.tvbox.osc.util.XWalkUtils;
+import com.github.tvbox.osc.util.thunder.Jianpian;
 import com.github.tvbox.osc.util.thunder.Thunder;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.lzy.okgo.OkGo;
@@ -496,7 +497,7 @@ public class PlayActivity extends BaseActivity {
     void playUrl(String url, HashMap<String, String> headers) {
         LOG.i("playUrl:" + url);
         if(autoRetryCount>1 && url.contains(".m3u8")){
-            url="http://home.jundie.top:666/unBom.php?m3u8="+url;
+            url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
         }
         String finalUrl = url;
         runOnUiThread(new Runnable() {
@@ -732,6 +733,7 @@ public class PlayActivity extends BaseActivity {
         }
         stopLoadWebView(true);
         stopParse();
+        Thunder.stop(false);
     }
 
     private VodInfo mVodInfo;
@@ -782,7 +784,7 @@ public class PlayActivity extends BaseActivity {
             autoRetryFromLoadFoundVideoUrls();
             return true;
         }
-        if (autoRetryCount < 2) {
+        if (autoRetryCount < 1) {
             autoRetryCount++;
             play(false);
             return true;
@@ -820,6 +822,17 @@ public class PlayActivity extends BaseActivity {
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
             CacheManager.delete(MD5.string2MD5(subtitleCacheKey), 0);
+        }
+        if(vs.url.startsWith("tvbox-xg:") || (Thunder.isFtp(vs.url) && vs.url.contains("gbl.114s"))){//荐片地址特殊判断
+            String jp_url= vs.url;
+            mController.showParse(false);
+            if(vs.url.startsWith("tvbox-xg:")){
+                jp_url = jp_url.replace("tvbox-xg://","tvbox-xg:");
+                playUrl(Jianpian.JPUrlDec(jp_url.substring(9)), null);
+            }else {
+                playUrl(Jianpian.JPUrlDec(jp_url), null);
+            }
+            return;
         }
         if (Thunder.play(vs.url, new Thunder.ThunderCallback() {
             @Override
@@ -1105,7 +1118,6 @@ public class PlayActivity extends BaseActivity {
                 public void run() {
                     JSONObject rs = ApiConfig.get().jsonExtMix(parseFlag + "111", pb.getUrl(), finalExtendName, jxs, webUrl);
                     if (rs == null || !rs.has("url") || rs.optString("url").isEmpty()) {
-//                        errorWithRetry("解析错误", false);
                         setTip("解析错误", false, true);
                     } else {
                         if (rs.has("parse") && rs.optInt("parse", 0) == 1) {

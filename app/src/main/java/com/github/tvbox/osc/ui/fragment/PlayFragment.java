@@ -67,6 +67,7 @@ import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.util.PlayerHelper;
 import com.github.tvbox.osc.util.VideoParseRuler;
 import com.github.tvbox.osc.util.XWalkUtils;
+import com.github.tvbox.osc.util.thunder.Jianpian;
 import com.github.tvbox.osc.util.thunder.Thunder;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.lzy.okgo.OkGo;
@@ -504,7 +505,7 @@ public class PlayFragment extends BaseLazyFragment {
     void playUrl(String url, HashMap<String, String> headers) {
         LOG.i("playUrl:" + url);
         if(autoRetryCount>0 && url.contains(".m3u8")){
-            url="http://home.jundie.top:666/unBom.php?m3u8="+url;
+            url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
         }
         String finalUrl = url;
         if (mActivity == null) return;
@@ -760,6 +761,7 @@ public class PlayFragment extends BaseLazyFragment {
         }
         stopLoadWebView(true);
         stopParse();
+        Thunder.stop(true);
     }
 
     private VodInfo mVodInfo;
@@ -805,7 +807,7 @@ public class PlayFragment extends BaseLazyFragment {
             autoRetryFromLoadFoundVideoUrls();
             return true;
         }
-        if (autoRetryCount < 2) {
+        if (autoRetryCount < 1) {
             autoRetryCount++;
             play(false);
             return true;
@@ -844,6 +846,18 @@ public class PlayFragment extends BaseLazyFragment {
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
             CacheManager.delete(MD5.string2MD5(subtitleCacheKey), 0);
+        }
+
+        if(vs.url.startsWith("tvbox-xg:") || (Thunder.isFtp(vs.url) && vs.url.contains("gbl.114s"))){//荐片地址特殊判断
+            String jp_url= vs.url;
+            mController.showParse(false);
+            if(vs.url.startsWith("tvbox-xg:")){
+                jp_url = jp_url.replace("tvbox-xg://","tvbox-xg:");
+                playUrl(Jianpian.JPUrlDec(jp_url.substring(9)), null);
+            }else {
+                playUrl(Jianpian.JPUrlDec(jp_url), null);
+            }
+            return;
         }
         if (Thunder.play(vs.url, new Thunder.ThunderCallback() {
             @Override
