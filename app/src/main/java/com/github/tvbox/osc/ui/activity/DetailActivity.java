@@ -386,7 +386,7 @@ public class DetailActivity extends BaseActivity {
         tvDes.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                copyInfo("已复制站点信息",DefaultConfig.siteJson);
+                //copyInfo("已复制站点信息",DefaultConfig.siteJson);
                 return true;
             }
         });

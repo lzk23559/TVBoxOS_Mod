@@ -92,6 +92,10 @@ public class ApiConfig {
         return instance;
     }
 
+    public SourceBean getSourceQQ() {
+        return getSource("push_agentqq");
+    }
+
     public static boolean isAli(String id){
         if(id==null)return false;
         if(id.contains("aliyundrive")){
