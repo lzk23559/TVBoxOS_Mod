@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -922,7 +923,6 @@ public class SourceViewModel extends ViewModel {
                                 detailResult.postValue(data);
                             }
                         }
-
                         @Override
                         public void list(Map<Integer, String> urlMap) {
                             for (int key : urlMap.keySet()) {
