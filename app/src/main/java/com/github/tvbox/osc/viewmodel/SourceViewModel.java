@@ -427,7 +427,7 @@ public class SourceViewModel extends ViewModel {
         }
     }
     // detailContent
-    public void getDetail(String sourceKey, String id) {
+    public void getDetail(String sourceKey, String id,String wdName) {
         SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
         int type = sourceBean.getType();
         if (type == 3) {
@@ -435,9 +435,36 @@ public class SourceViewModel extends ViewModel {
                 @Override
                 public void run() {
                     try {
+                        String rid = id,sid="";
+                        if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
+                            String[] idInfo = id.split("\\$\\$\\$");
+                            if (idInfo.length == 1) {
+                                rid = rid + "$$$$$$" + wdName;
+                            }else if(idInfo.length>2) {
+                                idInfo[2] = wdName;
+                                rid = TextUtils.join("$$$", idInfo);
+                            }
+                            idInfo = rid.split("\\$\\$\\$");
+                            if (idInfo.length >2) {
+                                String vd = Hawk.get(HawkConfig.MY_VIDEO_DETAIL,"yes");
+                                int index = 1;//开启视频详情
+                                if (vd.isEmpty()) {
+                                    index = 0;
+                                }else {
+                                    Movie.Video mvo=(Movie.Video)CacheManager.getCache(wdName);
+                                    if(mvo!=null)index = 0;
+                                }
+                                if (idInfo.length == 3) {
+                                    rid = rid + "$$$"+index;
+                                }else {
+                                    idInfo[3] = ""+index;
+                                    rid = TextUtils.join("$$$", idInfo);
+                                }
+                            }
+                        }
                         Spider sp = ApiConfig.get().getCSP(sourceBean);
                         List<String> ids = new ArrayList<>();
-                        ids.add(id);
+                        ids.add(rid);
                         json(detailResult, sp.detailContent(ids), sourceBean.getKey());
                     } catch (Throwable th) {
                         th.printStackTrace();

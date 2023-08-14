@@ -249,6 +249,13 @@ public class PlayerHelper {
             return "TextureView";
         }
     }
+    public static String getRenderName1(int renderType) {
+        if (renderType == 1) {
+            return "S渲染";
+        } else {
+            return "T渲染";
+        }
+    }
 
     public static String getScaleName(int screenScaleType) {
         String scaleText = "默认";

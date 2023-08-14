@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
-
+import com.github.tvbox.osc.bean.VodInfo;
 import com.github.catvod.crawler.JarLoader;
 import com.github.catvod.crawler.JsLoader;
 import com.github.catvod.crawler.Spider;
@@ -29,9 +29,10 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
-
+import java.util.Collections;
+import java.util.Comparator;
 import org.json.JSONObject;
-
+import com.github.tvbox.osc.bean.Movie;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,6 +62,9 @@ public class ApiConfig {
     private List<IJKCode> ijkCodes;
     private String spider = null;
     public String wallpaper = "";
+    public static String pushKey = "push_agent";
+    public static boolean delsp = false;
+    public static String _api = "http://test.xinjun58.com/qq/api/q2.json";
 
     private SourceBean emptyHome = new SourceBean();
 
@@ -86,6 +90,136 @@ public class ApiConfig {
             }
         }
         return instance;
+    }
+
+    public static boolean isPic(String wdPic){
+        if(!wdPic.isEmpty()&&!wdPic.contains(".xinjun58")&&!wdPic.contains("13263837859"))return true;
+        return false;
+    }
+    public static boolean isAgentImg(String pic){
+        String isname = Hawk.get(HawkConfig.MY_NAME,"yes");
+        if (!isname.isEmpty()&&pic!=null&&!pic.contains("//img9.doubanio")) {
+            return true;
+        }
+        return false;
+    }
+    public static Matcher matcher(String regx, String content) {
+        Pattern pattern = Pattern.compile(regx);
+        return pattern.matcher(content);
+    }
+    public static boolean isNumeric(String str){
+        if(str==null||str.isEmpty())return false;
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(str).matches();
+    }
+
+
+    public static int cs(String msg1,String regx){
+        String msg = msg1.replaceAll(regx, "⑩");
+        Matcher ma = matcher("⑩", msg);//指定字符串出现的次数
+        int c = 0;
+        while (ma.find()) {
+            c++;
+        }
+        return c;
+    }
+
+    public static String getBstr(String ss,boolean f){
+        String s = ss.replace("4K", "").replace("mp4", "");
+        if(!f) s = s.replaceFirst("1080", "");
+        return s;
+    }
+
+    public static String getBx(String vod_play_url){
+        int z = 0;//更换第一个
+        String[] playUrls = vod_play_url.split("\\$\\$\\$");
+        String s = playUrls[z];
+        String type = "";
+        boolean f = false;
+        if (s.contains("4K")) {
+            type = "4K";
+        }else if (s.contains("4k")) {
+            type = "4K";
+        }else if (s.contains("1080")) {
+            if(!s.contains("1079"))type = "1080";
+            else f = true;
+        }
+        Map<String, String> hashMap = new LinkedHashMap<>();
+        String[] urls = s.split("#");
+
+        for (String url : urls) {
+            String[] arr = url.split("\\$");
+            hashMap.put(arr[0], arr[1]);
+        }
+        ArrayList<String> arrayList2 = new ArrayList<>(hashMap.keySet());
+        hashMap =getBx(arrayList2, hashMap, type,f);
+
+        List<String> zlist = new ArrayList<>();
+        for (String k : hashMap.keySet()) {
+            zlist.add(k + "$" + hashMap.get(k));
+        }
+        Collections.sort(zlist, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        String zstr = TextUtils.join("#", zlist);
+        playUrls[z]=zstr;
+        String zs = TextUtils.join("$$$", playUrls);
+        return zs;
+    }
+
+    public static  Map<String, String> getBx(List<String> list,Map<String, String> map,String type,boolean f){
+        String iname="",rname="",zname="";
+        String regx = ".*(Ep|EP|E|第)(\\d+)[\\.|集]?.*";
+        Matcher ma = null;
+        boolean flag = false;
+        String ss = list.get(0);
+        String s0 = getBstr(ss, f);
+        if(!s0.equals(ss)) flag = true;
+        int c = cs(s0, "\\d+"), index = 0;
+        Map<String, String> m = new LinkedHashMap<>();
+        for (String name : list) {
+            zname = name;
+            if (matcher(regx, name).find()) {
+                iname = name.replaceAll(regx, "$2");
+            }else {
+                if (name.startsWith("[")) {
+                    name = name.replaceAll("\\[.*?\\](.*)", "$1");
+                }
+                if (!f && list.size() < 200) {
+                    name = name.replaceAll("\\d{4,8}", "");
+                }
+
+                name = name.replace("mp4", "").replace("4K","").replace("4k","").replace("1080P","").replace("1080p","");
+                if (c==1) {
+                    if(flag) rname = getBstr(name,f);
+                    else rname = name;
+                    ma = matcher("\\d+", rname);
+                    while (ma.find()) {
+                        iname = ma.group();
+                    }
+                }else if(matcher(".*(\\d+)集.*", name).find()){
+                    iname = name.replaceAll(".*(\\d+)集.*", "$1");
+                }else if(matcher("(\\d+).*", name).find()){
+                    iname = name.replaceAll(".*?(\\d+).*", "$1");
+                }else {
+                    iname = name;
+                }
+            }
+            if(iname.contains(".")&&iname.length()>5) iname = iname.substring(0, iname.lastIndexOf("."));
+            if(isNumeric(iname)) {
+                int zi = Integer.parseInt(iname);
+                if(zi>index)index=zi;
+                if(iname.length()==1)iname="0"+iname;
+            } else iname = zname;
+            if (type.isEmpty()||zname.contains(type)) {
+                m.put(iname, map.get(zname));
+            }
+        }
+        if (!type.isEmpty() && index > 0 && m.size() != index && list.size() == index) return getBx(list, map, "", f);
+        return m;
     }
 
     public static String FindResult(String json, String configKey) {
@@ -127,7 +261,7 @@ public class ApiConfig {
     }
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl = Hawk.get(HawkConfig.API_URL, "");
+        String apiUrl = Hawk.get(HawkConfig.API_URL, _api);
         if (apiUrl.isEmpty()) {
             callback.error("-1");
             return;

@@ -48,7 +48,7 @@ public class Movie implements Serializable {
         @XStreamAlias("area")//地区
         public String area;
         @XStreamAlias("year")//年份
-        public int year;
+        public String year;
         @XStreamAlias("state")
         public String state;
         @XStreamAlias("note")//描述集数或者影片信息<![CDATA[共40集]]>

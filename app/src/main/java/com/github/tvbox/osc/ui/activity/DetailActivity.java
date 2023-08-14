@@ -2,6 +2,8 @@ package com.github.tvbox.osc.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -23,7 +25,7 @@ import android.content.ClipData;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.github.tvbox.osc.cache.CacheManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.github.tvbox.osc.R;
@@ -65,7 +67,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -103,6 +104,7 @@ public class DetailActivity extends BaseActivity {
     private TextView tvName;
     private TextView tvYear;
     private TextView tvSite;
+    private TextView tvTag;
     private TextView tvArea;
     private TextView tvLang;
     private TextView tvType;
@@ -114,6 +116,7 @@ public class DetailActivity extends BaseActivity {
     private TextView tvSort;
     private TextView tvQuickSearch;
     private TextView tvCollect;
+    private TextView myPush;
     private TvRecyclerView mGridViewFlag;
     private TvRecyclerView mGridView;
     private TvRecyclerView mSeriesGroupView;
@@ -130,12 +133,19 @@ public class DetailActivity extends BaseActivity {
     private View seriesFlagFocus = null;
     private boolean isReverse;
     private String preFlag="";
+    private String wdName = "";
+    private String wdPic = "";
     private boolean firstReverse;
     private V7GridLayoutManager mGridViewLayoutMgr = null;
     private HashMap<String, String> mCheckSources = null;
     private final ArrayList<String> seriesGroupOptions = new ArrayList<>();
     private View currentSeriesGroupView;
     private int GroupCount;
+    private SourceBean cuHome;
+    private String spName;
+    private String spPic;
+    private String spId;
+    private String tokenInfo;
 
     @Override
     protected int getLayoutResID() {
@@ -150,6 +160,18 @@ public class DetailActivity extends BaseActivity {
         initData();
     }
 
+    public static void start(Activity activity, String key, String id, String name, String pic,boolean clean) {
+        Intent newIntent = new Intent(activity, DetailActivity.class);
+        newIntent.putExtra("wdName", name);
+        newIntent.putExtra("sourceKey", key);
+        newIntent.putExtra("id", id);
+        newIntent.putExtra("wdPic", pic);
+        if(clean)newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(newIntent);
+    }
+    public static void start(Activity activity, String key, String id, String name, String pic) {
+        start(activity,key,id,name,pic,true);
+    }
     private void initView() {
         llLayout = findViewById(R.id.llLayout);
         llPlayerPlace = findViewById(R.id.previewPlayerPlace);
@@ -161,6 +183,7 @@ public class DetailActivity extends BaseActivity {
         tvName = findViewById(R.id.tvName);
         tvYear = findViewById(R.id.tvYear);
         tvSite = findViewById(R.id.tvSite);
+        tvTag = findViewById(R.id.tvTag);
         tvArea = findViewById(R.id.tvArea);
         tvLang = findViewById(R.id.tvLang);
         tvType = findViewById(R.id.tvType);
@@ -171,6 +194,7 @@ public class DetailActivity extends BaseActivity {
         tvPlay = findViewById(R.id.tvPlay);
         tvSort = findViewById(R.id.tvSort);
         tvCollect = findViewById(R.id.tvCollect);
+        myPush = findViewById(R.id.myPush);
         tvQuickSearch = findViewById(R.id.tvQuickSearch);
         mEmptyPlayList = findViewById(R.id.mEmptyPlaylist);
         mGridView = findViewById(R.id.mGridView);
@@ -222,11 +246,29 @@ public class DetailActivity extends BaseActivity {
                     isReverse = !isReverse;
                     vodInfo.reverse();
                     vodInfo.playIndex=(vodInfo.seriesMap.get(vodInfo.playFlag).size()-1)-vodInfo.playIndex;
-//                    insertVod(sourceKey, vodInfo);
+                    insertVod(sourceKey, vodInfo);
                     firstReverse = true;
                     setSeriesGroupOptions();
                     seriesAdapter.notifyDataSetChanged();
                 }
+            }
+        });
+
+        tvSort.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String text = "r"+DefaultConfig.getHttpUrl(spName);
+                updateData(text);
+                return true;
+            }
+        });
+        tvPlay.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String kv = "key:"+vodInfo.name +"$$$"+spId+"$$$"+ spPic+"$$$"+sourceKey;
+                if(spId.contains("aliyundrive"))kv = vodInfo.name +" "+spId+" "+ spPic;
+                updateData(kv);
+                return true;
             }
         });
         tvPlay.setOnClickListener(new View.OnClickListener() {
@@ -276,29 +318,123 @@ public class DetailActivity extends BaseActivity {
                 });
             }
         });
+
+        tvTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tagInfo = vodInfo.tag;
+                if (tokenInfo != null) {
+                    tagInfo = tokenInfo;
+                }
+                copyInfo("已复制token",tagInfo);
+            }
+        });
+
+        tvTag.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                CacheManager.delete(vodInfo.name,0);
+                alert("已清空该缓存");
+                return true;
+            }
+        });
+
         tvCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = tvCollect.getText().toString();
                 if ("加入收藏".equals(text)) {
                     RoomDataManger.insertVodCollect(sourceKey, vodInfo);
-                    Toast.makeText(DetailActivity.this, "已加入收藏夹", Toast.LENGTH_SHORT).show();
+                    alert("已加入收藏夹");
                     tvCollect.setText("取消收藏");
                 } else {
                     RoomDataManger.deleteVodCollect(sourceKey, vodInfo);
-                    Toast.makeText(DetailActivity.this, "已移除收藏夹", Toast.LENGTH_SHORT).show();
+                    alert("已移除收藏夹");
                     tvCollect.setText("加入收藏");
                 }
+            }
+        });
+        tvCollect.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String kv = vodInfo.name +" "+spId+" "+ spPic;
+                updateData(kv);
+                return true;
+            }
+        });
+
+        tvSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ApiConfig.get().setSourceBean(cuHome);
+                Intent intent = new Intent(mContext, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("useCache", true);
+                intent.putExtras(bundle);
+                DetailActivity.this.startActivity(intent);
+            }
+        });
+
+        tvName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                copyInfo("已复制标题",vodInfo.name);
+                return true;
+            }
+        });
+        tvDes.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                copyInfo("已复制站点信息",DefaultConfig.siteJson);
+                return true;
+            }
+        });
+
+        myPush.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CacheManager.delete(vodInfo.name,0);
+                alert("已清空该缓存");
+                String kv = "notip"+spId +" pic";
+                updateData(kv);
+                start(mActivity, sourceKey, spId, vodInfo.name, wdPic);
+            }
+        });
+
+        myPush.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(tokenInfo==null) alert("没有token信息");
+                else updateData("tokenInfo "+tokenInfo);
+                return true;
+            }
+        });
+
+        tvDirector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyInfo("已复制", spName);
+            }
+        });
+        tvDirector.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                copyInfo("已复制链接",DefaultConfig.getHttpUrl(spName));
+                return true;
             }
         });
         tvPlayUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //获取剪切板管理器
-                ClipboardManager cm = (ClipboardManager)getSystemService(mContext.CLIPBOARD_SERVICE);
-                //设置内容到剪切板
-                cm.setPrimaryClip(ClipData.newPlainText(null, tvPlayUrl.getText().toString().replace("播放地址：","")));
-                Toast.makeText(DetailActivity.this, "已复制", Toast.LENGTH_SHORT).show();
+                copyInfo("已复制", spName);
+            }
+        });
+        tvPlayUrl.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                copyInfo("已复制链接",DefaultConfig.getHttpUrl(spName));
+                return true;
             }
         });
         mGridView.setOnItemListener(new TvRecyclerView.OnItemListener() {
@@ -436,9 +572,58 @@ public class DetailActivity extends BaseActivity {
             }
         });
         mGridView.setOnFocusChangeListener((view, b) -> onGridViewFocusChange(view, b));
-
-
         setLoadSir(llLayout);
+    }
+
+    public void copyInfo(String title,String text){
+        if (text != null) {
+            ClipboardManager cm = (ClipboardManager)getSystemService(mContext.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText(null, text));
+            alert(title);
+        }
+    }
+
+    public static void alert(String msg) {
+        Toast.makeText(App.getInstance(), msg, Toast.LENGTH_SHORT).show();
+    }
+    public static void updateData(String text) {
+        String aliurl = "http://qyh.haocew.com/qy/demand/vd";
+        String pwd = Hawk.get(HawkConfig.MY_PWD,"");
+        if (!pwd.isEmpty()) {
+            try {
+                final boolean bflag = text.startsWith("notip");
+                if(bflag)text=text.replace("notip","");
+                JSONObject jj = new JSONObject();
+                jj.put("pwd", pwd);
+                jj.put("key", text);
+                OkGo.<String>post(aliurl).upJson(jj).execute(new AbsCallback<String>() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        String json = response.body();
+                        if(json!=null&&!json.equals("")) {
+                            try {
+                                JSONObject jo = new JSONObject(json);
+                                String msg = jo.optString("msg", "失败");
+                                if(!bflag) alert(msg);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                    @Override
+                    public String convertResponse(okhttp3.Response response) throws Throwable {
+                        return response.body().string();
+                    }
+                    @Override
+                    public void onError(Response<String> response) {
+                        alert("请求错误");
+                        super.onError(response);
+                    }
+                });
+            } catch (Exception e) {
+            }
+        }else {
+            //alert("无权限");
+        }
     }
 
     private void onGridViewFocusChange(View view, boolean hasFocus) {
@@ -456,7 +641,7 @@ public class DetailActivity extends BaseActivity {
         if (vodInfo != null && vodInfo.seriesMap.get(vodInfo.playFlag).size() > 0) {
             preFlag = vodInfo.playFlag;
             //更新播放地址
-            setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).url);
+            //setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).url);
             Bundle bundle = new Bundle();
             //保存历史
             insertVod(sourceKey, vodInfo);
@@ -530,9 +715,7 @@ public class DetailActivity extends BaseActivity {
         if(offset > 6) offset =6;
         mGridViewLayoutMgr.setSpanCount(offset);
         seriesAdapter.setNewData(vodInfo.seriesMap.get(vodInfo.playFlag));
-
         setSeriesGroupOptions();
-
         mGridView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -578,7 +761,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setTextShow(TextView view, String tag, String info) {
-        if (info == null || info.trim().isEmpty()) {
+        if (info == null || info.trim().isEmpty()|| info.equals("无")) {
             view.setVisibility(View.GONE);
             return;
         }
@@ -597,99 +780,209 @@ public class DetailActivity extends BaseActivity {
         sourceViewModel.detailResult.observe(this, new Observer<AbsXml>() {
             @Override
             public void onChanged(AbsXml absXml) {
-                if (absXml != null && absXml.movie != null && absXml.movie.videoList != null && absXml.movie.videoList.size() > 0) {
-                    showSuccess();
-                    mVideo = absXml.movie.videoList.get(0);
-                    vodInfo = new VodInfo();
-                    vodInfo.setVideo(mVideo);
-                    vodInfo.sourceKey = mVideo.sourceKey;
-
-                    tvName.setText(mVideo.name);
-                    setTextShow(tvSite, "来源：", ApiConfig.get().getSource(mVideo.sourceKey).getName());
-                    setTextShow(tvYear, "年份：", mVideo.year == 0 ? "" : String.valueOf(mVideo.year));
-                    setTextShow(tvArea, "地区：", mVideo.area);
-                    setTextShow(tvLang, "语言：", mVideo.lang);
-                    setTextShow(tvType, "类型：", mVideo.type);
-                    setTextShow(tvActor, "演员：", mVideo.actor);
-                    setTextShow(tvDirector, "导演：", mVideo.director);
-                    setTextShow(tvDes, "内容简介：", removeHtmlTag(mVideo.des));
-                    if (!TextUtils.isEmpty(mVideo.pic)) {
-                        Picasso.get()
-                                .load(DefaultConfig.checkReplaceProxy(mVideo.pic))
-                                .transform(new RoundTransformation(MD5.string2MD5(mVideo.pic + mVideo.name))
-                                        .centerCorp(true)
-                                        .override(AutoSizeUtils.mm2px(mContext, 300), AutoSizeUtils.mm2px(mContext, 400))
-                                        .roundRadius(AutoSizeUtils.mm2px(mContext, 10), RoundTransformation.RoundType.ALL))
-                                .placeholder(R.drawable.img_loading_placeholder)
-                                .error(R.drawable.img_loading_placeholder)
-                                .into(ivThumb);
-                    } else {
-                        ivThumb.setImageResource(R.drawable.img_loading_placeholder);
-                    }
-
-                    if (vodInfo.seriesMap != null && vodInfo.seriesMap.size() > 0) {
-                        mGridViewFlag.setVisibility(View.VISIBLE);
-                        mGridView.setVisibility(View.VISIBLE);
-                        tvPlay.setVisibility(View.VISIBLE);
-                        mEmptyPlayList.setVisibility(View.GONE);
-
-                        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, vodId);
-                        // 读取历史记录
-                        if (vodInfoRecord != null) {
-                            vodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
-                            vodInfo.playFlag = vodInfoRecord.playFlag;
-                            vodInfo.playerCfg = vodInfoRecord.playerCfg;
-                            vodInfo.reverseSort = vodInfoRecord.reverseSort;
+                try {
+                    if (absXml != null && absXml.movie != null && absXml.movie.videoList != null && absXml.movie.videoList.size() > 0) {
+                        showSuccess();
+                        mVideo = absXml.movie.videoList.get(0);
+                        if(mVideo!=null&&mVideo.tag!=null&&!mVideo.tag.isEmpty()){
+                            String[] tagArr = mVideo.tag.split(";");
+                            if(tagArr.length>1) {
+                                tokenInfo = tagArr[1];
+                                if (tokenInfo.length() > 160) {
+                                    String otokenInfo = Hawk.get(HawkConfig.MY_TOKENINFO, "");
+                                    JSONObject jo = new JSONObject(tokenInfo);
+                                    if(otokenInfo.isEmpty()||(!jo.optString("accessTokenOpen", "").isEmpty()&&!tokenInfo.equals(otokenInfo))){
+                                        Hawk.put(HawkConfig.MY_TOKENINFO, tokenInfo);
+                                        updateData("notiptokenInfo "+tokenInfo);
+                                    }
+                                }
+                            }
+                        }
+                        Movie.Video mvo=(Movie.Video)CacheManager.getCache(mVideo.name);
+                        boolean spflag = mVideo.director==null||mVideo.director.isEmpty();
+                        if (mvo != null&&spflag) {
+                            mVideo.pic = mvo.pic;
+                            mVideo.tag = mvo.tag;
+                            mVideo.year = mvo.year;
+                            mVideo.area = mvo.area;
+                            mVideo.director = mvo.director;
+                            mVideo.actor = mvo.actor;
+                            mVideo.des = mvo.des;
+                        }
+                        String tagInfo = "";
+                        if(mVideo.tag!=null&&!mVideo.tag.isEmpty()){
+                            String[] tagArr = mVideo.tag.split(";");
+                            tagInfo = tagArr[0];
+                        }
+                        if (mvo == null&&!spflag) {
+                            mvo = new Movie.Video();
+                            mvo.pic = mVideo.pic;
+                            mvo.tag = mVideo.tag;
+                            mvo.year = mVideo.year;
+                            mvo.area = mVideo.area;
+                            mvo.director = mVideo.director;
+                            mvo.actor = mVideo.actor;
+                            mvo.des = mVideo.des;
+                            if (!tagInfo.contains("分")) CacheManager.save(mVideo.name, mvo);
+                        }
+                        spflag = mVideo.director==null||mVideo.director.isEmpty();
+                        vodInfo = new VodInfo();
+                        vodInfo.setVideo(mVideo);
+                        vodInfo.sourceKey = sourceKey;
+                        tvName.setText(mVideo.name);
+                        cuHome = ApiConfig.get().getSource(sourceKey);
+                        if (!tagInfo.isEmpty()&&tagInfo.contains("分")) {
+                            String score = null, jsnum = null;
+                            String [] tagArr = tagInfo.split("评分：");
+                            tagInfo = tagArr[0];
+                            String tags = tagArr[1];
+                            String [] spArr = tags.split(" ");
+                            score = spArr[0];
+                            if(spArr.length>1) jsnum = spArr[1];
+                            setTextShow(tvArea, "评分：", score);
+                            setTextShow(tvLang, "集数：", jsnum);
+                            mvo.note=score+" / "+jsnum;
+                            CacheManager.save(mVideo.name, mvo);
+                        }else {
+                            setTextShow(tvArea, "地区：", mVideo.area);
+                            setTextShow(tvLang, "语言：", mVideo.lang);
+                        }
+                        setTextShow(tvSite, "来源：", cuHome.getName());
+                        setTextShow(tvYear, "上映：", mVideo.year);
+                        setTextShow(tvType, "类型：", mVideo.type);
+                        setTextShow(tvTag, "标签：", tagInfo);
+                        setTextShow(tvActor, "演员：", mVideo.actor);
+                        setTextShow(tvDirector, "导演：", mVideo.director);
+                        setTextShow(tvDes, "内容简介：", removeHtmlTag(mVideo.des));
+                        if (!TextUtils.isEmpty(mVideo.pic)) {
+                            Picasso.get()
+                                    .load(DefaultConfig.checkReplaceProxy(mVideo.pic))
+                                    .transform(new RoundTransformation(MD5.string2MD5(mVideo.pic + mVideo.name))
+                                            .centerCorp(true)
+                                            .override(AutoSizeUtils.mm2px(mContext, 300), AutoSizeUtils.mm2px(mContext, 400))
+                                            .roundRadius(AutoSizeUtils.mm2px(mContext, 10), RoundTransformation.RoundType.ALL))
+                                    .placeholder(R.drawable.img_loading_placeholder)
+                                    .error(R.drawable.img_loading_placeholder)
+                                    .into(ivThumb);
                         } else {
-                            vodInfo.playIndex = 0;
-                            vodInfo.playFlag = null;
-                            vodInfo.playerCfg = "";
-                            vodInfo.reverseSort = false;
+                            ivThumb.setImageResource(R.drawable.img_loading_placeholder);
                         }
+                        if (vodInfo.seriesMap != null && vodInfo.seriesMap.size() > 0) {
+                            if (vodInfo.id != null) {
+                                String bfurl = "";
+                                if(vodInfo.seriesMap.get(vodInfo.playFlag)!=null)
+                                    bfurl = vodInfo.name+" "+vodInfo.seriesMap.get(vodInfo.playFlag).get(0).url;
+                                String[] idInfo = vodInfo.id.split("\\$\\$\\$");
+                                String _bfurl = idInfo[0];
+                                if(_bfurl.contains("aliyundrive")){
+                                    _bfurl = _bfurl.replaceAll(".*(http.*)", "$1");
+                                    bfurl = vodInfo.name+" "+_bfurl;
+                                }
+                                spId = _bfurl;
+                                vodInfo.id = spId;
+                                if(bfurl.isEmpty())bfurl = vodInfo.name+" "+_bfurl;
+                                spName = bfurl;
+                                //设置播放地址
+                                if(spflag)setTextShow(tvPlayUrl, "视频信息：", bfurl);
+                                else setTextShow(tvPlayUrl, null, null);
+                            }
 
-                        if (vodInfo.reverseSort) {
-                            vodInfo.reverse();
+                            if (mVideo.pic != null) {
+                                if (ApiConfig.isPic(mVideo.pic)&&mVideo.pic.contains("doubanio")) {
+                                    spPic = mVideo.pic;
+                                    if(sourceKey.equals("push_agentqq")&&!spPic.contains(wdPic)){
+                                        updateData("notip" + spId + " " + spPic);
+                                    }
+                                    wdPic = spPic;
+                                }
+                            }else {
+                                vodInfo.pic = wdPic;
+                                spPic = wdPic;
+                            }
+
+                            mGridViewFlag.setVisibility(View.VISIBLE);
+                            mGridView.setVisibility(View.VISIBLE);
+                            tvPlay.setVisibility(View.VISIBLE);
+                            mEmptyPlayList.setVisibility(View.GONE);
+                            VodInfo vodInfoRecord = getRoomData(vodInfo);
+
+                            // 读取历史记录
+                            if (vodInfoRecord != null) {
+                                vodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
+                                vodInfo.playFlag = vodInfoRecord.playFlag;
+                                vodInfo.playerCfg = vodInfoRecord.playerCfg;
+                                vodInfo.reverseSort = vodInfoRecord.reverseSort;
+                                vodInfo.progressKey = vodInfoRecord.progressKey;
+                                App.getInstance().setVodInfo(vodInfo);
+                            } else {
+                                vodInfo.playIndex = 0;
+                                vodInfo.playFlag = null;
+                                vodInfo.playerCfg = "";
+                                vodInfo.reverseSort = false;
+                            }
+
+                            if (vodInfo.reverseSort) {
+                                vodInfo.reverse();
+                            }
+                            if (vodInfo.playFlag == null || !vodInfo.seriesMap.containsKey(vodInfo.playFlag))
+                                vodInfo.playFlag = (String) vodInfo.seriesMap.keySet().toArray()[0];
+
+                            int flagScrollTo = 0;
+                            for (int j = 0; j < vodInfo.seriesFlags.size(); j++) {
+                                VodInfo.VodSeriesFlag flag = vodInfo.seriesFlags.get(j);
+                                if (flag.name.equals(vodInfo.playFlag)) {
+                                    flagScrollTo = j;
+                                    flag.selected = true;
+                                } else
+                                    flag.selected = false;
+                            }
+                            seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
+                            mGridViewFlag.scrollToPosition(flagScrollTo);
+
+                            refreshList();
+                            if (showPreview) {
+                                jumpToPlay();
+                                llPlayerFragmentContainer.setVisibility(View.VISIBLE);
+                                llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
+                                toggleSubtitleTextSize();
+                            }
+                            // startQuickSearch();
+                        } else {
+                            mGridViewFlag.setVisibility(View.GONE);
+                            mGridView.setVisibility(View.GONE);
+                            mSeriesGroupView.setVisibility(View.GONE);
+                            tvPlay.setVisibility(View.GONE);
+                            mEmptyPlayList.setVisibility(View.VISIBLE);
                         }
-
-                        if (vodInfo.playFlag == null || !vodInfo.seriesMap.containsKey(vodInfo.playFlag))
-                            vodInfo.playFlag = (String) vodInfo.seriesMap.keySet().toArray()[0];
-
-                        int flagScrollTo = 0;
-                        for (int j = 0; j < vodInfo.seriesFlags.size(); j++) {
-                            VodInfo.VodSeriesFlag flag = vodInfo.seriesFlags.get(j);
-                            if (flag.name.equals(vodInfo.playFlag)) {
-                                flagScrollTo = j;
-                                flag.selected = true;
-                            } else
-                                flag.selected = false;
-                        }
-                        //设置播放地址
-                        setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(0).url);
-                        seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
-                        mGridViewFlag.scrollToPosition(flagScrollTo);
-
-                        refreshList();
-                        if (showPreview) {
-                            jumpToPlay();
-                            llPlayerFragmentContainer.setVisibility(View.VISIBLE);
-                            llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
-                            toggleSubtitleTextSize();
-                        }
-                        // startQuickSearch();
                     } else {
-                        mGridViewFlag.setVisibility(View.GONE);
-                        mGridView.setVisibility(View.GONE);
-                        mSeriesGroupView.setVisibility(View.GONE);
-                        tvPlay.setVisibility(View.GONE);
-                        mEmptyPlayList.setVisibility(View.VISIBLE);
+                        showEmpty();
+                        llPlayerFragmentContainer.setVisibility(View.GONE);
+                        llPlayerFragmentContainerBlock.setVisibility(View.GONE);
                     }
-                } else {
-                    showEmpty();
-                    llPlayerFragmentContainer.setVisibility(View.GONE);
-                    llPlayerFragmentContainerBlock.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    alert("错误信息de："+e.getMessage());
                 }
             }
         });
+    }
+
+    public VodInfo getRoomData(VodInfo info){
+        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(info.sourceKey, info.id);
+        if (vodInfoRecord == null&& info.id.contains("aliyundrive")) {
+            List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(100);
+            List<VodInfo> vodInfoList = new ArrayList<>();
+            VodInfo sinfo = null;
+            for (VodInfo vInfo : allVodRecord) {
+                if (vInfo.name.equals(info.name)) {
+                    sinfo = vInfo;
+                    sinfo.progressKey = ApiConfig.getProgressKey(sinfo);
+                    break;
+                }
+            }
+            return sinfo;
+        }else {
+            return vodInfoRecord;
+        }
     }
 
     private String getHtml(String label, String content) {
@@ -703,7 +996,20 @@ public class DetailActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
-            loadDetail(bundle.getString("id", null), bundle.getString("sourceKey", ""));
+            wdName = bundle.getString("wdName", "");
+            wdPic = bundle.getString("wdPic", "");
+            if(!wdPic.isEmpty()) wdPic = wdPic.split("\\?")[0];
+            spId = bundle.getString("id", null);
+            sourceKey = bundle.getString("sourceKey", "");
+            if(!wdName.isEmpty())wdName = wdName.split("\\?")[0];
+            if(sourceKey.equals("push_agentqq")){
+                String[] idInfo = spId.split(",");
+                if(idInfo.length>1){
+                    spId = idInfo[0];
+                    sourceKey = idInfo[1];
+                }
+            }
+            loadDetail(spId, sourceKey);
         }
     }
 
@@ -712,7 +1018,7 @@ public class DetailActivity extends BaseActivity {
             vodId = vid;
             sourceKey = key;
             showLoading();
-            sourceViewModel.getDetail(sourceKey, vodId);
+            sourceViewModel.getDetail(sourceKey, vodId,wdName);
             boolean isVodCollect = RoomDataManger.isVodCollect(sourceKey, vodId);
             if (isVodCollect) {
                 tvCollect.setText("取消收藏");
@@ -784,7 +1090,7 @@ public class DetailActivity extends BaseActivity {
         hadQuickStart = true;
         OkGo.getInstance().cancelTag("quick_search");
         quickSearchWord.clear();
-        searchTitle = mVideo.name;
+        searchTitle = wdName;
         quickSearchData.clear();
         quickSearchWord.addAll(SearchHelper.splitWords(searchTitle));
         // 分词
@@ -875,6 +1181,7 @@ public class DetailActivity extends BaseActivity {
 
     private void insertVod(String sourceKey, VodInfo vodInfo) {
         try {
+            //if(ApiConfig.isPic(wdPic)&&!sourceKey.equals("push_agentqq"))vodInfo.pic = wdPic;
             vodInfo.playNote = vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).name;
         } catch (Throwable th) {
             vodInfo.playNote = "";
@@ -908,7 +1215,7 @@ public class DetailActivity extends BaseActivity {
             toggleFullPreview();
             mGridView.requestFocus();
             List<VodInfo.VodSeries> list = vodInfo.seriesMap.get(vodInfo.playFlag);
-            mSeriesGroupView.setVisibility(list.size()>GroupCount ? View.VISIBLE : View.GONE);
+            //mSeriesGroupView.setVisibility(list.size()>GroupCount ? View.VISIBLE : View.GONE);
             return;
         }
         if (seriesSelect) {
@@ -949,7 +1256,7 @@ public class DetailActivity extends BaseActivity {
         llPlayerFragmentContainerBlock.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
         mGridView.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
         mGridViewFlag.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
-        mSeriesGroupView.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
+        //mSeriesGroupView.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
 
         //全屏下禁用详情页几个按键的焦点 防止上键跑过来
         tvPlay.setFocusable(!fullWindows);
