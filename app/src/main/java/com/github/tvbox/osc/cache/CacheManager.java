@@ -74,13 +74,16 @@ public class CacheManager {
     }
 
     public static <T> void save(String key, T body) {
-        Cache cache = new Cache();
-        cache.key = key;
-        cache.data = toByteArray(body);
-        AppDataManager.get().getCacheDao().save(cache);
+        if(key!=null&&!key.isEmpty()){
+            Cache cache = new Cache();
+            cache.key = key;
+            cache.data = toByteArray(body);
+            AppDataManager.get().getCacheDao().save(cache);
+        }
     }
 
     public static Object getCache(String key) {
+        if(key==null||key.isEmpty())return null;
         Cache cache = AppDataManager.get().getCacheDao().getCache(key);
         if (cache != null && cache.data != null) {
             return toObject(cache.data);

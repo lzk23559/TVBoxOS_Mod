@@ -19,6 +19,7 @@ public class VodInfo implements Serializable {
     public String last;//时间
     //内容id
     public String id;
+    public String progressKey; //播放记录key
     //父级id
     public int tid;
     //影片名称 <![CDATA[老爸当家]]>
@@ -34,7 +35,7 @@ public class VodInfo implements Serializable {
     //地区
     public String area;
     //年份
-    public int year;
+    public String year;
     public String state;
     //描述集数或者影片信息<![CDATA[共40集]]>
     public String note;
@@ -50,6 +51,7 @@ public class VodInfo implements Serializable {
     public String playNote = "";
     public String sourceKey;
     public String playerCfg = "";
+    public String tag;
     public boolean reverseSort = false;
 
     public void setVideo(Movie.Video video) {
@@ -66,6 +68,7 @@ public class VodInfo implements Serializable {
         state = video.state;
         note = video.note;
         actor = video.actor;
+        tag = video.tag;
         director = video.director;
         des = video.des;
         if (video.urlBean != null && video.urlBean.infoList != null && video.urlBean.infoList.size() > 0) {

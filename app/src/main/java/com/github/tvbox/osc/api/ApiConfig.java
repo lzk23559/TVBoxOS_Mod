@@ -92,6 +92,19 @@ public class ApiConfig {
         return instance;
     }
 
+    public static boolean isAli(String id){
+        if(id==null)return false;
+        if(id.contains("aliyundrive")){
+            return true;
+        }
+        return false;
+    }
+
+    public static String getProgressKey(VodInfo mVodInfo){
+        String subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex;
+        return subtitleCacheKey;
+    }
+
     public static boolean isPic(String wdPic){
         if(!wdPic.isEmpty()&&!wdPic.contains(".xinjun58")&&!wdPic.contains("13263837859"))return true;
         return false;

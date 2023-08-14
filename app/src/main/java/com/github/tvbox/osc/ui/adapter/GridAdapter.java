@@ -55,7 +55,7 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
         }
 
         TextView tvYear = helper.getView(R.id.tvYear);
-        if (item.year <= 0) {
+        if (TextUtils.isEmpty(item.year)) {
             tvYear.setVisibility(View.GONE);
         } else {
             tvYear.setText(String.valueOf(item.year));

@@ -1,4 +1,3 @@
-
 package com.github.tvbox.osc.player.controller;
 
 import android.annotation.SuppressLint;
@@ -1126,12 +1125,6 @@ public class VodController extends BaseController {
             return true;
         }
         return false;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mHandler.removeCallbacks(myRunnable2);
     }
 
     @Override

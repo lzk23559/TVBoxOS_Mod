@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -24,6 +25,14 @@ import java.util.regex.Pattern;
  * @description:
  */
 public class DefaultConfig {
+
+    public static String getHttpUrl(String text) {
+        Matcher m = Pattern.compile("(https?://[A-Za-z0-9:_@$#\\/\\.\\?\\=\\&\\%\\-]+)").matcher(text);
+        if (m.find()) {
+            text = m.group(1);
+        }
+        return text;
+    }
 
     public static List<MovieSort.SortData> adjustSort(String sourceKey, List<MovieSort.SortData> list, boolean withMy) {
         List<MovieSort.SortData> data = new ArrayList<>();
