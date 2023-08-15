@@ -682,7 +682,7 @@ public class PlayActivity extends BaseActivity {
                 mVodPlayerCfg.put("pr", Hawk.get(HawkConfig.PLAY_RENDER, 1));
             }
             if (!mVodPlayerCfg.has("ijk")) {
-                mVodPlayerCfg.put("ijk", Hawk.get(HawkConfig.IJK_CODEC, ""));
+                mVodPlayerCfg.put("ijk", Hawk.get(HawkConfig.IJK_CODEC, "硬解码"));
             }
             if (!mVodPlayerCfg.has("sc")) {
                 mVodPlayerCfg.put("sc", Hawk.get(HawkConfig.PLAY_SCALE, 0));
