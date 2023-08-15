@@ -75,6 +75,7 @@ public class FastSearchActivity extends BaseActivity {
     private FastSearchAdapter searchAdapterFilter;
     private FastListAdapter spListAdapter;
     private String searchTitle = "";
+    private String wdPic = "";
     private HashMap<String, String> spNames;
     private boolean isFilterMode = false;
     private String searchFilterKey = "";    // 过滤的key
@@ -201,10 +202,9 @@ public class FastSearchActivity extends BaseActivity {
                     } catch (Throwable th) {
                         th.printStackTrace();
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", video.id);
-                    bundle.putString("sourceKey", video.sourceKey);
-                    jumpActivity(DetailActivity.class, bundle);
+                    String key = video.sourceKey;
+                    //if(!ApiConfig._api.contains("63")&&ApiConfig.isAli(video.id))key = ApiConfig.pushKey;
+                    DetailActivity.start( FastSearchActivity.this, key, video.id, searchTitle,wdPic);
                 }
             }
         });
@@ -228,10 +228,7 @@ public class FastSearchActivity extends BaseActivity {
                     } catch (Throwable th) {
                         th.printStackTrace();
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", video.id);
-                    bundle.putString("sourceKey", video.sourceKey);
-                    jumpActivity(DetailActivity.class, bundle);
+                    DetailActivity.start(FastSearchActivity.this, video.sourceKey, video.id, searchTitle,video.pic);
                 }
             }
         });
@@ -317,7 +314,9 @@ public class FastSearchActivity extends BaseActivity {
         initCheckedSourcesForSearch();
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("title")) {
-            String title = intent.getStringExtra("title");
+            Bundle bundle = intent.getExtras();
+            String title = bundle.getString("title", "");
+            wdPic = bundle.getString("pic", "");
             showLoading();
             search(title);
         }
@@ -468,11 +467,13 @@ public class FastSearchActivity extends BaseActivity {
 
     private void searchData(AbsXml absXml) {
         String lastSourceKey = "";
-
         if (absXml != null && absXml.movie != null && absXml.movie.videoList != null && absXml.movie.videoList.size() > 0) {
             List<Movie.Video> data = new ArrayList<>();
+            boolean isPic = ApiConfig.isPic(wdPic);
             for (Movie.Video video : absXml.movie.videoList) {
                 if (!matchSearchResult(video.name, searchTitle)) continue;
+                if(isPic&&!ApiConfig.isPic(video.pic))video.pic = wdPic;
+                if(!searchTitle.isEmpty())video.name = searchTitle;
                 data.add(video);
                 if (!resultVods.containsKey(video.sourceKey)) {
                     resultVods.put(video.sourceKey, new ArrayList<Movie.Video>());

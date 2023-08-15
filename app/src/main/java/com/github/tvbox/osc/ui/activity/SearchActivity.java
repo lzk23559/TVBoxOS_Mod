@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProvider;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
@@ -74,14 +73,16 @@ public class SearchActivity extends BaseActivity {
     private TvRecyclerView mGridView;
     private TvRecyclerView mGridViewWord;
     SourceViewModel sourceViewModel;
-    private RemoteDialog remoteDialog;
     private EditText etSearch;
     private TextView tvSearch;
     private TextView tvClear;
     private SearchKeyboard keyboard;
+    private TextView tvAddress;
+    private ImageView ivQRCode;
     private SearchAdapter searchAdapter;
     private PinyinAdapter wordAdapter;
     private String searchTitle = "";
+    private String wdPic = "";
     private TextView tvSearchCheckboxBtn;
 
     private static HashMap<String, String> mCheckSources = null;
@@ -91,7 +92,16 @@ public class SearchActivity extends BaseActivity {
     protected int getLayoutResID() {
         return R.layout.activity_search;
     }
-
+    public static void start(Activity activity, String name, String pic,boolean clean) {
+        Intent newIntent = new Intent(activity, SearchActivity.class);
+        newIntent.putExtra("title", name);
+        newIntent.putExtra("pic", pic);
+        if(clean)newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(newIntent);
+    }
+    public static void start(Activity activity, String name, String pic) {
+        start(activity,name,pic,true);
+    }
 
     private static Boolean hasKeyBoard;
     private static Boolean isSearchBack;
@@ -159,6 +169,8 @@ public class SearchActivity extends BaseActivity {
         tvSearch = findViewById(R.id.tvSearch);
         tvSearchCheckboxBtn = findViewById(R.id.tvSearchCheckboxBtn);
         tvClear = findViewById(R.id.tvClear);
+        tvAddress = findViewById(R.id.tvAddress);
+        ivQRCode = findViewById(R.id.ivQRCode);
         mGridView = findViewById(R.id.mGridView);
         keyboard = findViewById(R.id.keyBoardRoot);
         mGridViewWord = findViewById(R.id.mGridViewWord);
@@ -198,11 +210,26 @@ public class SearchActivity extends BaseActivity {
                     }
                     hasKeyBoard = false;
                     isSearchBack = true;
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", video.id);
-                    bundle.putString("sourceKey", video.sourceKey);
-                    jumpActivity(DetailActivity.class, bundle);
+
+                    String key = video.sourceKey;
+                    //if(!ApiConfig._api.contains("63")&&ApiConfig.isAli(video.id))key = ApiConfig.pushKey;
+                    DetailActivity.start(SearchActivity.this, key, video.id, searchTitle,wdPic);
                 }
+            }
+        });
+
+        tvSearch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String isname = Hawk.get(HawkConfig.MY_NAME,"");
+                if (isname.isEmpty()) {
+                    Hawk.put(HawkConfig.MY_NAME, "yes");
+                    Toast.makeText(mContext, "开启搜索标题", Toast.LENGTH_SHORT).show();
+                }else {
+                    Hawk.put(HawkConfig.MY_NAME, "");
+                    Toast.makeText(mContext, "关闭搜索标题", Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
         });
         tvSearch.setOnClickListener(new View.OnClickListener() {
@@ -212,10 +239,31 @@ public class SearchActivity extends BaseActivity {
                 hasKeyBoard = true;
                 String wd = etSearch.getText().toString().trim();
                 if (!TextUtils.isEmpty(wd)) {
+                    wd.trim();
+                    if (wd.startsWith("pwd")) {
+                        String s = wd.replace("pwd", "");
+                        Hawk.put(HawkConfig.MY_PWD, s);
+                        Toast.makeText(mContext, "密码设置为："+s, Toast.LENGTH_SHORT).show();
+                    }else
                     search(wd);
                 } else {
                     Toast.makeText(mContext, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        tvClear.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String vd = Hawk.get(HawkConfig.MY_VIDEO_DETAIL,"");
+                if (vd.isEmpty()) {
+                    Hawk.put(HawkConfig.MY_VIDEO_DETAIL, "yes");
+                    Toast.makeText(mContext, "开启视频详情", Toast.LENGTH_SHORT).show();
+                }else {
+                    Hawk.put(HawkConfig.MY_VIDEO_DETAIL, "");
+                    Toast.makeText(mContext, "关闭视频详情", Toast.LENGTH_SHORT).show();
+                }
+                return true;
             }
         });
         tvClear.setOnClickListener(new View.OnClickListener() {
@@ -255,7 +303,7 @@ public class SearchActivity extends BaseActivity {
                         loadRec(text);
                     }
                 } else if (pos == 0) {
-                    remoteDialog = new RemoteDialog(mContext);
+                    RemoteDialog remoteDialog = new RemoteDialog(mContext);
                     remoteDialog.show();
                 }
             }
@@ -351,10 +399,14 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void initData() {
+        refreshQRCode();
         initCheckedSourcesForSearch();
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("title")) {
-            String title = intent.getStringExtra("title");
+            Bundle bundle = intent.getExtras();
+            String title = bundle.getString("title", "");
+            wdPic = bundle.getString("pic", "");
+            etSearch.setText(title);
             showLoading();
             search(title);
         }
@@ -389,6 +441,12 @@ public class SearchActivity extends BaseActivity {
 
     }
 
+    private void refreshQRCode() {
+        String address = ControlManager.get().getAddress(false);
+        tvAddress.setText(String.format("远程搜索使用手机/电脑扫描下面二维码或者直接浏览器访问地址\n%s", address));
+        ivQRCode.setImageBitmap(QRCodeGen.generateBitmap(address + "search.html", 300, 300));
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void server(ServerEvent event) {
         if (event.type == ServerEvent.SERVER_SEARCH) {
@@ -419,13 +477,9 @@ public class SearchActivity extends BaseActivity {
 
     private void search(String title) {
         cancel();
-        if (remoteDialog != null) {
-            remoteDialog.dismiss();
-            remoteDialog = null;
-        }
         showLoading();
-        etSearch.setText(title);
         this.searchTitle = title;
+        etSearch.setText(title);
         mGridView.setVisibility(View.INVISIBLE);
         searchAdapter.setNewData(new ArrayList<>());
         searchResult();

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.TextView;
-
+import com.github.tvbox.osc.api.ApiConfig;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -17,7 +17,7 @@ import com.github.tvbox.osc.ui.adapter.HistoryAdapter;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-
+import android.content.Intent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -100,42 +100,12 @@ public class HistoryActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
                 VodInfo vodInfo = historyAdapter.getData().get(position);
-
-//                HistoryDialog historyDialog = new HistoryDialog().build(mContext, vodInfo).setOnHistoryListener(new HistoryDialog.OnHistoryListener() {
-//                    @Override
-//                    public void onLook(VodInfo vodInfo) {
-//                        if (vodInfo != null) {
-//                            Bundle bundle = new Bundle();
-//                            bundle.putInt("id", vodInfo.id);
-//                            bundle.putString("sourceKey", vodInfo.sourceKey);
-//                            jumpActivity(DetailActivity.class, bundle);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onDelete(VodInfo vodInfo) {
-//                        if (vodInfo != null) {
-//                               for (int i = 0; i < historyAdapter.getData().size(); i++) {
-//                                    if (vodInfo.id == historyAdapter.getData().get(i).id) {
-//                                        historyAdapter.remove(i);
-//                                        break;
-//                                    }
-//                                }
-//                                RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);
-//                        }
-//                    }
-//                });
-//                historyDialog.show();
-
                 if (vodInfo != null) {
                     if (delMode) {
                         historyAdapter.remove(position);
                         RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);
                     } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("id", vodInfo.id);
-                        bundle.putString("sourceKey", vodInfo.sourceKey);
-                        jumpActivity(DetailActivity.class, bundle);
+                        DetailActivity.start( HistoryActivity.this, vodInfo.sourceKey, vodInfo.id, vodInfo.name, vodInfo.pic);
                     }
                 }
             }
@@ -145,8 +115,9 @@ public class HistoryActivity extends BaseActivity {
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
                 VodInfo vodInfo = historyAdapter.getData().get(position);
-                historyAdapter.remove(position);
-                RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);
+                /*historyAdapter.remove(position);
+                RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);*/
+                SearchActivity.start(HistoryActivity.this, vodInfo.name, vodInfo.pic);
                 return true;
             }
         });
@@ -156,12 +127,22 @@ public class HistoryActivity extends BaseActivity {
         List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(100);
         List<VodInfo> vodInfoList = new ArrayList<>();
         for (VodInfo vodInfo : allVodRecord) {
-            if (vodInfo.playNote != null && !vodInfo.playNote.isEmpty())vodInfo.note = "上次看到" + vodInfo.playNote;
+            String sourceKey = vodInfo.sourceKey;
+            if (sourceKey != null) {
+                String name = ApiConfig.get().getSource(sourceKey).getName();
+                if ((vodInfo.pic==null||vodInfo.pic.isEmpty())||(vodInfo.pic!=null&&vodInfo.pic.contains("img.aliyundrive.com"))) {
+                    if (name.contains("易搜")) {
+                        vodInfo.pic = "https://f.haocew.com/image/tv/yiso.jpg";
+                    }else if (vodInfo.id.contains("aliyundrive")&&!vodInfo.pic.contains("xinjun58")) {
+                        vodInfo.pic = "http://image.xinjun58.com/sp/pic/bg/ali.jpg";
+                    }
+                }
+            }
+            if (vodInfo.playNote != null && !vodInfo.playNote.isEmpty())vodInfo.note = "最近：" + vodInfo.playNote;
             vodInfoList.add(vodInfo);
         }
         historyAdapter.setNewData(vodInfoList);
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refresh(RefreshEvent event) {

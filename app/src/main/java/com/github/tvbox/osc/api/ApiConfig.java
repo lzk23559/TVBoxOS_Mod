@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import com.github.tvbox.osc.util.UA;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -113,12 +113,11 @@ public class ApiConfig {
         if(!wdPic.isEmpty()&&!wdPic.contains(".xinjun58")&&!wdPic.contains("13263837859"))return true;
         return false;
     }
-    public static boolean isAgentImg(String pic){
-        String isname = Hawk.get(HawkConfig.MY_NAME,"yes");
-        if (!isname.isEmpty()&&pic!=null&&!pic.contains("//img9.doubanio")) {
-            return true;
+    public static String isAgentImg(String pic){
+        if (pic!=null&&pic.contains(".doubanio")&&!pic.contains("@Referer")) {
+            return pic+"@User-Agent="+ UA.randomOne()+"@Referer=https://www.douban.com/";
         }
-        return false;
+        return pic;
     }
     public static Matcher matcher(String regx, String content) {
         Pattern pattern = Pattern.compile(regx);

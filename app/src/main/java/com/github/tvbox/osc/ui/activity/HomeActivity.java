@@ -1,6 +1,7 @@
 package com.github.tvbox.osc.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
@@ -18,14 +19,13 @@ import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.viewpager.widget.ViewPager;
-
+import com.github.tvbox.osc.bean.Movie;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -222,21 +222,20 @@ public class HomeActivity extends BaseActivity {
         tvName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(dataInitOk && jarInitOk){
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("useCache", true);
-                    intent.putExtras(bundle);
-                    HomeActivity.this.startActivity(intent);
-                }else {
-                    jumpActivity(SettingActivity.class);
-                }
-                return true;
+                return reHome(mContext);
             }
         });
         setLoadSir(this.contentLayout);
         //mHandler.postDelayed(mFindFocus, 500);
+    }
+    public static boolean reHome(Context appContext){
+        Intent intent = new Intent(appContext, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                /*Bundle bundle = new Bundle();
+                bundle.putBoolean("useCache", true);
+                intent.putExtras(bundle);*/
+        appContext.startActivity(intent);
+        return true;
     }
 
     private void initViewModel() {
@@ -260,11 +259,17 @@ public class HomeActivity extends BaseActivity {
 
     private void initData() {
         SourceBean home = ApiConfig.get().getHomeSourceBean();
-        if (home != null && home.getName() != null && !home.getName().isEmpty())
-            tvName.setText(home.getName());
+        if (home != null) {
+            String homeName = home.getName();
+            if (homeName != null && !homeName.isEmpty()){
+                String pre = "";
+                if(ApiConfig.delsp)pre = "D.";
+                tvName.setText(pre + homeName);
+            }
+        }
         if (dataInitOk && jarInitOk) {
             showLoading();
-            sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
+            sourceViewModel.getSort(home.getKey());
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {
@@ -272,6 +277,7 @@ public class HomeActivity extends BaseActivity {
             }
             return;
         }
+
         showLoading();
         if (dataInitOk && !jarInitOk) {
             if (!ApiConfig.get().getSpider().isEmpty()) {
@@ -282,6 +288,8 @@ public class HomeActivity extends BaseActivity {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                               /* if (!useCacheConfig)
+                                    Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
                             }
                         }, 50);
@@ -401,9 +409,15 @@ public class HomeActivity extends BaseActivity {
         if (sortAdapter.getData().size() > 0) {
             for (MovieSort.SortData data : sortAdapter.getData()) {
                 if (data.id.equals("my0")) {
-                    if (Hawk.get(HawkConfig.HOME_REC, 0) == 1 && absXml != null && absXml.videoList != null && absXml.videoList.size() > 0) {
+                    int hi = Hawk.get(HawkConfig.HOME_REC, 0);
+                    if (hi == 1 && absXml != null && absXml.videoList != null && absXml.videoList.size() > 0) {
                         fragments.add(UserFragment.newInstance(absXml.videoList));
-                    } else {
+                    } else if(hi == 3){
+                        List<Movie.Video> mv = sourceViewModel.getAbsSortXmlQQ();
+                        if(mv!=null)
+                        fragments.add(UserFragment.newInstance(mv));
+                        else fragments.add(UserFragment.newInstance(absXml.videoList));
+                    }else {
                         fragments.add(UserFragment.newInstance(null));
                     }
                 } else {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
@@ -14,14 +13,7 @@ import com.github.tvbox.osc.bean.Movie;
 import com.github.tvbox.osc.bean.VodInfo;
 import com.github.tvbox.osc.cache.RoomDataManger;
 import com.github.tvbox.osc.event.ServerEvent;
-import com.github.tvbox.osc.ui.activity.CollectActivity;
-import com.github.tvbox.osc.ui.activity.DetailActivity;
-import com.github.tvbox.osc.ui.activity.FastSearchActivity;
-import com.github.tvbox.osc.ui.activity.HistoryActivity;
-import com.github.tvbox.osc.ui.activity.LivePlayActivity;
-import com.github.tvbox.osc.ui.activity.PushActivity;
-import com.github.tvbox.osc.ui.activity.SearchActivity;
-import com.github.tvbox.osc.ui.activity.SettingActivity;
+import com.github.tvbox.osc.ui.activity.*;
 import com.github.tvbox.osc.ui.adapter.HomeHotVodAdapter;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
@@ -36,8 +28,6 @@ import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -98,7 +88,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                 vod.name = vodInfo.name;
                 vod.pic = vodInfo.pic;
                 if (vodInfo.playNote != null && !vodInfo.playNote.isEmpty())
-                    vod.note = "上次看到" + vodInfo.playNote;
+                    vod.note = "最近：" + vodInfo.playNote;
                 vodList.add(vod);
             }
             homeHotVodAdapter.setNewData(vodList);
@@ -134,6 +124,35 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHotList1 = findViewById(R.id.tvHotList1);
         tvHotList2 = findViewById(R.id.tvHotList2);
         homeHotVodAdapter = new HomeHotVodAdapter();
+
+        tvSearch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ApiConfig.delsp = !ApiConfig.delsp;
+                if(ApiConfig.delsp){
+                    DetailActivity.alert("开启删除视频");
+                }else {
+                    DetailActivity.alert("关闭删除视频");
+                }
+                return HomeActivity.reHome(mContext);
+            }
+        });
+
+        tvLive.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                DetailActivity.updateData("stoken");
+                return HomeActivity.reHome(mContext);
+            }
+        });
+
+        tvHistory.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return HomeActivity.reHome(mContext);
+            }
+        });
+
         homeHotVodAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -141,25 +160,13 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                     return;
                 Movie.Video vod = ((Movie.Video) adapter.getItem(position));
                 if (vod.id != null && !vod.id.isEmpty()) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", vod.id);
-                    bundle.putString("sourceKey", vod.sourceKey);
                     if(Hawk.get(HawkConfig.HOME_REC, 0)==1 && Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        bundle.putString("title", vod.name);
-                        jumpActivity(FastSearchActivity.class, bundle);
+                        SearchActivity.start(mActivity, vod.name, vod.pic);
                     }else {
-                        jumpActivity(DetailActivity.class, bundle);
+                        DetailActivity.start( mActivity, vod.sourceKey, vod.id, vod.name, vod.pic,false);
                     }
                 } else {
-                    Intent newIntent;
-                    if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        newIntent = new Intent(mContext, FastSearchActivity.class);
-                    }else {
-                        newIntent = new Intent(mContext, SearchActivity.class);
-                    }
-                    newIntent.putExtra("title", vod.name);
-                    newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mActivity.startActivity(newIntent);
+                    SearchActivity.start(mActivity, vod.name, vod.pic);
                 }
             }
         });
@@ -171,6 +178,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                 Movie.Video vod = ((Movie.Video) adapter.getItem(position));
                 Bundle bundle = new Bundle();
                 bundle.putString("title", vod.name);
+                bundle.putString("pic", vod.pic);
                 jumpActivity(FastSearchActivity.class, bundle);
                 return true;
             }
@@ -215,12 +223,13 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
     }
 
     private void initHomeHotVod(HomeHotVodAdapter adapter) {
-        if (Hawk.get(HawkConfig.HOME_REC, 0) == 1) {
+        int hi = Hawk.get(HawkConfig.HOME_REC, 0);
+        if (hi == 1||hi == 3) {
             if (homeSourceRec != null) {
                 adapter.setNewData(homeSourceRec);
-                return;
             }
-        } else if (Hawk.get(HawkConfig.HOME_REC, 0) == 2) {
+            return;
+        } else if (hi == 2) {
             return;
         }
         setDouBanData(adapter);
@@ -282,11 +291,11 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                 vod.name = obj.get("title").getAsString();
                 vod.note = obj.get("rate").getAsString();
                 if(!vod.note.isEmpty())vod.note+=" 分";
-                vod.pic = obj.get("cover").getAsString()+"@User-Agent="+ UA.randomOne()+"@Referer=https://www.douban.com/";
+                vod.pic = obj.get("cover").getAsString();
+                vod.pic = ApiConfig.isAgentImg(vod.pic);
                 result.add(vod);
             }
         } catch (Throwable th) {
-
         }
         return result;
     }

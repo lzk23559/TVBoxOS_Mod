@@ -307,7 +307,7 @@ public class VodController extends BaseController {
         mNextBtn.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                 bfq();
+                bfq();
                 return true;
             }
         });
@@ -470,7 +470,7 @@ public class VodController extends BaseController {
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
                     listener.replay(false);
-//                    hideBottom();
+                    hideBottom();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -563,7 +563,7 @@ public class VodController extends BaseController {
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
                     listener.replay(false);
-//                    hideBottom();
+                    hideBottom();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -923,8 +923,7 @@ public class VodController extends BaseController {
                 listener.replay(false);
                 break;
             case VideoView.STATE_ERROR:
-                //listener.errReplay();
-                listener.replay(false);
+                listener.errReplay();
                 break;
             case VideoView.STATE_PREPARED:
                 mPlayLoadNetSpeed.setVisibility(GONE);
@@ -967,6 +966,8 @@ public class VodController extends BaseController {
         int keyCode = event.getKeyCode();
         int action = event.getAction();
         if (isBottomVisible()) {
+            mHandler.removeMessages(1002);
+            mHandler.removeMessages(1003);
             myHandle.postDelayed(myRunnable, myHandleSeconds);
             return super.dispatchKeyEvent(event);
         }
@@ -1124,5 +1125,11 @@ public class VodController extends BaseController {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mHandler.removeCallbacks(myRunnable2);
     }
 }
