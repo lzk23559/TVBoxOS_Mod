@@ -774,12 +774,10 @@ public class VodController extends BaseController {
     }
 
     public void setTitle(String playTitleInfo) {
-        String reg = ".*? (\\d+)$",reg1="^第(\\d+)集$";
+        String reg = ".*? 第?(\\d+)集?$";
         if(playTitleInfo!=null){
             if(ApiConfig.matcher(reg, playTitleInfo).find())
             jsnum = playTitleInfo.replaceAll(reg, "$1")+"集 ";
-            else if(ApiConfig.matcher(reg1, playTitleInfo).find())
-                jsnum = playTitleInfo.replaceAll(reg1, "$1")+"集 ";
         } else jsnum = "";
         mPlayTitle.setText(playTitleInfo);
         mPlayTitle1.setText(playTitleInfo);
