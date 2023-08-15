@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.github.tvbox.osc.cache.RoomDataManger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -116,7 +117,7 @@ public class PlayActivity extends BaseActivity {
     private VodController mController;
     private SourceViewModel sourceViewModel;
     private Handler mHandler;
-
+    private boolean reverseSort = false;
     private long videoDuration = -1;
 
     @Override
@@ -642,6 +643,10 @@ public class PlayActivity extends BaseActivity {
         });
     }
 
+    private VodInfo getVodInfo(VodInfo v){
+        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(v.sourceKey, v.id);
+        return vodInfoRecord;
+    }
     private void initData() {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
@@ -650,6 +655,14 @@ public class PlayActivity extends BaseActivity {
             mVodInfo = App.getInstance().getVodInfo();
             sourceKey = bundle.getString("sourceKey");
             sourceBean = ApiConfig.get().getSource(sourceKey);
+
+            VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
+            // 读取历史记录
+            if (vodInfoRecord != null) {
+                mVodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
+                mVodInfo.reverseSort = vodInfoRecord.reverseSort;
+                this.reverseSort = mVodInfo.reverseSort;
+            }
             initPlayerCfg();
             play(false);
         }
@@ -666,7 +679,7 @@ public class PlayActivity extends BaseActivity {
                 mVodPlayerCfg.put("pl", (sourceBean.getPlayerType() == -1) ? (int)Hawk.get(HawkConfig.PLAY_TYPE, 1) : sourceBean.getPlayerType() );
             }
             if (!mVodPlayerCfg.has("pr")) {
-                mVodPlayerCfg.put("pr", Hawk.get(HawkConfig.PLAY_RENDER, 0));
+                mVodPlayerCfg.put("pr", Hawk.get(HawkConfig.PLAY_RENDER, 1));
             }
             if (!mVodPlayerCfg.has("ijk")) {
                 mVodPlayerCfg.put("ijk", Hawk.get(HawkConfig.IJK_CODEC, ""));
@@ -747,18 +760,25 @@ public class PlayActivity extends BaseActivity {
         if (mVodInfo == null || mVodInfo.seriesMap.get(mVodInfo.playFlag) == null) {
             hasNext = false;
         } else {
-            hasNext = mVodInfo.playIndex + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
+            if (!reverseSort) {
+                hasNext = mVodInfo.playIndex + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
+            }else {
+                hasNext = mVodInfo.playIndex - 1 >= 0;
+            }
         }
         if (!hasNext) {
             if(isProgress && mVodInfo!=null){
-                mVodInfo.playIndex=0;
+        /*        mVodInfo.playIndex=0;
                 Toast.makeText(this, "已经是最后一集了!,即将跳到第一集继续播放", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, "已经是最后一集了!", Toast.LENGTH_SHORT).show();
+            }else {*/
+                if(!reverseSort) {
+                    Toast.makeText(this, "已经是最后一集了!", Toast.LENGTH_SHORT).show();
+                }else Toast.makeText(this, "已经是第一集了!", Toast.LENGTH_SHORT).show();
                 return;
             }
         }else {
-            mVodInfo.playIndex++;
+            if (!reverseSort) mVodInfo.playIndex++;
+            else mVodInfo.playIndex--;
         }
         play(false);
     }
@@ -768,13 +788,19 @@ public class PlayActivity extends BaseActivity {
         if (mVodInfo == null || mVodInfo.seriesMap.get(mVodInfo.playFlag) == null) {
             hasPre = false;
         } else {
+            if (reverseSort) {
+                hasPre = mVodInfo.playIndex + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
+            }else
             hasPre = mVodInfo.playIndex - 1 >= 0;
         }
         if (!hasPre) {
-            Toast.makeText(this, "已经是第一集了!", Toast.LENGTH_SHORT).show();
+            if(!reverseSort){
+                Toast.makeText(this, "已经是第一集了!", Toast.LENGTH_SHORT).show();
+            }else Toast.makeText(this, "已经是最后一集了!", Toast.LENGTH_SHORT).show();
             return;
         }
-        mVodInfo.playIndex--;
+        if (reverseSort) mVodInfo.playIndex++;
+        else mVodInfo.playIndex--;
         play(false);
     }
 
@@ -785,7 +811,7 @@ public class PlayActivity extends BaseActivity {
             autoRetryFromLoadFoundVideoUrls();
             return true;
         }
-        if (autoRetryCount < 1) {
+        if (autoRetryCount < 2) {
             autoRetryCount++;
             play(false);
             return true;
@@ -817,8 +843,11 @@ public class PlayActivity extends BaseActivity {
         stopParse();
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();
-        String subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex+ "-" + vs.name + "-subt";
-        String progressKey = mVodInfo.sourceKey + mVodInfo.id + mVodInfo.playFlag + mVodInfo.playIndex + vs.name;
+
+        String subKey = ApiConfig.getProgressKey(mVodInfo);
+        if(mVodInfo.progressKey!=null)subKey= mVodInfo.progressKey;
+        String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
+        String progressKey = subKey.replace("-","") + vs.name;
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
