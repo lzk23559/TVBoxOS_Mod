@@ -701,7 +701,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
             return "站点推荐";
         } else if (type == 2) {
             return "观看历史";
-        } else {
+        } else if (type == 3) {
+            return "QQ推荐";
+        }else {
             return "豆瓣热播";
         }
     }

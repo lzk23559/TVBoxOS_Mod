@@ -282,6 +282,9 @@ public class ApiConfig {
             callback.error("-1");
             return;
         }
+        if (apiUrl.contains("q2.json")) {
+            Hawk.put(HawkConfig.HOME_REC, 3);
+        }
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));
         if (useCache && cache.exists()) {
             try {
