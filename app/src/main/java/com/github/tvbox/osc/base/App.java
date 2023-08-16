@@ -75,6 +75,9 @@ public class App extends MultiDexApplication {
         if (!Hawk.contains(HawkConfig.TIME_FLAG)) {
             Hawk.put(HawkConfig.TIME_FLAG,true);
         }
+        if (!Hawk.contains(HawkConfig.PLAY_RENDER)) {
+            Hawk.put(HawkConfig.PLAY_RENDER,1);
+        }
     }
 
     public static App getInstance() {
