@@ -64,7 +64,7 @@ public class ApiConfig {
     public String wallpaper = "";
     public static String pushKey = "push_agent";
     public static boolean delsp = false;
-    public static String _api = "http://test.xinjun58.com/qq/api/q2.json";
+    public static String _api = "http://test.xinjun58.com/qq/api/q631.json";
 
     private SourceBean emptyHome = new SourceBean();
 
@@ -282,7 +282,7 @@ public class ApiConfig {
             callback.error("-1");
             return;
         }
-        if (apiUrl.contains("q2.json")) {
+        if (apiUrl.contains("xinjun58")) {
             Hawk.put(HawkConfig.HOME_REC, 3);
         }
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));
