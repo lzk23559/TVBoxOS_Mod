@@ -438,32 +438,29 @@ public class SourceViewModel extends ViewModel {
                 public void run() {
                     try {
                         String rid = id,sid="";
-                        String isname = Hawk.get(HawkConfig.MY_NAME,"yes");
-                        if (!isname.isEmpty()) {
-                            if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
-                                String[] idInfo = id.split("\\$\\$\\$");
-                                if (idInfo.length == 1) {
-                                    rid = rid + "$$$$$$" + wdName;
-                                }else if(idInfo.length>2) {
-                                    idInfo[2] = wdName;
-                                    rid = TextUtils.join("$$$", idInfo);
+                        if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
+                            String[] idInfo = id.split("\\$\\$\\$");
+                            if (idInfo.length == 1) {
+                                rid = rid + "$$$$$$" + wdName;
+                            }else if(idInfo.length>2) {
+                                idInfo[2] = wdName;
+                                rid = TextUtils.join("$$$", idInfo);
+                            }
+                            idInfo = rid.split("\\$\\$\\$");
+                            if (idInfo.length >2) {
+                                String vd = Hawk.get(HawkConfig.MY_VIDEO_DETAIL,"yes");
+                                int index = 1;//开启视频详情
+                                if (vd.isEmpty()) {
+                                    index = 0;
+                                }else {
+                                    Movie.Video mvo=(Movie.Video)CacheManager.getCache(wdName);
+                                    if(mvo!=null)index = 0;
                                 }
-                                idInfo = rid.split("\\$\\$\\$");
-                                if (idInfo.length >2) {
-                                    String vd = Hawk.get(HawkConfig.MY_VIDEO_DETAIL,"yes");
-                                    int index = 1;//开启视频详情
-                                    if (vd.isEmpty()) {
-                                        index = 0;
-                                    }else {
-                                        Movie.Video mvo=(Movie.Video)CacheManager.getCache(wdName);
-                                        if(mvo!=null)index = 0;
-                                    }
-                                    if (idInfo.length == 3) {
-                                        rid = rid + "$$$"+index;
-                                    }else {
-                                        idInfo[3] = ""+index;
-                                        rid = TextUtils.join("$$$", idInfo);
-                                    }
+                                if (idInfo.length == 3) {
+                                    rid = rid + "$$$"+index;
+                                }else {
+                                    idInfo[3] = ""+index;
+                                    rid = TextUtils.join("$$$", idInfo);
                                 }
                             }
                         }

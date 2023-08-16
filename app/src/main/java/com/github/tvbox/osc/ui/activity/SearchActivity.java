@@ -224,10 +224,10 @@ public class SearchActivity extends BaseActivity {
                 String isname = Hawk.get(HawkConfig.MY_NAME,"");
                 if (isname.isEmpty()) {
                     Hawk.put(HawkConfig.MY_NAME, "yes");
-                    Toast.makeText(mContext, "开启搜索标题", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "开启搜索标题", Toast.LENGTH_SHORT).show();
                 }else {
                     Hawk.put(HawkConfig.MY_NAME, "");
-                    Toast.makeText(mContext, "关闭搜索标题", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "关闭搜索标题", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }
