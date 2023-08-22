@@ -81,10 +81,12 @@ public class HomeActivity extends BaseActivity {
     private HomePageAdapter pageAdapter;
     private View currentView;
     private List<BaseLazyFragment> fragments = new ArrayList<>();
+    public static List<BaseLazyFragment> fragmentsa = new ArrayList<>();
     private boolean isDownOrUp = false;
     private boolean sortChange = false;
     private int currentSelected = 0;
     private int sortFocused = 0;
+    public static int sortFocuseda = 0;
     public View sortFocusView = null;
     private Handler mHandler = new Handler();
     private long mExitTime = 0;
@@ -161,6 +163,8 @@ public class HomeActivity extends BaseActivity {
 
             public void onItemSelected(TvRecyclerView tvRecyclerView, View view, int position) {
                 if (view != null) {
+                    fragmentsa = fragments;
+                    sortFocuseda = sortFocused;
                     HomeActivity.this.currentView = view;
                     HomeActivity.this.isDownOrUp = false;
                     HomeActivity.this.sortChange = true;
@@ -195,6 +199,12 @@ public class HomeActivity extends BaseActivity {
 
         this.mGridView.setOnInBorderKeyEventListener(new TvRecyclerView.OnInBorderKeyEventListener() {
             public final boolean onInBorderKeyEvent(int direction, View view) {
+                if(direction == View.FOCUS_UP){
+                    BaseLazyFragment baseLazyFragment = fragments.get(sortFocused);
+                    if ((baseLazyFragment instanceof GridFragment) ) {// 弹出筛选
+                        ((GridFragment) baseLazyFragment).forceRefresh();
+                    }
+                }
                 if (direction != View.FOCUS_DOWN) {
                     return false;
                 }

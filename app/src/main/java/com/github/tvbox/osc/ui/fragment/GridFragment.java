@@ -46,7 +46,7 @@ public class GridFragment extends BaseLazyFragment {
     private SourceViewModel sourceViewModel;
     private GridFilterDialog gridFilterDialog;
     private GridAdapter gridAdapter;
-    private int page = 1;
+    public int page = 1;
     private int maxPage = 1;
     private boolean isLoad = false;
     private boolean isTop = true;
@@ -287,7 +287,7 @@ public class GridFragment extends BaseLazyFragment {
         return isLoad || !mGrids.empty(); //如果有缓存页的话也可以认为是加载了数据的
     }
 
-    private void initData() {
+    public void initData() {
         showLoading();
         isLoad = false;
         scrollTop();
@@ -315,15 +315,19 @@ public class GridFragment extends BaseLazyFragment {
         if (!sortData.filters.isEmpty() && gridFilterDialog == null) {
             gridFilterDialog = new GridFilterDialog(mContext);
             gridFilterDialog.setData(sortData);
-            gridFilterDialog.setOnDismiss(new GridFilterDialog.Callback() {
-                @Override
-                public void change() {
-                    page = 1;
-                    initData();
-                }
-            });
+//            gridFilterDialog.setOnDismiss(new GridFilterDialog.Callback() {
+//                @Override
+//                public void change() {
+//                    page = 1;
+//                    initData();
+//                }
+//            });
         }
         if (gridFilterDialog != null)
             gridFilterDialog.show();
+    }
+    public void forceRefresh() {
+        page = 1;
+        initData();
     }
 }
