@@ -99,6 +99,7 @@ public class HistoryActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
+                if (position == -1) return;
                 VodInfo vodInfo = historyAdapter.getData().get(position);
                 if (vodInfo != null) {
                     if (delMode) {

@@ -18,7 +18,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
-
+import android.net.TrafficStats;
 import androidx.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
@@ -34,7 +34,8 @@ import java.util.Locale;
  */
 
 public final class PlayerUtils {
-
+    private static long lastTotalRxBytes;
+    private static long lastTimeStamp;
     private PlayerUtils() {
     }
 
