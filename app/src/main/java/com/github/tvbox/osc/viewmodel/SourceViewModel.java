@@ -38,6 +38,7 @@ import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.player.thirdparty.RemoteTVBox;
 import androidx.annotation.NonNull;
 import java.util.concurrent.CountDownLatch;
+import java.net.URLDecoder;
 /**
  * @author pj567
  * @date :2020/12/18
