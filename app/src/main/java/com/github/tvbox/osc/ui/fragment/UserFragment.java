@@ -83,7 +83,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
             tvHotList1.setVisibility(View.VISIBLE);
             tvHotList2.setVisibility(View.GONE);
             tvHotList1.setHasFixedSize(true);
-            tvHotList1.setLayoutManager(new V7GridLayoutManager(this.mContext, 5));
+            tvHotList1.setLayoutManager(new V7GridLayoutManager(this.mContext, 6));
         }else {
             tvHotList1.setVisibility(View.GONE);
             tvHotList2.setVisibility(View.VISIBLE);
@@ -194,7 +194,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
 
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                itemView.animate().scaleX(1.05f).scaleY(1.05f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+                itemView.animate().scaleX(1.02f).scaleY(1.02f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
             }
 
             @Override
@@ -211,7 +211,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
 
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                itemView.animate().scaleX(1.05f).scaleY(1.05f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+                itemView.animate().scaleX(1.02f).scaleY(1.02f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
             }
 
             @Override
