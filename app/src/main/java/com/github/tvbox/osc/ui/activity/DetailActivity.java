@@ -129,6 +129,7 @@ public class DetailActivity extends BaseActivity {
     private SeriesAdapter seriesAdapter;
     public String vodId;
     public String sourceKey;
+    public String firstsourceKey;
     boolean seriesSelect = false;
     private View seriesFlagFocus = null;
     private boolean isReverse;
@@ -644,7 +645,7 @@ public class DetailActivity extends BaseActivity {
             //setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).url);
             Bundle bundle = new Bundle();
             //保存历史
-            insertVod(sourceKey, vodInfo);
+            insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
             App.getInstance().setVodInfo(vodInfo);
@@ -783,6 +784,11 @@ public class DetailActivity extends BaseActivity {
                 try {
                     if (absXml != null && absXml.movie != null && absXml.movie.videoList != null && absXml.movie.videoList.size() > 0) {
                         showSuccess();
+                        if(!TextUtils.isEmpty(absXml.msg) && !absXml.msg.equals("数据列表")){
+                            Toast.makeText(DetailActivity.this, absXml.msg, Toast.LENGTH_SHORT).show();
+                            showEmpty();
+                            return;
+                        }
                         mVideo = absXml.movie.videoList.get(0);
                         if(mVideo!=null&&mVideo.tag!=null&&!mVideo.tag.isEmpty()){
                             String[] tagArr = mVideo.tag.split(";");
@@ -829,9 +835,9 @@ public class DetailActivity extends BaseActivity {
                         spflag = mVideo.director==null||mVideo.director.isEmpty();
                         vodInfo = new VodInfo();
                         vodInfo.setVideo(mVideo);
-                        vodInfo.sourceKey = sourceKey;
+                        vodInfo.sourceKey = firstsourceKey;
                         tvName.setText(mVideo.name);
-                        cuHome = ApiConfig.get().getSource(sourceKey);
+                        cuHome = ApiConfig.get().getSource(firstsourceKey);
                         if (!tagInfo.isEmpty()&&tagInfo.contains("分")) {
                             String score = null, jsnum = null;
                             String [] tagArr = tagInfo.split("评分：");
@@ -850,7 +856,11 @@ public class DetailActivity extends BaseActivity {
                         }
                         setTextShow(tvSite, "来源：", cuHome.getName());
                         setTextShow(tvYear, "上映：", mVideo.year);
-                        setTextShow(tvType, "类型：", mVideo.type);
+                        if (!firstsourceKey.equals(sourceKey)) {
+                            setTextShow(tvType, "类型：", "[" + ApiConfig.get().getSource(sourceKey).getName() + "] 解析");
+                        } else {
+                            setTextShow(tvType, "类型：", mVideo.type);
+                        }
                         setTextShow(tvTag, "标签：", tagInfo);
                         setTextShow(tvActor, "演员：", mVideo.actor);
                         setTextShow(tvDirector, "导演：", mVideo.director);
@@ -1018,6 +1028,7 @@ public class DetailActivity extends BaseActivity {
         if (vid != null) {
             vodId = vid;
             sourceKey = key;
+            firstsourceKey = key;
             showLoading();
             sourceViewModel.getDetail(sourceKey, vodId,wdName);
             boolean isVodCollect = RoomDataManger.isVodCollect(sourceKey, vodId);
@@ -1044,11 +1055,11 @@ public class DetailActivity extends BaseActivity {
                     mGridView.setSelection(index);
                     vodInfo.playIndex = index;
                     //保存历史
-                    insertVod(sourceKey, vodInfo);
+                    insertVod(firstsourceKey, vodInfo);
                 } else if (event.obj instanceof JSONObject) {
                     vodInfo.playerCfg = ((JSONObject) event.obj).toString();
                     //保存历史
-                    insertVod(sourceKey, vodInfo);
+                    insertVod(firstsourceKey, vodInfo);
                 }
 
             }
