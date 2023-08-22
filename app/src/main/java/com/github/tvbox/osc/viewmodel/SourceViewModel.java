@@ -476,7 +476,7 @@ public class SourceViewModel extends ViewModel {
     }
 
     // detailContent
-    public void getDetail(String sourceKey, String urlid,String wdName) {
+    public void getDetail(String sskey, String urlid,String wdName) {
         if (urlid.startsWith("push://") && ApiConfig.get().getSource("push_agent") != null) {
             String pushUrl = urlid.substring(7);
             if (pushUrl.startsWith("b64:")) {
@@ -488,9 +488,10 @@ public class SourceViewModel extends ViewModel {
             } else {
                 pushUrl = URLDecoder.decode(pushUrl);
             }
-            sourceKey = "push_agent";
+            sskey = "push_agent";
             urlid = pushUrl;
         }
+        String sourceKey = sskey;
         String id = urlid;
         SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
         int type = sourceBean.getType();
@@ -499,8 +500,8 @@ public class SourceViewModel extends ViewModel {
                 @Override
                 public void run() {
                     try {
-                        String rid = id, sid = "", sskey = sourceKey;
-                        if((sskey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
+                        String rid = id, sid = "";
+                        if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
                             String[] idInfo = id.split("\\$\\$\\$");
                             if (idInfo.length == 1) {
                                 rid = rid + "$$$$$$" + wdName;
