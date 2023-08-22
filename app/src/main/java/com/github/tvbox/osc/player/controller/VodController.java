@@ -364,6 +364,7 @@ public class VodController extends BaseController {
                     listener.updatePlayerCfg();
                     speed_old = speed;
                     mControlWrapper.setSpeed(speed);
+                    hideBottom();
                 } catch (Exception e) {
                     DetailActivity.alert("错误信息VodmNextBtn:"+e.getMessage());
                 }
@@ -379,6 +380,7 @@ public class VodController extends BaseController {
                 String tip = "关闭";
                 if(timeFlag) tip = "开启";
                 DetailActivity.alert("播放进度已"+tip);
+                hideBottom();
                 return true;
             }
         });
