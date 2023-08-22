@@ -27,6 +27,9 @@ import xyz.doikki.videoplayer.render.TextureRenderViewFactory;
 
 public class PlayerHelper {
     public static void updateCfg(VideoView videoView, JSONObject playerCfg) {
+        updateCfg(videoView,playerCfg,-1);
+    }
+    public static void updateCfg(VideoView videoView, JSONObject playerCfg,int forcePlayerType) {
         int playerType = Hawk.get(HawkConfig.PLAY_TYPE, 0);
         int renderType = Hawk.get(HawkConfig.PLAY_RENDER, 1);
         String ijkCode = Hawk.get(HawkConfig.IJK_CODEC, "硬解码");
@@ -39,6 +42,7 @@ public class PlayerHelper {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        if(forcePlayerType>=0)playerType = forcePlayerType;
         IJKCode codec = ApiConfig.get().getIJKCodec(ijkCode);
         PlayerFactory playerFactory;
         if (playerType == 1) {

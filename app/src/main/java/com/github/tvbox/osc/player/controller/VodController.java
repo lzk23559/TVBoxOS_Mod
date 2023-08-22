@@ -307,7 +307,19 @@ public class VodController extends BaseController {
         mNextBtn.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                bfq();
+                //bfq();
+                try {
+                    float speed = (float) mPlayerConfig.getDouble("sp");
+                    if (speed != 1.5f)  speed = 1.5f;
+                    else speed = 1.0f;
+                    mPlayerConfig.put("sp", speed);
+                    updatePlayerCfgView();
+                    listener.updatePlayerCfg();
+                    speed_old = speed;
+                    mControlWrapper.setSpeed(speed);
+                } catch (Exception e) {
+                    DetailActivity.alert("错误信息VodmNextBtn:"+e.getMessage());
+                }
                 return true;
             }
         });

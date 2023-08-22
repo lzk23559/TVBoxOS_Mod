@@ -798,6 +798,7 @@ public class DetailActivity extends BaseActivity {
                                 }
                             }
                         }
+                        if (TextUtils.isEmpty(mVideo.name))mVideo.name = "片名";
                         Movie.Video mvo=(Movie.Video)CacheManager.getCache(mVideo.name);
                         boolean spflag = mVideo.director==null||mVideo.director.isEmpty();
                         if (mvo != null&&spflag) {

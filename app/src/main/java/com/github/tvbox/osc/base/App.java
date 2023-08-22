@@ -33,7 +33,7 @@ public class App extends MultiDexApplication {
 
     private static P2PClass p;
     public static String burl;
-
+    private static String dashData;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,7 +63,7 @@ public class App extends MultiDexApplication {
         // Hawk
         Hawk.init(this).build();
         Hawk.put(HawkConfig.DEBUG_OPEN, false);
-        if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {
+        if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {//播放器
             Hawk.put(HawkConfig.PLAY_TYPE, 1);
         }
         if (!Hawk.contains(HawkConfig.IJK_CODEC)) {
@@ -113,5 +113,12 @@ public class App extends MultiDexApplication {
 
     public Activity getCurrentActivity() {
         return AppManager.getInstance().currentActivity();
+    }
+
+    public void setDashData(String data) {
+        dashData = data;
+    }
+    public String getDashData() {
+        return dashData;
     }
 }

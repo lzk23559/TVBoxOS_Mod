@@ -228,13 +228,18 @@ public class GridFragment extends BaseLazyFragment {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
-                Movie.Video video = gridAdapter.getData().get(position);
-                if (video != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", video.id);
-                    bundle.putString("sourceKey", video.sourceKey);
-                    bundle.putString("title", video.name);
-                    jumpActivity(FastSearchActivity.class, bundle);
+                Movie.Video vod = gridAdapter.getData().get(position);
+                if (vod != null) {//视频列表
+                    if(ApiConfig.delsp&&vod.sourceKey.contains("push_agentqq")){
+                        String id = vod.id.split("\\$\\$\\$")[0];
+                        String kv = vod.name + " " + id;
+                        DetailActivity.updateData(kv);
+                    }else {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", vod.name);
+                        bundle.putString("pic", vod.pic);
+                        jumpActivity(FastSearchActivity.class, bundle);
+                    }
                 }
                 return true;
             }

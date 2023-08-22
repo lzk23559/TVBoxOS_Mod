@@ -181,7 +181,13 @@ public class SearchActivity extends BaseActivity {
         wordAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                search(wordAdapter.getItem(position));
+                if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", wordAdapter.getItem(position));
+                    jumpActivity(FastSearchActivity.class, bundle);
+                }else {
+                    search(wordAdapter.getItem(position));
+                }
             }
         });
         mGridView.setHasFixedSize(true);
@@ -244,8 +250,13 @@ public class SearchActivity extends BaseActivity {
                         String s = wd.replace("pwd", "");
                         Hawk.put(HawkConfig.MY_PWD, s);
                         Toast.makeText(mContext, "密码设置为："+s, Toast.LENGTH_SHORT).show();
-                    }else
-                    search(wd);
+                    }else if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", wd);
+                        jumpActivity(FastSearchActivity.class, bundle);
+                    }else {
+                        search(wd);
+                    }
                 } else {
                     Toast.makeText(mContext, "输入内容不能为空", Toast.LENGTH_SHORT).show();
                 }
@@ -408,7 +419,13 @@ public class SearchActivity extends BaseActivity {
             wdPic = bundle.getString("pic", "");
             etSearch.setText(title);
             showLoading();
-            search(title);
+            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                Bundle bundle = new Bundle();
+                bundle.putString("title", title);
+                jumpActivity(FastSearchActivity.class, bundle);
+            }else {
+                search(title);
+            }
         }
         // 加载热词
         OkGo.<String>get("https://node.video.qq.com/x/api/hot_search")
@@ -452,7 +469,13 @@ public class SearchActivity extends BaseActivity {
         if (event.type == ServerEvent.SERVER_SEARCH) {
             String title = (String) event.obj;
             showLoading();
-            search(title);
+            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                Bundle bundle = new Bundle();
+                bundle.putString("title", title);
+                jumpActivity(FastSearchActivity.class, bundle);
+            }else{
+                search(title);
+            }
         }
     }
 
