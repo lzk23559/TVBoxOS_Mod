@@ -1,5 +1,5 @@
 package com.github.tvbox.osc.player.controller;
-
+import android.app.Activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import com.github.tvbox.osc.ui.activity.DetailActivity;
@@ -72,6 +72,7 @@ public class VodController extends BaseController {
                         mBottomRoot.setVisibility(GONE);
                         mTopRoot1.setVisibility(GONE);
                         mTopRoot2.setVisibility(VISIBLE);
+                        backBtn.setVisibility(INVISIBLE);
                         break;
                     }
                     case 1004: { // 设置速度
@@ -129,6 +130,8 @@ public class VodController extends BaseController {
     TextView mZimuBtn;
     TextView mAudioTrackBtn;
     public TextView mLandscapePortraitBtn;
+    private View backBtn;//返回键
+    private boolean isClickBackBtn;
     LockRunnable lockRunnable = new LockRunnable();
     private boolean isLock = false;
     Handler myHandle;
@@ -227,6 +230,16 @@ public class VodController extends BaseController {
         mZimuBtn = findViewById(R.id.zimu_select);
         mAudioTrackBtn = findViewById(R.id.audio_track_select);
         mLandscapePortraitBtn = findViewById(R.id.landscape_portrait);
+        backBtn = findViewById(R.id.tv_back);
+        backBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getContext() instanceof Activity) {
+                    isClickBackBtn = true;
+                    ((Activity) getContext()).onBackPressed();
+                }
+            }
+        });
         mLockView = findViewById(R.id.tv_lock);
         mLockView.setOnClickListener(new OnClickListener() {
             @Override
@@ -1170,6 +1183,13 @@ public class VodController extends BaseController {
     }
     @Override
     public boolean onBackPressed() {
+        if (isClickBackBtn) {
+            isClickBackBtn = false;
+            if (isBottomVisible()) {
+                hideBottom();
+            }
+            return false;
+        }
         if (super.onBackPressed()) {
             return true;
         }
