@@ -499,8 +499,8 @@ public class SourceViewModel extends ViewModel {
                 @Override
                 public void run() {
                     try {
-                        String rid = id,sid="";
-                        if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
+                        String rid = id, sid = "", sskey = sourceKey;
+                        if((sskey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
                             String[] idInfo = id.split("\\$\\$\\$");
                             if (idInfo.length == 1) {
                                 rid = rid + "$$$$$$" + wdName;
