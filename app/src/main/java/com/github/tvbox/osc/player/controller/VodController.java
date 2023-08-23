@@ -141,7 +141,6 @@ public class VodController extends BaseController {
     private boolean timeFlag;
     private boolean fromLongPress;
     private float speed_old = 1.0f;
-    private Integer rightState=0;
     private String jsnum;
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
