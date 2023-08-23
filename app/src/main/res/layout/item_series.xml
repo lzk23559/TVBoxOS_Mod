@@ -4,17 +4,17 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_margin="@dimen/vs_5"
-    android:background="@drawable/shape_source_series_focus"
+    android:background="@drawable/button_detail_play"
     android:focusable="true">
 
     <TextView
         android:id="@+id/tvSeries"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/vs_50"
+        android:layout_height="@dimen/vs_40"
         android:ellipsize="marquee"
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
-        android:padding="@dimen/vs_10"
+        android:padding="@dimen/vs_5"
         android:singleLine="true"
         android:textColor="@android:color/white"
         android:textSize="@dimen/ts_20" />

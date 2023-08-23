@@ -31,7 +31,7 @@ public class GridFilterDialog extends BaseDialog {
 
     public GridFilterDialog(@NonNull @NotNull Context context) {
         super(context);
-        setCanceledOnTouchOutside(true);
+        setCanceledOnTouchOutside(false);
         setCancelable(true);
         setContentView(R.layout.dialog_grid_filter);
         filterRoot = findViewById(R.id.filterRoot);
@@ -89,10 +89,6 @@ public class GridFilterDialog extends BaseDialog {
                         val.getPaint().setFakeBoldText(false);
                         val.setTextColor(getContext().getResources().getColor(R.color.color_FFFFFF));
                         pre = null;
-                    }
-                    BaseLazyFragment baseLazyFragment = HomeActivity.fragmentsa.get(HomeActivity.sortFocuseda);
-                    if ((baseLazyFragment instanceof GridFragment) ) {
-                        ((GridFragment) baseLazyFragment).forceRefresh();
                     }
                 }
             });

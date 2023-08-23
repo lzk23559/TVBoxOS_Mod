@@ -21,7 +21,7 @@
         android:singleLine="true"
         android:text="11111111111"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/ts_20" />
+        android:textSize="@dimen/ts_24" />
 
     <View
         android:id="@+id/tvSeriesFlagSelect"

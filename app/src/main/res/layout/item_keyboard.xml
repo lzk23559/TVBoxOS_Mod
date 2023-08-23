@@ -4,7 +4,7 @@
     android:layout_height="@dimen/vs_50"
     android:layout_gravity="center"
     android:layout_margin="@dimen/vs_4"
-    android:background="@drawable/shape_user_focus"
+    android:background="@drawable/button_detail_play"
     android:focusable="true">
 
     <TextView

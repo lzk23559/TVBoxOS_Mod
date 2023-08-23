@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/vs_5"
-    android:background="@drawable/button_dialog_main"
+    android:background="@drawable/shape_source_flag_focus"
     android:ellipsize="end"
     android:focusable="true"
     android:gravity="center_vertical"

@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true">
+    <item android:state_focused="true" android:state_pressed="true">
         <shape>
-            <corners android:radius="@dimen/vs_5" />
-            <solid android:color="@color/color_6632364E" />
-            <stroke android:width="@dimen/vs_2" android:color="@android:color/white" />
+            <corners android:radius="2mm" />
+            <solid android:color="@color/color_3D3D3D" />
         </shape>
     </item>
-    <item android:state_focused="false">
+    <item android:state_focused="false" android:state_pressed="true">
         <shape>
-            <corners android:radius="@dimen/vs_5" />
-            <solid android:color="@color/color_6632364E" />
+            <gradient
+                android:startColor="@color/color_theme_80"
+                android:endColor="@color/color_theme_20"
+                android:type="radial"
+                android:gradientRadius="50" />
+            <corners android:radius="5.0mm" />
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape>
+            <corners android:radius="@dimen/vs_2" />
+            <stroke android:width="1.5mm" android:color="@color/color_theme_h" />
+            <gradient
+                android:angle="135.0"
+                android:centerColor="@color/color_theme_80"
+                android:endColor="@color/color_theme_40"
+                android:startColor="@color/color_theme_40" />
+        </shape>
+    </item>
+    <item android:state_focused="false" android:state_pressed="false">
+        <shape>
+            <corners android:radius="@dimen/vs_2" />
+            <stroke android:width="1.0mm" android:color="@color/color_33FFFFFF" />
+            <solid android:color="@color/color_theme_30" />
         </shape>
     </item>
 </selector>

@@ -102,6 +102,7 @@ public class DetailActivity extends BaseActivity {
     private ImageView ivThumb;
     private TextView tvName;
     private TextView tvYear;
+    private TextView tvNote;
     private TextView tvSite;
     private TextView tvArea;
     private TextView tvLang;
@@ -161,6 +162,7 @@ public class DetailActivity extends BaseActivity {
         ivThumb.setVisibility(!showPreview ? View.VISIBLE : View.GONE);
         tvName = findViewById(R.id.tvName);
         tvYear = findViewById(R.id.tvYear);
+        tvNote = findViewById(R.id.tvNote);
         tvSite = findViewById(R.id.tvSite);
         tvArea = findViewById(R.id.tvArea);
         tvLang = findViewById(R.id.tvLang);
@@ -529,7 +531,7 @@ public class DetailActivity extends BaseActivity {
         int screenWidth = getWindowManager().getDefaultDisplay().getWidth()/3;
         int offset = screenWidth/w;
         if(offset <=2) offset =2;
-        if(offset > 6) offset =6;
+        if(offset > 6) offset =10;
         mGridViewLayoutMgr.setSpanCount(offset);
         seriesAdapter.setNewData(vodInfo.seriesMap.get(vodInfo.playFlag));
 
@@ -613,16 +615,16 @@ public class DetailActivity extends BaseActivity {
                     vodInfo.setVideo(mVideo);
                     vodInfo.sourceKey = mVideo.sourceKey;
                     sourceKey = mVideo.sourceKey;
-
+                    tvNote.setText(mVideo.note);
                     tvName.setText(mVideo.name);
                     setTextShow(tvSite, "来源：", ApiConfig.get().getSource(firstsourceKey).getName());
-                    setTextShow(tvYear, "年份：", mVideo.year == 0 ? "" : String.valueOf(mVideo.year));
-                    setTextShow(tvArea, "地区：", mVideo.area);
-                    setTextShow(tvLang, "语言：", mVideo.lang);
+                    setTextShow(tvYear, "", mVideo.year == 0 ? "" : String.valueOf(mVideo.year));
+                    setTextShow(tvArea, "•", mVideo.area);
+                   // setTextShow(tvLang, "语言：", mVideo.lang);
                     if (!firstsourceKey.equals(sourceKey)) {
-                    	setTextShow(tvType, "类型：", "[" + ApiConfig.get().getSource(sourceKey).getName() + "] 解析");
+                    	setTextShow(tvType, "类型", "[" + ApiConfig.get().getSource(sourceKey).getName() + "] 解析");
                     } else {
-                    	setTextShow(tvType, "类型：", mVideo.type);
+                    	setTextShow(tvType, "类型", mVideo.type);
                     }
                     setTextShow(tvActor, "演员：", mVideo.actor);
                     setTextShow(tvDirector, "导演：", mVideo.director);
@@ -710,7 +712,19 @@ public class DetailActivity extends BaseActivity {
         if (content == null) {
             content = "";
         }
-        return label + "<font color=\"#FFFFFF\">" + content + "</font>";
+        if (label == "类型") {
+            content = content.replace(","," • ");
+            content = content.replace("/","•");
+            return " • " + content;
+        }
+        if (label.contains("演员")) {
+            content = content.replace(","," / ");
+            return label + content;
+        }
+        if (label.length() == 1) {
+            return label + " " + content + " ";
+        }
+        return label +  content + " ";
     }
 
     private void initData() {
