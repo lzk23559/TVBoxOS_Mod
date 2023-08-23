@@ -42,7 +42,7 @@ public abstract class BaseController extends BaseVideoController implements Gest
     private boolean mEnableInNormal;
     private boolean mCanSlide;
     private int mCurPlayState;
-    protected Integer rightState=0;
+
     protected Handler mHandler;
 
     protected HandlerCallback mHandlerCallback;
@@ -287,8 +287,6 @@ public abstract class BaseController extends BaseVideoController implements Gest
             mFirstTouch = false;
         }
         if (mChangePosition) {
-            if(deltaX>0)rightState= 1;
-            else rightState=-1;
             slideToChangePosition(deltaX);
         } else if (mChangeBrightness) {
             slideToChangeBrightness(deltaY);
