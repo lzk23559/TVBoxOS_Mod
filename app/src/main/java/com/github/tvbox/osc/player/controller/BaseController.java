@@ -42,7 +42,7 @@ public abstract class BaseController extends BaseVideoController implements Gest
     private boolean mEnableInNormal;
     private boolean mCanSlide;
     private int mCurPlayState;
-    private Integer rightState=0;
+    protected Integer rightState=0;
     protected Handler mHandler;
 
     protected HandlerCallback mHandlerCallback;
