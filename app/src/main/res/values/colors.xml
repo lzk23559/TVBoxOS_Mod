@@ -46,5 +46,6 @@
     <color name="color_theme_20">#3328333C</color>
     <color name="color_32364E_40">#8033455C</color>
     <color name="color_80FFFFFF">#CCFFFFFF</color>
+    <color name="color_000000_90">#E6000000</color>
 
 </resources>

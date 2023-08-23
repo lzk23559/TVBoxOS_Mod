@@ -178,7 +178,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/tvWad"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_deta_bac"
@@ -214,14 +213,6 @@
                             android:textColor="@color/color_80FFFFFF"
                             android:textSize="@dimen/ts_18" />
 
-                        <TextView
-                            android:id="@+id/tvPlayUrl"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:ellipsize="end"
-                            android:singleLine="true"
-                            android:textColor="@color/color_80FFFFFF"
-                            android:textSize="@dimen/ts_18" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -234,7 +225,6 @@
                     android:paddingBottom="@dimen/vs_5"
                     android:paddingRight="@dimen/vs_10"
                     android:paddingLeft="@dimen/vs_10"
-                    android:focusable="true"
                     android:background="@drawable/button_deta_bac"
                     android:lineSpacingMultiplier="1.3"
                     android:maxLines="4"
@@ -253,7 +243,7 @@
 
                     <TextView
                         android:id="@+id/tvPlay"
-                        android:layout_width="@dimen/vs_120"
+                        android:layout_width="@dimen/vs_110"
                         android:layout_height="@dimen/vs_40"
                         android:layout_marginEnd="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
@@ -266,7 +256,7 @@
 
                     <TextView
                         android:id="@+id/tvQuickSearch"
-                        android:layout_width="@dimen/vs_120"
+                        android:layout_width="@dimen/vs_110"
                         android:layout_height="@dimen/vs_40"
                         android:layout_marginEnd="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
@@ -279,7 +269,7 @@
 
                     <TextView
                         android:id="@+id/tvSort"
-                        android:layout_width="@dimen/vs_120"
+                        android:layout_width="@dimen/vs_110"
                         android:layout_height="@dimen/vs_40"
                         android:layout_marginEnd="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
@@ -292,12 +282,24 @@
 
                     <TextView
                         android:id="@+id/tvCollect"
-                        android:layout_width="@dimen/vs_120"
+                        android:layout_width="@dimen/vs_110"
                         android:layout_height="@dimen/vs_40"
+                        android:layout_marginEnd="@dimen/vs_10"
+                        android:layout_marginRight="@dimen/vs_10"
                         android:background="@drawable/button_detail_play"
                         android:focusable="true"
                         android:gravity="center"
                         android:text="加入收藏"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/vs_20" />
+                    <TextView
+                        android:id="@+id/tvPlayUrl"
+                        android:layout_width="@dimen/vs_110"
+                        android:layout_height="@dimen/vs_40"
+                        android:background="@drawable/button_detail_play"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="复制网址"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/vs_20" />
                 </LinearLayout>

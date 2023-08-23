@@ -1,6 +1,7 @@
 package com.github.tvbox.osc.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -76,6 +77,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -211,9 +213,6 @@ public class DetailActivity extends BaseActivity {
         };
         mSeriesGroupView.setAdapter(seriesGroupAdapter);
 
-        //禁用播放地址焦点
-        tvPlayUrl.setFocusable(false);
-
         llPlayerFragmentContainerBlock.setOnClickListener((view -> toggleFullPreview()));
 
         tvSort.setOnClickListener(new View.OnClickListener() {
@@ -297,11 +296,11 @@ public class DetailActivity extends BaseActivity {
         tvPlayUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //获取剪切板管理器
-                ClipboardManager cm = (ClipboardManager)getSystemService(mContext.CLIPBOARD_SERVICE);
-                //设置内容到剪切板
-                cm.setPrimaryClip(ClipData.newPlainText(null, tvPlayUrl.getText().toString().replace("播放地址：","")));
-                Toast.makeText(DetailActivity.this, "已复制", Toast.LENGTH_SHORT).show();
+                ClipboardManager clipboard = (ClipboardManager) DetailActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                String cpContent = Objects.requireNonNull(vodInfo.seriesMap.get(vodInfo.playFlag)).get(vodInfo.playIndex).url;
+                ClipData clipData = ClipData.newPlainText(null, cpContent);
+                clipboard.setPrimaryClip(clipData);
+                Toast.makeText(DetailActivity.this, "已复制" + cpContent, Toast.LENGTH_SHORT).show();
             }
         });
         mGridView.setOnItemListener(new TvRecyclerView.OnItemListener() {
@@ -458,8 +457,6 @@ public class DetailActivity extends BaseActivity {
     private void jumpToPlay() {
         if (vodInfo != null && vodInfo.seriesMap.get(vodInfo.playFlag).size() > 0) {
             preFlag = vodInfo.playFlag;
-            //更新播放地址
-            setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).url);
             Bundle bundle = new Bundle();
             //保存历史
             insertVod(firstsourceKey, vodInfo);
@@ -679,8 +676,6 @@ public class DetailActivity extends BaseActivity {
                             } else
                                 flag.selected = false;
                         }
-                        //设置播放地址
-                        setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(0).url);
                         seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
                         mGridViewFlag.scrollToPosition(flagScrollTo);
 
