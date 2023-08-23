@@ -141,6 +141,7 @@ public class VodController extends BaseController {
     private boolean timeFlag;
     private boolean fromLongPress;
     private float speed_old = 1.0f;
+    private Integer rightState=0;
     private String jsnum;
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
@@ -531,7 +532,6 @@ public class VodController extends BaseController {
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
                     listener.replay(false);
-                    hideBottom();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -570,7 +570,6 @@ public class VodController extends BaseController {
                                     updatePlayerCfgView();
                                     listener.updatePlayerCfg();
                                     listener.replay(false);
-                                    hideBottom();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -624,7 +623,6 @@ public class VodController extends BaseController {
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
                     listener.replay(false);
-                    hideBottom();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -934,6 +932,7 @@ public class VodController extends BaseController {
     }
 
     public void tvSlideStart(int dir) {
+        rightState = dir;
         int duration = (int) mControlWrapper.getDuration();
         if (duration <= 0)
             return;
@@ -1039,10 +1038,6 @@ public class VodController extends BaseController {
                 if (isInPlayback) {
                     tvSlideStart(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ? 1 : -1);
                     return true;
-                }else {
-                    if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
-                        listener.replay(false);
-                    }
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
                 if (isInPlayback) {
@@ -1053,6 +1048,9 @@ public class VodController extends BaseController {
                 if (!isBottomVisible()) {
                     showBottom();
                     myHandle.postDelayed(myRunnable, myHandleSeconds);
+                    return true;
+                }else if (keyCode == KeyEvent.KEYCODE_MENU){
+                    listener.replay(false);
                     return true;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -1121,9 +1119,9 @@ public class VodController extends BaseController {
             try {
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
                 int current = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f&&current==0) {
+                if (speed2 == 1.0f && current == 0 && rightState == 1) {
                     sdrest();
-                }else{
+                } else {
                     fromLongPress = true;
                     if (speed2 != 3.0f) {
                         speed_old = speed2;
