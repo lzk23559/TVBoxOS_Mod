@@ -1123,27 +1123,31 @@ public class VodController extends BaseController {
     }
 
     public void restart(){
-        if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
-            listener.replay(false);
-        }else {
-            float speed2 = (float) mPlayerConfig.getDouble("sp");
-            int currentst = mPlayerConfig.getInt("st");
-            if (speed2 == 1.0f && currentst == 0) {
-                sdrest();
+        try {
+            if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
+                listener.replay(false);
             }else {
-                int current = (int) mControlWrapper.getCurrentPosition()/1000;
-                if(current<360){
-                    mPlayerConfig.put("st", current);
+                float speed2 = (float) mPlayerConfig.getDouble("sp");
+                int currentst = mPlayerConfig.getInt("st");
+                if (speed2 == 1.0f && currentst == 0) {
+                    sdrest();
                 }else {
-                    int duration = (int) mControlWrapper.getDuration()/1000;
-                    if((duration - current)<360) mPlayerConfig.put("et", current);
-                    myHandle.removeCallbacks(myRunnable);
-                    myHandle.postDelayed(myRunnable, myHandleSeconds);
-                    updatePlayerCfgView();
-                    listener.replay(false);
-                    listener.updatePlayerCfg();
+                    int current = (int) mControlWrapper.getCurrentPosition()/1000;
+                    if(current<360){
+                        mPlayerConfig.put("st", current);
+                    }else {
+                        int duration = (int) mControlWrapper.getDuration()/1000;
+                        if((duration - current)<360) mPlayerConfig.put("et", current);
+                        myHandle.removeCallbacks(myRunnable);
+                        myHandle.postDelayed(myRunnable, myHandleSeconds);
+                        updatePlayerCfgView();
+                        listener.replay(false);
+                        listener.updatePlayerCfg();
+                    }
                 }
             }
+        } catch (Exception e) {
+            DetailActivity.alert("错误信息Vodrestart:"+e.getMessage());
         }
     }
 
