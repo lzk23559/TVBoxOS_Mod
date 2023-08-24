@@ -690,7 +690,7 @@ public class VodController extends BaseController {
                 return true;
             }
         });
-        mPlayerTimeSkipBtn.setOnClickListener(new OnClickListener() {
+        mPlayerTimeSkipBtn.setOnClickListener(new OnClickListener() {//片尾
             @Override
             public void onClick(View view) {
                 myHandle.removeCallbacks(myRunnable);
@@ -1135,9 +1135,12 @@ public class VodController extends BaseController {
                     int current = (int) mControlWrapper.getCurrentPosition()/1000;
                     if(current<360){
                         mPlayerConfig.put("st", current);
+                        updatePlayerCfgView();
+                        listener.updatePlayerCfg();
                     }else {
                         int duration = (int) mControlWrapper.getDuration()/1000;
-                        if((duration - current)<360) mPlayerConfig.put("et", current);
+                        int cd = duration - current;
+                        if((cd<360) mPlayerConfig.put("et", cd);
                         myHandle.removeCallbacks(myRunnable);
                         myHandle.postDelayed(myRunnable, myHandleSeconds);
                         updatePlayerCfgView();
