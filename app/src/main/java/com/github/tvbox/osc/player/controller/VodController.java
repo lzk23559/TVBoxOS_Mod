@@ -1137,16 +1137,15 @@ public class VodController extends BaseController {
                         mPlayerConfig.put("st", current);
                         updatePlayerCfgView();
                         listener.updatePlayerCfg();
+                        return;
                     }else {
                         int duration = (int) mControlWrapper.getDuration()/1000;
                         int cd = duration - current;
                         if(cd<360) mPlayerConfig.put("et", cd);
-                        myHandle.removeCallbacks(myRunnable);
-                        myHandle.postDelayed(myRunnable, myHandleSeconds);
-                        updatePlayerCfgView();
-                        listener.replay(false);
-                        listener.updatePlayerCfg();
                     }
+                    updatePlayerCfgView();
+                    listener.updatePlayerCfg();
+                    listener.replay(false);
                 }
             }
         } catch (Exception e) {

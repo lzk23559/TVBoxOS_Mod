@@ -597,7 +597,7 @@
             android:layout_gravity="left|center"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginRight="@dimen/vs_20"
+            android:layout_marginLeft="@dimen/vs_20"
             android:paddingHorizontal="@dimen/vs_20"
             android:src="@drawable/icon_back"
             android:visibility="invisible" />
@@ -610,7 +610,7 @@
             android:layout_gravity="right|center"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginLeft="@dimen/vs_20"
+            android:layout_marginRight="@dimen/vs_20"
             android:paddingHorizontal="@dimen/vs_20"
             android:src="@drawable/icon_unlock"
             android:visibility="invisible" />
