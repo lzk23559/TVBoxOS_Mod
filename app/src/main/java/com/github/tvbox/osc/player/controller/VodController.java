@@ -1140,7 +1140,7 @@ public class VodController extends BaseController {
                     }else {
                         int duration = (int) mControlWrapper.getDuration()/1000;
                         int cd = duration - current;
-                        if((cd<360) mPlayerConfig.put("et", cd);
+                        if(cd<360) mPlayerConfig.put("et", cd);
                         myHandle.removeCallbacks(myRunnable);
                         myHandle.postDelayed(myRunnable, myHandleSeconds);
                         updatePlayerCfgView();
