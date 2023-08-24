@@ -244,7 +244,7 @@ public class VodController extends BaseController {
         backBtn.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                sdrest();
+                restart();
                 return true;
             }
         });
@@ -1052,12 +1052,13 @@ public class VodController extends BaseController {
                     return true;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode== KeyEvent.KEYCODE_MENU) {
+                if (keyCode == KeyEvent.KEYCODE_MENU){
+                    restart();
+                    return true;
+                }
                 if (!isBottomVisible()) {
                     showBottom();
                     myHandle.postDelayed(myRunnable, myHandleSeconds);
-                    return true;
-                }else if (keyCode == KeyEvent.KEYCODE_MENU){
-                    listener.replay(false);
                     return true;
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -1121,13 +1122,39 @@ public class VodController extends BaseController {
         }
     }
 
+    public void restart(){
+        if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
+            listener.replay(false);
+        }else {
+            float speed2 = (float) mPlayerConfig.getDouble("sp");
+            int currentst = mPlayerConfig.getInt("st");
+            if (speed2 == 1.0f && currentst == 0) {
+                sdrest();
+            }else {
+                int current = (int) mControlWrapper.getCurrentPosition()/1000;
+                if(current<360){
+                    mPlayerConfig.put("st", current);
+                }else {
+                    int duration = (int) mControlWrapper.getDuration()/1000;
+                    if((duration - current)<360) mPlayerConfig.put("et", current);
+                    myHandle.removeCallbacks(myRunnable);
+                    myHandle.postDelayed(myRunnable, myHandleSeconds);
+                    updatePlayerCfgView();
+                    listener.replay(false);
+                    listener.updatePlayerCfg();
+                }
+            }
+        }
+    }
+
     public void can(){
         if (videoPlayState!=VideoView.STATE_PAUSED) {
             try {
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
-                int current = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f && current == 0 && rightState == 1) {
+                int currentst = mPlayerConfig.getInt("st");
+                if (speed2 == 1.0f && currentst == 0 && rightState == 1) {
                     sdrest();
+                    rightState = 0;
                 } else {
                     fromLongPress = true;
                     if (speed2 != 3.0f) {
