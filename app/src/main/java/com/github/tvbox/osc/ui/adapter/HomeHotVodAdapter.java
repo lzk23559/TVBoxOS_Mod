@@ -54,6 +54,13 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
             tvNote.setText(item.note);
             tvNote.setVisibility(View.VISIBLE);
         }
+        TextView tvArea = helper.getView(R.id.tvArea);
+        if (TextUtils.isEmpty(item.area)) {
+            tvArea.setVisibility(View.GONE);
+        } else {
+            tvArea.setText(item.area);
+            tvArea.setVisibility(View.VISIBLE);
+        }
         helper.setText(R.id.tvName, item.name);
         ImageView ivThumb = helper.getView(R.id.ivThumb);
         //由于部分电视机使用glide报错

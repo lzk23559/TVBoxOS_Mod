@@ -548,7 +548,7 @@ public class DetailActivity extends BaseActivity {
         int listSize = list.size();
         int offset = mGridViewLayoutMgr.getSpanCount();
         seriesGroupOptions.clear();
-        GroupCount=(offset==3 || offset==6)?30:20;
+        GroupCount=(offset==3 || offset==6)?60:50;
         if(listSize>100 && listSize<=400)GroupCount=60;
         if(listSize>400)GroupCount=120;
         if(listSize > GroupCount) {
