@@ -123,16 +123,8 @@ public class FileUtils {
             return name;
         }
         return name;
-    }
-    
-    public static String getTotalCacheSize(Context context) {
-        long cacheSize = getFolderSize(context.getCacheDir());
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            cacheSize += getFolderSize(context.getExternalCacheDir());
-        }
-        return getFormatSize(cacheSize);
-    }
-    
+    }   
+       
     public static boolean isAsFile(String name, String path) {
         try {
             for (String fname : App.getInstance().getAssets().list(path)) {
