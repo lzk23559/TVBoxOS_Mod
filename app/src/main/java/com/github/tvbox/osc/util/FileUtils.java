@@ -100,7 +100,8 @@ public class FileUtils {
         try {
             JSONObject jSONObject = new JSONObject();
             jSONObject.put("expires", (int) (time + (System.currentTimeMillis() / 1000)));
-            jSONObject.put("data", new String(Base64.decode(data, Base64.URL_SAFE)));
+	    jSONObject.put("data", Base64.encodeToString(data.getBytes(), Base64.URL_SAFE));	
+            //jSONObject.put("data", new String(Base64.decode(data, Base64.URL_SAFE)));
             writeSimple(jSONObject.toString().getBytes(), open(name));
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +120,8 @@ public class FileUtils {
             }
             JsonObject asJsonObject = (new Gson().fromJson(code, JsonObject.class)).getAsJsonObject();
             if (((long) asJsonObject.get("expires").getAsInt()) > System.currentTimeMillis() / 1000) {
-                return Base64.encodeToString(asJsonObject.get("data").getAsString().getBytes(), Base64.URL_SAFE);
+		return new String(Base64.decode(asJsonObject.get("data").getAsString(), Base64.URL_SAFE));    
+                //return Base64.encodeToString(asJsonObject.get("data").getAsString().getBytes(), Base64.URL_SAFE);
             }
             recursiveDelete(open(name));
             return "";
