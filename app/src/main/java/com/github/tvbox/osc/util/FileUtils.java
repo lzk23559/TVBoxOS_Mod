@@ -4,7 +4,8 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.github.tvbox.osc.base.App;
-
+import com.github.tvbox.osc.server.ControlManager;
+import com.github.tvbox.osc.util.urlhttp.OkHttpUtil;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FileUtils {
 	
@@ -141,24 +144,31 @@ public class FileUtils {
         // 返回拼接好的JSON String
         return jsonString;
     }
-
-    public static String getAssetFile(String assetName) throws IOException {
-        InputStream is = App.getInstance().getAssets().open(assetName);
-        byte[] data = new byte[is.available()];
-        is.read(data);
-        return new String(data, "UTF-8");
-    }
-
-    public static boolean isAssetFile(String name, String path) {
+    
+    public static String getAsOpen(String name) {
         try {
-            for(String one : App.getInstance().getAssets().list(path)) {
-                if (one.equals(name)) return true;
+            InputStream is = App.getInstance().getAssets().open(name);
+            byte[] data = new byte[is.available()];
+            is.read(data);
+            return new String(data, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    
+    public static boolean isAsFile(String name, String path) {
+        try {
+            for (String fname : App.getInstance().getAssets().list(path)) {
+                if (fname.equals(name.trim())) {
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
-    }
+    }    
 
     public static String getRootPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -180,9 +190,9 @@ public class FileUtils {
         if (!dir.exists()) return;
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) return;
-        for(File one : files) {
+        for(File fname : files) {
             try {
-                deleteFile(one);
+                deleteFile(fname);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -201,8 +211,8 @@ public class FileUtils {
                 if (file.canWrite()) file.delete();
                 return;
             }
-            for(File one : files) {
-                deleteFile(one);
+            for(File fname : files) {
+                deleteFile(fname);
             }
         }
         return;
