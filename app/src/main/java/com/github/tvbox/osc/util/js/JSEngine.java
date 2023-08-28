@@ -12,6 +12,31 @@ import com.whl.quickjs.wrapper.QuickJSContext;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JSEngine {
+    
+    static String loadModule(String name) {
+        try {
+            String cache = moduleCache.get(name);
+            if (cache != null && !cache.isEmpty())
+                return cache;
+            String content = null;
+            if (name.startsWith("http://") || name.startsWith("https://")) {
+                content = OkGo.<String>get(name).headers("User-Agent", "Mozilla/5.0").execute().body().string();
+            }
+            if (name.startsWith("assets://")) {
+                InputStream is = App.getInstance().getAssets().open(name.substring(9));
+                byte[] data = new byte[is.available()];
+                is.read(data);
+                content = new String(data, "UTF-8");
+            }
+            if (content != null && !content.isEmpty()) {
+                moduleCache.put(name, content);
+                return content;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     private static JSEngine instance = null;
 

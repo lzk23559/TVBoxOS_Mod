@@ -45,7 +45,7 @@ public class SpiderJS extends Spider {
             try {
                 jsThread.postVoid((ctx, globalThis) -> {
                     String moduleKey = "__" + MD5.encode(key) + "__";
-                    String jsContent = loadModule(js);
+                    String jsContent = JSEngine.getInstance().loadModule(js);
 
                     if(jsContent.contains("export default{") || jsContent.contains("export default {")){
                         jsContent = jsContent.replaceAll("export default.*?[{]", "globalThis." + moduleKey+" = {");
