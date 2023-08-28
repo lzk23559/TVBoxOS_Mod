@@ -69,7 +69,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation files('libs/thunder.jar')
-    implementation files('libs/commons-lang3-3.12.0.jar')
+    //implementation files('libs/commons-lang3-3.12.0.jar')
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.11'
     annotationProcessor 'androidx.room:room-compiler:2.3.0'
@@ -88,8 +88,7 @@ dependencies {
     implementation 'com.orhanobut:hawk:2.0.1'
 
     implementation project(":player")
-    implementation project(":quickjs")
-
+    implementation 'wang.harlon.quickjs:wrapper-android:0.20.2'
     implementation('org.xwalk:xwalk_shared_library:23.53.589.4') {
         exclude group: 'com.android.support'
     }
