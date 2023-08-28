@@ -53,7 +53,7 @@ public class JSThread {
 
     public <T> T post(JSEngine.Event<T> event) throws Throwable {
         if ((thread != null && thread.isInterrupted())) {
-            LOG.e("QuickJS", "QuickJS is released");
+           // LOG.e("QuickJS", "QuickJS is released");
             return null;
         }
         if (Thread.currentThread() == thread) {
@@ -81,11 +81,11 @@ public class JSThread {
                     result.wait();
                 }
             } catch (InterruptedException e) {
-                LOG.e(e);
+               // LOG.e(e);
             }
         }
         if (errors[0] != null) {
-            LOG.e(errors[0]);
+           // LOG.e(errors[0]);
             throw errors[0];
         }
         return (T) result[0];
@@ -97,7 +97,7 @@ public class JSThread {
 
     public void postVoid(JSEngine.Event<Void> event, boolean block) {
         if ((thread != null && thread.isInterrupted())) {
-            LOG.e("QuickJS", "QuickJS is released");
+         //   LOG.e("QuickJS", "QuickJS is released");
             return;
         }
         if (Thread.currentThread() == thread) {
@@ -130,11 +130,11 @@ public class JSThread {
                         result.wait();
                     }
                 } catch (InterruptedException e) {
-                    LOG.e(e);
+               //     LOG.e(e);
                 }
             }
             if (errors[0] != null) {
-                LOG.e(errors[0]);
+               // LOG.e(errors[0]);
                 throw errors[0];
             }
         }
@@ -151,7 +151,7 @@ public class JSThread {
                 try {
                     return method.invoke(this, args);
                 } catch (Exception e) {
-                    LOG.e(e);
+                  //  LOG.e(e);
                     throw new RuntimeException(e);
                 }
             });
@@ -169,7 +169,7 @@ public class JSThread {
             getGlobalObj().setProperty("jsapi", getJsContext().createNewJSObject());
             Class<?>[] classes = cls.getDeclaredClasses();
             JSObject apiObj = getGlobalObj().getJSObject("jsapi");
-            LOG.e("cls","" + classes.length);
+          //  LOG.e("cls","" + classes.length);
             for (Class<?> classe : classes) {
                 Object javaObj = null;
                 try {
@@ -196,7 +196,7 @@ public class JSThread {
                     }
                 }
                 apiObj.setProperty(classe.getSimpleName(), claObj);
-                LOG.e("cls", classe.getSimpleName());
+              //  LOG.e("cls", classe.getSimpleName());
             }
         }
     }
@@ -219,7 +219,7 @@ public class JSThread {
         try {
             return HtmlParser.parseDomForUrl(html, rule, "");
         } catch (Exception th) {
-            LOG.e(th);
+          //  LOG.e(th);
             return "";
         }
     }
@@ -230,7 +230,7 @@ public class JSThread {
         try {
             return getJsContext().parse(new Gson().toJson(HtmlParser.parseDomForArray(html, rule)));
         } catch (Exception th) {
-            LOG.e(th);
+         //   LOG.e(th);
             return getJsContext().createNewJSArray();
         }
     }
@@ -241,7 +241,7 @@ public class JSThread {
         try {
             return getJsContext().parse(new Gson().toJson(HtmlParser.parseDomForList(html, p1, list_text, list_url, urlKey)));
         } catch (Exception th) {
-            LOG.e(th);
+          //  LOG.e(th);
             return getJsContext().createNewJSArray();
         }
     }
@@ -252,7 +252,7 @@ public class JSThread {
         try {
             return HtmlParser.parseDomForUrl(html, rule, urlKey);
         } catch (Exception th) {
-            LOG.e(th);
+          //  LOG.e(th);
             return "";
         }
     }
@@ -356,7 +356,7 @@ public class JSThread {
             }
             return jsObject;
         } catch (Throwable throwable) {
-            LOG.e(throwable);
+         //   LOG.e(throwable);
             return "";
         }
     }
@@ -372,7 +372,7 @@ public class JSThread {
                 for (Object o : args) {
                     b.append(o == null ? "null" : o.toString());
                 }
-                LOG.i("QuickJS", b.toString());
+               // LOG.i("QuickJS", b.toString());
                 return null;
             }
         });
@@ -394,7 +394,7 @@ public class JSThread {
             }
             OkGo.getInstance().cancelTag(tag);
         } catch (Exception e) {
-            LOG.e(e);
+         //   LOG.e(e);
         }
     }
 }

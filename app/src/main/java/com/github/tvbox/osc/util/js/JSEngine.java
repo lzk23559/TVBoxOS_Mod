@@ -62,7 +62,7 @@ public class JSEngine {
                 }
                 @Override
                 public String getModuleScript(String moduleName) {
-                    return FileUtils.loadModule(moduleName);
+                    return loadModule(moduleName);
                 }
             });
             JSThread jsThread = new JSThread();
