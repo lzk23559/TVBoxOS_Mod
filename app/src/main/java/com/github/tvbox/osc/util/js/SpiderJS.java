@@ -60,7 +60,7 @@ public class SpiderJS extends Spider {
                     return null;
                 });
             } catch (Throwable throwable) {
-                LOG.e(throwable);
+          //      LOG.e(throwable);
             }
         }
     }
@@ -74,7 +74,7 @@ public class SpiderJS extends Spider {
 
             }
         } catch (Throwable throwable) {
-            LOG.e(throwable);
+      //      LOG.e(throwable);
         }
         return null;
     }
@@ -109,7 +109,7 @@ public class SpiderJS extends Spider {
             });
             return postFunc("category", tid, pg, filter, obj);
         } catch (Throwable throwable) {
-            LOG.e(throwable);
+       //     LOG.e(throwable);
             return "";
         }
     }
@@ -133,7 +133,7 @@ public class SpiderJS extends Spider {
             });
             return postFunc("play", flag, id, array);
         } catch (Throwable throwable) {
-            LOG.e(throwable);
+         //   LOG.e(throwable);
             return "";
         }
     }
@@ -174,12 +174,12 @@ public class SpiderJS extends Spider {
                     result[2] = baos;
                     return result;
                 } catch (Throwable throwable) {
-                    LOG.e(throwable);
+               //     LOG.e(throwable);
                     return new Object[0];
                 }
             });
         } catch (Throwable throwable) {
-            LOG.e(throwable);
+      //      LOG.e(throwable);
             return new Object[0];
         }
     }
