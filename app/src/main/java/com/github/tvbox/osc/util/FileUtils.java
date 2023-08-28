@@ -2,10 +2,16 @@ package com.github.tvbox.osc.util;
 
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.github.tvbox.osc.base.App;
 import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.util.urlhttp.OkHttpUtil;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -16,10 +22,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FileUtils {
+	
+	public static File open(String str) {
+        return new File(App.getInstance().getExternalCacheDir().getAbsolutePath() + "/qjscache_" + str + ".js");
+    }
+    public static String genUUID() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+	
+	private static final Pattern URLJOIN = Pattern.compile("^http.*\\.(js|txt|json|m3u)$", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 	
 	public static String loadModule(String name) {
         try {
@@ -30,18 +46,15 @@ public class FileUtils {
             }
             Matcher m = URLJOIN.matcher(name);
             if (m.find()) {
-                if(!Hawk.get(HawkConfig.DEBUG_OPEN, false)) {
-                    String cache = getCache(MD5.encode(name));
-                    if (StringUtils.isEmpty(cache)) {
-                        String netStr = OkHttpUtil.get(name);
-                        if (!TextUtils.isEmpty(netStr)) {
-                            setCache(604800, MD5.encode(name), netStr);
-                        }
-                        return netStr;
+                String cache = getCache(MD5.encode(name));
+                if (StringUtils.isEmpty(cache)) {
+                    String netStr = OkHttpUtil.get(name);
+                    if (!TextUtils.isEmpty(netStr)) {
+                        setCache(604800, MD5.encode(name), netStr);
                     }
-                    return cache;
-                } else {
-                    return OkHttpUtil.get(name);
+                    return netStr;
+                }
+                return cache;                    
                 }
             } else if (name.startsWith("assets://")) {
                 return getAsOpen(name.substring(9));
@@ -61,6 +74,38 @@ public class FileUtils {
             return name;
         }
         return name;
+    }
+    
+    public static void setCache(int time, String name, String data) {
+        try {
+            JSONObject jSONObject = new JSONObject();
+            jSONObject.put("expires", (int) (time + (System.currentTimeMillis() / 1000)));
+            jSONObject.put("data", new String(Base64.decode(data, Base64.URL_SAFE)));
+            writeSimple(jSONObject.toString().getBytes(), open(name));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static String getCache(String name) {
+        try {
+            String code = "";
+            File file = open(name);
+            if (file.exists()) {
+                code = new String(readSimple(file));
+            }
+            if (TextUtils.isEmpty(code)) {
+                return "";
+            }
+            JsonObject asJsonObject = (new Gson().fromJson(code, JsonObject.class)).getAsJsonObject();
+            if (((long) asJsonObject.get("expires").getAsInt()) > System.currentTimeMillis() / 1000) {
+                return Base64.encodeToString(asJsonObject.get("data").getAsString().getBytes(), Base64.URL_SAFE);
+            }
+            recursiveDelete(open(name));
+            return "";
+        } catch (Exception e4) {
+            return "";
+        }
     }
 
     public static boolean writeSimple(byte[] data, File dst) {
