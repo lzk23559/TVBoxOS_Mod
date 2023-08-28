@@ -17,6 +17,48 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class FileUtils {
+	
+	public static String loadModule(String name) {
+        try {
+            if (name.contains("gbk.js")) {
+                name = "gbk.js";
+            } else if (name.contains("模板.js")) {
+                name = "模板.js";
+            }
+            Matcher m = URLJOIN.matcher(name);
+            if (m.find()) {
+                if(!Hawk.get(HawkConfig.DEBUG_OPEN, false)) {
+                    String cache = getCache(MD5.encode(name));
+                    if (StringUtils.isEmpty(cache)) {
+                        String netStr = OkHttpUtil.get(name);
+                        if (!TextUtils.isEmpty(netStr)) {
+                            setCache(604800, MD5.encode(name), netStr);
+                        }
+                        return netStr;
+                    }
+                    return cache;
+                } else {
+                    return OkHttpUtil.get(name);
+                }
+            } else if (name.startsWith("assets://")) {
+                return getAsOpen(name.substring(9));
+            } else if (isAsFile(name, "js/lib")) {
+                return getAsOpen("js/lib/" + name);
+            } else if (name.startsWith("file://")) {
+                return OkHttpUtil.get(ControlManager.get().getAddress(true) + "file/" + name.replace("file:///", "").replace("file://", ""));
+            } else if (name.startsWith("clan://localhost/")) {
+                return OkHttpUtil.get(ControlManager.get().getAddress(true) + "file/" + name.replace("clan://localhost/", ""));
+            } else if (name.startsWith("clan://")) {
+                String substring = name.substring(7);
+                int indexOf = substring.indexOf(47);
+                return OkHttpUtil.get("http://" + substring.substring(0, indexOf) + "/file/" + substring.substring(indexOf + 1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return name;
+        }
+        return name;
+    }
 
     public static boolean writeSimple(byte[] data, File dst) {
         try {
