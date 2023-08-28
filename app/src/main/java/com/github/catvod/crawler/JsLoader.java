@@ -131,7 +131,7 @@ public class JsLoader {
                 return proxyFun.proxyInvoke(params);
             }
         } catch (Throwable th) {
-            LOG.e("proxyInvoke", th);
+          //  LOG.e("proxyInvoke", th);
         }
         return null;
     }
