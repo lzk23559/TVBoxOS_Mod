@@ -103,7 +103,11 @@ public class OkHttpUtil {
 
     public static String get(String str) {
         try {
-            return OkGo.<String>get(str).headers("User-Agent", UA.random()).execute().body().string();
+            return OkGo.<String>get(str)
+                    .headers("User-Agent", str.startsWith("https://gitcode.net/") ? UA.randomOne() : "okhttp/3.15")
+                    .execute()
+                    .body()
+                    .string();
         } catch (IOException e) {
             return "";
         }
