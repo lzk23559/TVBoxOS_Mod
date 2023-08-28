@@ -54,8 +54,7 @@ public class FileUtils {
                     }
                     return netStr;
                 }
-                return cache;                    
-                }
+                return cache;
             } else if (name.startsWith("assets://")) {
                 return getAsOpen(name.substring(9));
             } else if (isAsFile(name, "js/lib")) {
@@ -68,6 +67,27 @@ public class FileUtils {
                 String substring = name.substring(7);
                 int indexOf = substring.indexOf(47);
                 return OkHttpUtil.get("http://" + substring.substring(0, indexOf) + "/file/" + substring.substring(indexOf + 1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return name;
+        }
+        return name;
+    }
+    
+    public static String loadJs(String name) {
+        try {
+            if (name.startsWith("http://") || name.startsWith("https://")) {
+                String cache = getCache(MD5.encode(name));
+                if (StringUtils.isEmpty(cache)) {
+                    String netStr = OkHttpUtil.get(name);
+                    if (!TextUtils.isEmpty(netStr)) {
+                        setCache(604800, MD5.encode(name), netStr);
+                    }
+                    return ControlManager.get().getAddress(true) + "/proxy?do=ext&txt=" + Base64.encodeToString(netStr.getBytes(), Base64.URL_SAFE);
+                }
+                return ControlManager.get().getAddress(true) + "/proxy?do=ext&txt=" + Base64.encodeToString(cache.getBytes(), Base64.URL_SAFE);
+                //return cache;
             }
         } catch (Exception e) {
             e.printStackTrace();
