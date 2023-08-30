@@ -258,6 +258,7 @@ public class HomeActivity extends BaseActivity {
     private boolean jarInitOk = false;
     private boolean noInit = false;
     private void initData() {
+        if(noInit)Hawk.put(HawkConfig.API_URL, ApiConfig._api);
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
             String homeName = home.getName();
@@ -267,7 +268,6 @@ public class HomeActivity extends BaseActivity {
                 tvName.setText(pre + homeName);
             }
         }
-        if(noInit)return;
         if (dataInitOk && jarInitOk) {
             showLoading();
             sourceViewModel.getSort(home.getKey());

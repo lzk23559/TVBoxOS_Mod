@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.server.ControlManager;
@@ -57,6 +57,14 @@ public class ApiDialog extends BaseDialog {
         inputApi = findViewById(R.id.input);
         //内置网络接口在此处添加
         inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+        findViewById(R.id.inputSubmit).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Hawk.put(HawkConfig.API_URL, ApiConfig._api);
+                inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+                return true;
+            }
+        });
         findViewById(R.id.inputSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
