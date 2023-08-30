@@ -1084,6 +1084,15 @@ public class VodController extends BaseController {
         can();
     }
 
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode== KeyEvent.KEYCODE_ENTER) {
+            sdrest();
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
     public void bfq() {
         myHandle.removeCallbacks(myRunnable);
         myHandle.postDelayed(myRunnable, myHandleSeconds);

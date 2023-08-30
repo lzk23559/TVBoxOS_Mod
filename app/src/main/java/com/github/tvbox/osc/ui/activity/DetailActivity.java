@@ -1257,11 +1257,22 @@ public class DetailActivity extends BaseActivity {
         int action = event.getAction();
         if (action == KeyEvent.ACTION_DOWN) {//DOWN 按下按键事件
             if (keyCode== KeyEvent.KEYCODE_MENU) {
-                if (!fullWindows) toggleFullPreview();
+                //if (!fullWindows) toggleFullPreview();
+                tvCollect.requestFocus();
                 return true;
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode== KeyEvent.KEYCODE_ENTER) {
+            if (!fullWindows) {
+                toggleFullPreview();
+                return true;
+            }
+        }
+        return super.onKeyLongPress(keyCode, event);
     }
 
     // preview
