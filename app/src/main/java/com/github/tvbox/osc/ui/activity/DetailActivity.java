@@ -1252,25 +1252,30 @@ public class DetailActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyEvent(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        int action = event.getAction();
-        if (action == KeyEvent.ACTION_DOWN) {//DOWN 按下按键事件
-            if (keyCode== KeyEvent.KEYCODE_MENU) {
-                //if (!fullWindows) toggleFullPreview();
-                tvCollect.requestFocus();
-                return true;
-            }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode== KeyEvent.KEYCODE_MENU) {
+            tvCollect.requestFocus();
+            return true;
         }
-        return super.dispatchKeyEvent(event);
+        return super.onKeyDown(keyCode, event);
     }
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode== KeyEvent.KEYCODE_ENTER) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
             if (!fullWindows) {
                 toggleFullPreview();
                 return true;
             }
+        }
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            String text = "r"+DefaultConfig.getHttpUrl(spName);
+            updateData(text);
+            return true;
+        }
+        if (keyCode== KeyEvent.KEYCODE_MENU) {
+            String kv = vodInfo.name +" "+spId+" "+ spPic;
+            updateData(kv);
+            return true;
         }
         return super.onKeyLongPress(keyCode, event);
     }
