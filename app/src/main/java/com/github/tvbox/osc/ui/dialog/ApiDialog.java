@@ -61,7 +61,7 @@ public class ApiDialog extends BaseDialog {
             @Override
             public boolean onLongClick(View v) {
                 Hawk.put(HawkConfig.API_URL, ApiConfig._api);
-                inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+                inputApi.setText(ApiConfig._api);
                 return true;
             }
         });

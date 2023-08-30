@@ -256,9 +256,8 @@ public class HomeActivity extends BaseActivity {
 
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
-    private boolean noInit = false;
+
     private void initData() {
-        if(noInit)Hawk.put(HawkConfig.API_URL, ApiConfig._api);
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
             String homeName = home.getName();
@@ -308,7 +307,6 @@ public class HomeActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
-                                noInit = true;
                                 initData();
                             }
                         });
@@ -350,9 +348,8 @@ public class HomeActivity extends BaseActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            dataInitOk = false;
+                            dataInitOk = true;
                             jarInitOk = false;
-                            noInit = true;
                             initData();
                         }
                     });
@@ -381,6 +378,7 @@ public class HomeActivity extends BaseActivity {
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Hawk.put(HawkConfig.API_URL, ApiConfig._api);
                                             initData();
                                             dialog.hide();
                                         }
@@ -391,10 +389,10 @@ public class HomeActivity extends BaseActivity {
                                 public void cancel() {
                                     dataInitOk = true;
                                     jarInitOk = false;
-                                    noInit = true;
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
+                                            Hawk.put(HawkConfig.API_URL, ApiConfig._api);
                                             initData();
                                             dialog.hide();
                                         }
