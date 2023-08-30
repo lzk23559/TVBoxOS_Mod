@@ -302,7 +302,7 @@ public class HomeActivity extends BaseActivity {
 
                     @Override
                     public void error(String msg) {
-                        jarInitOk = true;
+                        jarInitOk = false;
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -349,7 +349,7 @@ public class HomeActivity extends BaseActivity {
                         @Override
                         public void run() {
                             dataInitOk = true;
-                            jarInitOk = true;
+                            jarInitOk = false;
                             initData();
                         }
                     });
@@ -387,7 +387,7 @@ public class HomeActivity extends BaseActivity {
                                 @Override
                                 public void cancel() {
                                     dataInitOk = true;
-                                    jarInitOk = true;
+                                    jarInitOk = false;
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {

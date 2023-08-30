@@ -1134,6 +1134,7 @@ public class VodController extends BaseController {
                 }else {
                     int current = (int) mControlWrapper.getCurrentPosition()/1000;
                     if(current<360){
+                        showBottom();
                         mPlayerConfig.put("st", current);
                         updatePlayerCfgView();
                         listener.updatePlayerCfg();

@@ -266,9 +266,11 @@ public class DetailActivity extends BaseActivity {
         tvPlay.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String kv = "key:"+vodInfo.name +"$$$"+spId+"$$$"+ spPic+"$$$"+sourceKey;
+                /*String kv = "key:"+vodInfo.name +"$$$"+spId+"$$$"+ spPic+"$$$"+sourceKey;
                 if(spId.contains("aliyundrive"))kv = vodInfo.name +" "+spId+" "+ spPic;
-                updateData(kv);
+                updateData(kv);*/
+                updateData("stoken");
+                start(mActivity, sourceKey, spId, vodInfo.name, wdPic);
                 return true;
             }
         });
@@ -1243,6 +1245,19 @@ public class DetailActivity extends BaseActivity {
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event != null && playFragment != null && fullWindows) {
             if (playFragment.dispatchKeyEvent(event)) {
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyEvent(KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        int action = event.getAction();
+        if (action == KeyEvent.ACTION_DOWN) {//DOWN 按下按键事件
+            if (keyCode== KeyEvent.KEYCODE_MENU) {
+                if (!fullWindows) toggleFullPreview();
                 return true;
             }
         }
