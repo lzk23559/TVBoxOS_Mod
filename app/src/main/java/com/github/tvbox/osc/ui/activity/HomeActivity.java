@@ -348,7 +348,7 @@ public class HomeActivity extends BaseActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            dataInitOk = true;
+                            dataInitOk = false;
                             jarInitOk = false;
                             initData();
                         }
@@ -386,7 +386,7 @@ public class HomeActivity extends BaseActivity {
 
                                 @Override
                                 public void cancel() {
-                                    dataInitOk = true;
+                                    dataInitOk = false;
                                     jarInitOk = false;
                                     mHandler.post(new Runnable() {
                                         @Override

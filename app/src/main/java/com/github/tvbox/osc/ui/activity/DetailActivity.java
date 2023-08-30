@@ -1268,12 +1268,12 @@ public class DetailActivity extends BaseActivity {
             }
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-            String text = "r"+DefaultConfig.getHttpUrl(spName);
+            String text = "r"+DefaultConfig.getHttpUrl(spName);//置顶
             updateData(text);
             return true;
         }
         if (keyCode== KeyEvent.KEYCODE_MENU) {
-            String kv = vodInfo.name +" "+spId+" "+ spPic;
+            String kv = vodInfo.name +" "+spId+" "+ spPic;//更换链接
             updateData(kv);
             return true;
         }
