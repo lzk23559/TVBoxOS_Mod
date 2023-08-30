@@ -256,7 +256,7 @@ public class HomeActivity extends BaseActivity {
 
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
-
+    private boolean noInit = false;
     private void initData() {
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
@@ -267,6 +267,7 @@ public class HomeActivity extends BaseActivity {
                 tvName.setText(pre + homeName);
             }
         }
+        if(noInit)return;
         if (dataInitOk && jarInitOk) {
             showLoading();
             sourceViewModel.getSort(home.getKey());
@@ -307,6 +308,7 @@ public class HomeActivity extends BaseActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
+                                noInit = true;
                                 initData();
                             }
                         });
@@ -350,6 +352,7 @@ public class HomeActivity extends BaseActivity {
                         public void run() {
                             dataInitOk = false;
                             jarInitOk = false;
+                            noInit = true;
                             initData();
                         }
                     });
@@ -386,8 +389,9 @@ public class HomeActivity extends BaseActivity {
 
                                 @Override
                                 public void cancel() {
-                                    dataInitOk = false;
+                                    dataInitOk = true;
                                     jarInitOk = false;
+                                    noInit = true;
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
