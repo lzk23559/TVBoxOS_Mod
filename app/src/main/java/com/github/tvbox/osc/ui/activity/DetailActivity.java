@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.ClipboardManager;
 import android.content.ClipData;
-
+import com.github.tvbox.osc.util.thunder.Thunder;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;

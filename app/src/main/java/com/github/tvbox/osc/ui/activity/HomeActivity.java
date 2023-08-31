@@ -222,24 +222,33 @@ public class HomeActivity extends BaseActivity {
         tvName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return reHome(mContext);//重新启动首页
+                return reHomes();//重新启动首页
             }
         });
         setLoadSir(this.contentLayout);
         //mHandler.postDelayed(mFindFocus, 500);
     }
     public static boolean reHome(Context appContext){
+        Intent intent = new Intent(appContext, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("useCache", true);
+        intent.putExtras(bundle);
+        appContext.startActivity(intent);
+        return true;
+    }
+
+    public boolean reHomes(){
         if(dataInitOk && jarInitOk){
-            Intent intent = new Intent(appContext, HomeActivity.class);
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             Bundle bundle = new Bundle();
             bundle.putBoolean("useCache", true);
             intent.putExtras(bundle);
-            appContext.startActivity(intent);
+            HomeActivity.this.startActivity(intent);
         }else {
             jumpActivity(SettingActivity.class);
         }
-
         return true;
     }
 
@@ -398,7 +407,7 @@ public class HomeActivity extends BaseActivity {
                                         @Override
                                         public void run() {
                                             dialog.hide();
-                                            reHome(mContext);
+                                            reHomes();
                                         }
                                     });
                                 }
@@ -675,7 +684,7 @@ public class HomeActivity extends BaseActivity {
             if(homeRec==3)homeRec=-1;
             homeRec++;
             Hawk.put(HawkConfig.HOME_REC, homeRec);
-            return reHome(mContext);
+            return reHomes();
         }
         return super.onKeyDown(keyCode, event);
     }
