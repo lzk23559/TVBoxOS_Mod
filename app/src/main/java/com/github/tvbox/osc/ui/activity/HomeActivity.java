@@ -222,19 +222,24 @@ public class HomeActivity extends BaseActivity {
         tvName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return reHome(mContext);
+                return reHome(mContext);//重新启动首页
             }
         });
         setLoadSir(this.contentLayout);
         //mHandler.postDelayed(mFindFocus, 500);
     }
     public static boolean reHome(Context appContext){
-        Intent intent = new Intent(appContext, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                /*Bundle bundle = new Bundle();
-                bundle.putBoolean("useCache", true);
-                intent.putExtras(bundle);*/
-        appContext.startActivity(intent);
+        if(dataInitOk && jarInitOk){
+            Intent intent = new Intent(appContext, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("useCache", true);
+            intent.putExtras(bundle);
+            appContext.startActivity(intent);
+        }else {
+            jumpActivity(SettingActivity.class);
+        }
+
         return true;
     }
 
@@ -392,9 +397,8 @@ public class HomeActivity extends BaseActivity {
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Hawk.put(HawkConfig.API_URL, ApiConfig._api);
-                                            initData();
                                             dialog.hide();
+                                            reHome(mContext);
                                         }
                                     });
                                 }
@@ -662,5 +666,17 @@ public class HomeActivity extends BaseActivity {
             }, sites, sites.indexOf(ApiConfig.get().getHomeSourceBean()));
             dialog.show();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode== KeyEvent.KEYCODE_MENU) {
+            int homeRec = Hawk.get(HawkConfig.HOME_REC, -1);
+            if(homeRec==3)homeRec=-1;
+            homeRec++;
+            Hawk.put(HawkConfig.HOME_REC, homeRec);
+            return reHome(mContext);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

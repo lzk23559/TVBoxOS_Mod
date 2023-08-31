@@ -1060,7 +1060,7 @@ public class VodController extends BaseController {
                     showBottom();
                     myHandle.postDelayed(myRunnable, myHandleSeconds);
                     return true;
-                }
+                }else listener.replay(false);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                 can();
                 return true;
@@ -1082,15 +1082,6 @@ public class VodController extends BaseController {
     @Override
     public void onLongPress(MotionEvent e) {
         can();
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode== KeyEvent.KEYCODE_ENTER) {
-            sdrest();
-            return true;
-        }
-        return super.onKeyLongPress(keyCode, event);
     }
 
     public void bfq() {

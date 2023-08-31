@@ -283,7 +283,7 @@ public class ApiConfig {
             return;
         }
         if (apiUrl.contains("xinjun58")) {
-            Hawk.put(HawkConfig.HOME_REC, 3);
+            if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
         }
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));
         if (useCache && cache.exists()) {
