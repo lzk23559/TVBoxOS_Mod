@@ -238,6 +238,15 @@ public class HomeActivity extends BaseActivity {
         return true;
     }
 
+    public static void homeRecf(){//站点切换
+        int homeRec = Hawk.get(HawkConfig.HOME_REC, -1);
+        int limit = 2;
+        if(ApiConfig.isOwnApi())limit = 3;
+        if(homeRec==limit)homeRec=-1;
+        homeRec++;
+        Hawk.put(HawkConfig.HOME_REC, homeRec);
+    }
+
     public boolean reHomes(){
         if(dataInitOk && jarInitOk){
             Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -677,13 +686,11 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode== KeyEvent.KEYCODE_MENU) {
-            int homeRec = Hawk.get(HawkConfig.HOME_REC, -1);
-            if(homeRec==3)homeRec=-1;
-            homeRec++;
-            Hawk.put(HawkConfig.HOME_REC, homeRec);
+            homeRecf();
             return reHomes();
         }
         return super.onKeyDown(keyCode, event);

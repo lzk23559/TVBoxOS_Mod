@@ -103,6 +103,13 @@ public class ApiConfig {
         }
         return false;
     }
+    public static boolean isOwnApi(){
+        String apiUrl = Hawk.get(HawkConfig.API_URL, _api);
+        if(apiUrl.contains("xinjun58")){
+            return true;
+        }
+        return false;
+    }
 
     public static String getProgressKey(VodInfo mVodInfo){
         String subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex;
@@ -282,7 +289,7 @@ public class ApiConfig {
             callback.error("-1");
             return;
         }
-        if (apiUrl.contains("xinjun58")) {
+        if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
         }
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));

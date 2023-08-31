@@ -152,6 +152,13 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                 return HomeActivity.reHome(mContext);
             }
         });
+        tvSetting.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                HomeActivity.homeRecf();
+                return HomeActivity.reHome(mContext);
+            }
+        });
 
         homeHotVodAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
