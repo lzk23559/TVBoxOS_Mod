@@ -562,7 +562,7 @@ public class SourceViewModel extends ViewModel {
         } else if (type == 0 || type == 1) {
             OkGo.<String>get(sourceBean.getApi())
                     .params("wd", wd)
-                    .params(type == 1 ? "ac" : null, type == 1 ? "detail" : null)
+                    .params("ac", "detail")
                     .tag("search")
                     .execute(new AbsCallback<String>() {
                         @Override
@@ -640,7 +640,7 @@ public class SourceViewModel extends ViewModel {
         } else if (type == 0 || type == 1) {
             OkGo.<String>get(sourceBean.getApi())
                     .params("wd", wd)
-                    .params(type == 1 ? "ac" : null, type == 1 ? "detail" : null)
+                    .params("ac", "detail")
                     .tag("quick_search")
                     .execute(new AbsCallback<String>() {
                         @Override
