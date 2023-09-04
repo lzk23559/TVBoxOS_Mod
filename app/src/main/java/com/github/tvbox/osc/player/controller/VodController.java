@@ -262,6 +262,13 @@ public class VodController extends BaseController {
                 showLockView();
             }
         });
+        mLockView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                sprest();
+                return true;
+            }
+        });
         View rootView = findViewById(R.id.rootView);
         rootView.setOnTouchListener(new OnTouchListener() {
             @Override
@@ -1037,6 +1044,7 @@ public class VodController extends BaseController {
             mHandler.removeMessages(1002);
             mHandler.removeMessages(1003);
             myHandle.postDelayed(myRunnable, myHandleSeconds);
+            if (keyCode != KeyEvent.KEYCODE_DPAD_DOWN && keyCode != KeyEvent.KEYCODE_MENU)
             return super.dispatchKeyEvent(event);
         }
         boolean isInPlayback = isInPlaybackState();
@@ -1060,7 +1068,9 @@ public class VodController extends BaseController {
                     showBottom();
                     myHandle.postDelayed(myRunnable, myHandleSeconds);
                     return true;
-                }else listener.replay(false);
+                }else {
+                    sprest();
+                }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                 can();
                 return true;
@@ -1122,9 +1132,31 @@ public class VodController extends BaseController {
         }
     }
 
+    public void sprest() {
+        try {
+            myHandle.removeCallbacks(myRunnable);
+            myHandle.postDelayed(myRunnable, myHandleSeconds);
+            int playerType = mPlayerConfig.getInt("pl");
+            if(playerType==1)playerType++;
+            else playerType=1;
+            mPlayerConfig.put("sp", 1.5f);
+            mPlayerConfig.put("pr", 1);//S渲染
+            mPlayerConfig.put("ijk", "硬解码");
+            mPlayerConfig.put("pl", playerType);//播放器
+            updatePlayerCfgView();
+            listener.replay(false);
+            listener.updatePlayerCfg();
+            mControlWrapper.setSpeed(1.5f);
+            mPlayerIJKBtn.requestFocus();
+            mPlayerIJKBtn.requestFocusFromTouch();
+        } catch (Exception e) {
+            DetailActivity.alert("错误信息Vodsdrest:"+e.getMessage());
+        }
+    }
+
     public void restart(){
         try {
-            if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
+            if(isBottomVisible()||mPlayLoadNetSpeed.getVisibility()==VISIBLE){
                 listener.replay(false);
             }else {
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
