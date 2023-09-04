@@ -1061,7 +1061,9 @@ public class VodController extends BaseController {
                 }
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode== KeyEvent.KEYCODE_MENU) {
                 if (keyCode == KeyEvent.KEYCODE_MENU){
-                    restart();
+                    if(isBottomVisible()){
+                        listener.replay(false);
+                    }else restart();
                     return true;
                 }
                 if (!isBottomVisible()) {
@@ -1156,7 +1158,7 @@ public class VodController extends BaseController {
 
     public void restart(){
         try {
-            if(isBottomVisible()||mPlayLoadNetSpeed.getVisibility()==VISIBLE){
+            if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
                 listener.replay(false);
             }else {
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
