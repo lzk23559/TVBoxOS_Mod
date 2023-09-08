@@ -138,7 +138,7 @@ public class VodController extends BaseController {
     Runnable myRunnable;
     int myHandleSeconds = 6000;//闲置多少毫秒秒关闭底栏  默认6秒
     int videoPlayState = 0;
-    private boolean isTv=false;
+    private boolean isTv=true;
     private boolean timeFlag;
     private boolean fromLongPress;
     private float speed_old = 1.0f;
@@ -232,7 +232,6 @@ public class VodController extends BaseController {
         mZimuBtn = findViewById(R.id.zimu_select);
         mAudioTrackBtn = findViewById(R.id.audio_track_select);
         mLandscapePortraitBtn = findViewById(R.id.landscape_portrait);
-        isTv = ScreenUtils.isTv(getContext());
         backBtn = findViewById(R.id.tv_back);
         backBtn.setOnClickListener(new OnClickListener() {
             @Override
