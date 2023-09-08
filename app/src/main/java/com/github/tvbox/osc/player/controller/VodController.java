@@ -64,7 +64,7 @@ public class VodController extends BaseController {
                         mTopRoot2.setVisibility(VISIBLE);
                         mPlayTitle.setVisibility(GONE);
                         mNextBtn.requestFocus();
-                        backBtn.setVisibility(ScreenUtils.isTv(context) ? INVISIBLE : VISIBLE);
+                        backBtn.setVisibility(isTv ? INVISIBLE : VISIBLE);
                         showLockView();
                         break;
                     }
@@ -136,8 +136,9 @@ public class VodController extends BaseController {
     private boolean isLock = false;
     Handler myHandle;
     Runnable myRunnable;
-    int myHandleSeconds = 10000;//闲置多少毫秒秒关闭底栏  默认6秒
+    int myHandleSeconds = 6000;//闲置多少毫秒秒关闭底栏  默认6秒
     int videoPlayState = 0;
+    private boolean isTv=false;
     private boolean timeFlag;
     private boolean fromLongPress;
     private float speed_old = 1.0f;
@@ -188,7 +189,7 @@ public class VodController extends BaseController {
     };
 
     private void showLockView() {
-        mLockView.setVisibility(ScreenUtils.isTv(getContext()) ? INVISIBLE : VISIBLE);
+        mLockView.setVisibility(isTv ? INVISIBLE : VISIBLE);
         mHandler.removeCallbacks(lockRunnable);
         mHandler.postDelayed(lockRunnable, 3000);
     }
@@ -231,6 +232,7 @@ public class VodController extends BaseController {
         mZimuBtn = findViewById(R.id.zimu_select);
         mAudioTrackBtn = findViewById(R.id.audio_track_select);
         mLandscapePortraitBtn = findViewById(R.id.landscape_portrait);
+        isTv = ScreenUtils.isTv(getContext());
         backBtn = findViewById(R.id.tv_back);
         backBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -488,11 +490,17 @@ public class VodController extends BaseController {
             @Override
             public boolean onLongClick(View view) {
                 try {
-                    mPlayerConfig.put("sp", 1.0f);
-                    updatePlayerCfgView();
-                    listener.updatePlayerCfg();
-                    speed_old = 1.0f;
-                    mControlWrapper.setSpeed(1.0f);
+                    if (isTv) {
+                        float speed = (float) mPlayerConfig.getDouble("sp");
+                        Hawk.put(HawkConfig.MY_SPEEND, speed);
+                        DetailActivity.alert("默认播放速度为："+speed+"倍");
+                    }else {
+                        speed_old = 1.0f;
+                        mPlayerConfig.put("sp", speed_old);
+                        updatePlayerCfgView();
+                        listener.updatePlayerCfg();
+                        mControlWrapper.setSpeed(speed_old);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1043,6 +1051,7 @@ public class VodController extends BaseController {
         if (isBottomVisible()) {
             mHandler.removeMessages(1002);
             mHandler.removeMessages(1003);
+
             myHandle.postDelayed(myRunnable, myHandleSeconds);
             if (keyCode != KeyEvent.KEYCODE_DPAD_DOWN && keyCode != KeyEvent.KEYCODE_MENU)
             return super.dispatchKeyEvent(event);
@@ -1084,7 +1093,7 @@ public class VodController extends BaseController {
                     return true;
                 }
             }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                hf();
+                if (!isTv) hf();
                 return true;
             }
         }
@@ -1126,7 +1135,7 @@ public class VodController extends BaseController {
             mPlayerConfig.put("st", 110);
             mPlayerConfig.put("et", 150);
             updatePlayerCfgView();
-            listener.replay(false);
+            //listener.replay(false);
             listener.updatePlayerCfg();
             mControlWrapper.setSpeed(1.5f);
         } catch (Exception e) {
@@ -1141,7 +1150,7 @@ public class VodController extends BaseController {
             int playerType = mPlayerConfig.getInt("pl");
             if(playerType==1)playerType++;
             else playerType=1;
-            mPlayerConfig.put("sp", 1.5f);
+            //mPlayerConfig.put("sp", 1.5f);
             mPlayerConfig.put("pr", 1);//S渲染
             mPlayerConfig.put("ijk", "硬解码");
             mPlayerConfig.put("pl", playerType);//播放器
@@ -1197,15 +1206,20 @@ public class VodController extends BaseController {
                     sdrest();
                     rightState = 0;
                 } else {
-                    fromLongPress = true;
-                    if (speed2 != 3.0f) {
-                        speed_old = speed2;
-                        float speed = 3.0f;
-                        mPlayerConfig.put("sp", speed);
-                        updatePlayerCfgView();
-                        listener.updatePlayerCfg();
-                        mControlWrapper.setSpeed(speed);
+                    float speed = 3.0f;
+                    if (isTv) {
+                        speed = Hawk.get(HawkConfig.MY_SPEEND, 2.0f);
+                        if (speed == speed2) speed = speed_old;
+                    }else {
+                        fromLongPress = true;
+                        if (speed2 != 3.0f) {
+                            speed_old = speed2;
+                        }
                     }
+                    mPlayerConfig.put("sp", speed);
+                    updatePlayerCfgView();
+                    listener.updatePlayerCfg();
+                    mControlWrapper.setSpeed(speed);
                 }
             } catch (Exception e) {
                 DetailActivity.alert("错误信息Vodcan:"+e.getMessage());

@@ -37,6 +37,7 @@ public class HawkConfig {
     public static final String HOME_REC_STYLE = "home_rec_style";
     public static final String MY_PWD = "my_pwd";
     public static final String MY_NAME = "my_name";
+    public static final String MY_SPEEND = "my_speed";
     public static final String MY_TOKENINFO = "my_tokenInfo";
     public static final String MY_VIDEO_DETAIL = "my_video_detail";
     public static final String TIME_FLAG = "my_time_flag";//右上角 播放进度和时间
