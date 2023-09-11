@@ -64,7 +64,7 @@ public class VodController extends BaseController {
                         mTopRoot2.setVisibility(VISIBLE);
                         mPlayTitle.setVisibility(GONE);
                         mNextBtn.requestFocus();
-                        backBtn.setVisibility(isTv ? INVISIBLE : VISIBLE);
+                        backBtn.setVisibility(ScreenUtils.isTv(context) ? INVISIBLE : VISIBLE);
                         showLockView();
                         break;
                     }
@@ -188,7 +188,7 @@ public class VodController extends BaseController {
     };
 
     private void showLockView() {
-        mLockView.setVisibility(isTv ? INVISIBLE : VISIBLE);
+        mLockView.setVisibility(ScreenUtils.isTv(getContext()) ? INVISIBLE : VISIBLE);
         mHandler.removeCallbacks(lockRunnable);
         mHandler.postDelayed(lockRunnable, 3000);
     }
@@ -488,7 +488,7 @@ public class VodController extends BaseController {
             @Override
             public boolean onLongClick(View view) {
                 try {
-                    if (ScreenUtils.isTv(context)) {
+                    if (ScreenUtils.isTv(getContext())) {
                         float speed = (float) mPlayerConfig.getDouble("sp");
                         Hawk.put(HawkConfig.MY_SPEEND, speed);
                         DetailActivity.alert("默认播放速度为："+speed+"倍");
@@ -1091,7 +1091,7 @@ public class VodController extends BaseController {
                     return true;
                 }
             }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                if (!ScreenUtils.isTv(context)) hf();
+                if (!ScreenUtils.isTv(getContext())) hf();
                 return true;
             }
         }
@@ -1205,7 +1205,7 @@ public class VodController extends BaseController {
                     rightState = 0;
                 } else {
                     float speed = 3.0f;
-                    if (ScreenUtils.isTv(context)) {
+                    if (ScreenUtils.isTv(getContext())) {
                         speed = Hawk.get(HawkConfig.MY_SPEEND, 2.0f);
                         if (speed == speed2) speed = speed_old;
                     }else {
