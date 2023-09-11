@@ -11,6 +11,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 public class ScreenUtils {
+    public static Boolean isTv=null;
 
     public static double getSqrt(Activity activity) {
         WindowManager wm = activity.getWindowManager();
@@ -32,8 +33,11 @@ public class ScreenUtils {
     }
 
     public static boolean isTv(Context context) {
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
-        return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION || (checkScreenLayoutIsTv(context) && !checkIsPhone(context));
+        if (isTv == null) {
+            UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+            isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION || (checkScreenLayoutIsTv(context) && !checkIsPhone(context));
+        }
+        return isTv;
     }
 
 

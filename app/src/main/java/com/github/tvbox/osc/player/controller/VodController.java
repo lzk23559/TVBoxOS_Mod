@@ -1134,7 +1134,7 @@ public class VodController extends BaseController {
             mPlayerConfig.put("st", 110);
             mPlayerConfig.put("et", 150);
             updatePlayerCfgView();
-            //listener.replay(false);
+            listener.replay(false);
             listener.updatePlayerCfg();
             mControlWrapper.setSpeed(1.5f);
         } catch (Exception e) {
