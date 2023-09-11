@@ -138,7 +138,6 @@ public class VodController extends BaseController {
     Runnable myRunnable;
     int myHandleSeconds = 6000;//闲置多少毫秒秒关闭底栏  默认6秒
     int videoPlayState = 0;
-    private boolean isTv=true;
     private boolean timeFlag;
     private boolean fromLongPress;
     private float speed_old = 1.0f;
@@ -489,7 +488,7 @@ public class VodController extends BaseController {
             @Override
             public boolean onLongClick(View view) {
                 try {
-                    if (isTv) {
+                    if (ScreenUtils.isTv(context)) {
                         float speed = (float) mPlayerConfig.getDouble("sp");
                         Hawk.put(HawkConfig.MY_SPEEND, speed);
                         DetailActivity.alert("默认播放速度为："+speed+"倍");
@@ -1092,7 +1091,7 @@ public class VodController extends BaseController {
                     return true;
                 }
             }else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                if (!isTv) hf();
+                if (!ScreenUtils.isTv(context)) hf();
                 return true;
             }
         }
@@ -1206,7 +1205,7 @@ public class VodController extends BaseController {
                     rightState = 0;
                 } else {
                     float speed = 3.0f;
-                    if (isTv) {
+                    if (ScreenUtils.isTv(context)) {
                         speed = Hawk.get(HawkConfig.MY_SPEEND, 2.0f);
                         if (speed == speed2) speed = speed_old;
                     }else {
