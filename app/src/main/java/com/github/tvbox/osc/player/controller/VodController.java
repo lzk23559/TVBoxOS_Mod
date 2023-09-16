@@ -1174,16 +1174,21 @@ public class VodController extends BaseController {
                     sdrest();
                 }else {
                     int current = (int) mControlWrapper.getCurrentPosition()/1000;
-                    if(current<360){
-                        showBottom();
+                    if(current<360){ 
+                        if(currentst==0){
+                        showBottom();                    
                         mPlayerConfig.put("st", current);
                         updatePlayerCfgView();
                         listener.updatePlayerCfg();
                         return;
+                        }    
                     }else {
+                        int currentet = mPlayerConfig.getInt("et");
+                        if(currentet==0){
                         int duration = (int) mControlWrapper.getDuration()/1000;
                         int cd = duration - current;
                         if(cd<360) mPlayerConfig.put("et", cd);
+                        }    
                     }
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
@@ -1207,7 +1212,7 @@ public class VodController extends BaseController {
                     float speed = 3.0f;
                     if (ScreenUtils.isTv(getContext())) {
                         speed = Hawk.get(HawkConfig.MY_SPEEND, 2.0f);
-                        if (speed == speed2) speed = speed_old;
+                        if (speed == speed2) speed = 1.5f;
                     }else {
                         fromLongPress = true;
                         if (speed2 != 3.0f) {
