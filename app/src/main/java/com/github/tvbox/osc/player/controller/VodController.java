@@ -1174,8 +1174,8 @@ public class VodController extends BaseController {
                     sdrest();
                 }else {
                     int current = (int) mControlWrapper.getCurrentPosition()/1000;
-                    if(current<360){ 
-                        if(currentst==0){
+                    if(current<330){ 
+                        if(currentst==0||currentst==110){
                         showBottom();                    
                         mPlayerConfig.put("st", current);
                         updatePlayerCfgView();
@@ -1184,10 +1184,10 @@ public class VodController extends BaseController {
                         }    
                     }else {
                         int currentet = mPlayerConfig.getInt("et");
-                        if(currentet==0){
+                        if(currentet==0||currentet==150){
                         int duration = (int) mControlWrapper.getDuration()/1000;
                         int cd = duration - current;
-                        if(cd<360) mPlayerConfig.put("et", cd);
+                        if(cd<330) mPlayerConfig.put("et", cd);
                         }    
                     }
                     updatePlayerCfgView();
