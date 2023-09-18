@@ -159,8 +159,9 @@ public class ApiConfig {
         if(!fbx)return vod_play_url;
         int z = 0;//更换第一个
         String s = vod_play_url;
+        String[] playUrls = null;
         if (vod_play_from.contains("$$$")) {
-            String[] playUrls = vod_play_url.split("\\$\\$\\$");
+            playUrls = vod_play_url.split("\\$\\$\\$");
             s = playUrls[z];
         }
         String type = "";
@@ -194,6 +195,7 @@ public class ApiConfig {
             }
         });
         String zstr = TextUtils.join("#", zlist);
+        if(playUrls==null)return zstr;
         playUrls[z]=zstr;
         String zs = TextUtils.join("$$$", playUrls);
         return zs;
