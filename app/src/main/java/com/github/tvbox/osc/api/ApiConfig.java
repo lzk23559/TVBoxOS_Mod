@@ -153,7 +153,10 @@ public class ApiConfig {
         return s;
     }
 
-    public static String getBx(String vod_play_url){
+    public static String getBx(String vod_play_url,String vod_play_from){
+        if(vod_play_from.contains("i%"))return vod_play_url;
+        boolean fbx = Hawk.get(HawkConfig.MY_BX, true);
+        if(!fbx)return vod_play_url;
         int z = 0;//更换第一个
         String[] playUrls = vod_play_url.split("\\$\\$\\$");
         String s = playUrls[z];
@@ -208,6 +211,7 @@ public class ApiConfig {
             if (matcher(regx, name).find()) {
                 iname = name.replaceAll(regx, "$2");
             }else {
+                name = name.replaceAll("(.*)?\\[\\d+.*?\\]", "$1");
                 if (name.startsWith("[")) {
                     name = name.replaceAll("\\[.*?\\](.*)", "$1");
                 }

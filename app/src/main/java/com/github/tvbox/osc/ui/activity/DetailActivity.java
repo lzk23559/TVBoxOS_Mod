@@ -237,6 +237,19 @@ public class DetailActivity extends BaseActivity {
         tvPlayUrl.setFocusable(false);
 
         llPlayerFragmentContainerBlock.setOnClickListener((view -> toggleFullPreview()));
+        llPlayerFragmentContainerBlock.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                boolean fbx = Hawk.get(HawkConfig.MY_BX, true);
+                fbx = !fbx;
+                Hawk.put(HawkConfig.MY_BX, fbx);
+                String tip = "关闭";
+                if(fbx) tip = "开启";
+                alert("集数优化已"+tip);
+                start(mActivity, sourceKey, spId, vodInfo.name, wdPic);
+                return true;
+            }
+        });
 
         tvSort.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -1291,8 +1304,9 @@ public class DetailActivity extends BaseActivity {
         toggleSubtitleTextSize();
     }
 
+    int subtitleTextSize = 0;
     void toggleSubtitleTextSize() {
-        int subtitleTextSize  = SubtitleHelper.getTextSize(this);
+        if(subtitleTextSize==0)subtitleTextSize  = SubtitleHelper.getTextSize(this);
         if (!fullWindows) {
             subtitleTextSize *= 0.6;
         }

@@ -3,7 +3,7 @@ package com.github.tvbox.osc.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.github.tvbox.osc.api.ApiConfig;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -128,6 +128,7 @@ public class AbsJson implements Serializable {
             video.director = vod_director;
             Movie.Video.UrlBean urlBean = new Movie.Video.UrlBean();
             if (vod_play_from != null && vod_play_url != null) {
+                vod_play_url = ApiConfig.getBx(vod_play_url,vod_play_from);
                 String[] playFlags = vod_play_from.split("\\$\\$\\$");
                 String[] playUrls = vod_play_url.split("\\$\\$\\$");
                 List<Movie.Video.UrlBean.UrlInfo> infoList = new ArrayList<>();
