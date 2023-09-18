@@ -20,8 +20,11 @@ public class SubtitleHelper {
     }
 
     public static int getTextSize(Activity activity) {
-        int autoSize = getSubtitleTextAutoSize(activity);
-        int subtitleConfigSize = Hawk.get(HawkConfig.SUBTITLE_TEXT_SIZE, autoSize);
+        int subtitleConfigSize = Hawk.get(HawkConfig.SUBTITLE_TEXT_SIZE, 0);
+        if(subtitleConfigSize<1){
+            subtitleConfigSize = getSubtitleTextAutoSize(activity);
+            setTextSize(subtitleConfigSize);
+        }
         return subtitleConfigSize;
     }
 

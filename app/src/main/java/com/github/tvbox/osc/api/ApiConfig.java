@@ -154,12 +154,15 @@ public class ApiConfig {
     }
 
     public static String getBx(String vod_play_url,String vod_play_from){
-        if(vod_play_from.contains("i%"))return vod_play_url;
+        if(vod_play_from.contains("原画i"))return vod_play_url;
         boolean fbx = Hawk.get(HawkConfig.MY_BX, true);
         if(!fbx)return vod_play_url;
         int z = 0;//更换第一个
-        String[] playUrls = vod_play_url.split("\\$\\$\\$");
-        String s = playUrls[z];
+        String s = vod_play_url;
+        if (vod_play_from.contains("$$$")) {
+            String[] playUrls = vod_play_url.split("\\$\\$\\$");
+            s = playUrls[z];
+        }
         String type = "";
         boolean f = false;
         if (s.contains("4K")) {

@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+import com.orhanobut.hawk.Hawk;
 
 public class ScreenUtils {
     public static Boolean isTv=null;
@@ -34,8 +35,13 @@ public class ScreenUtils {
 
     public static boolean isTv(Context context) {
         if (isTv == null) {
-            UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
-            isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION || (checkScreenLayoutIsTv(context) && !checkIsPhone(context));
+            if (!Hawk.contains(HawkConfig.SUBTITLE_TV)) {
+                UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+                isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION || (checkScreenLayoutIsTv(context) && !checkIsPhone(context));
+                Hawk.put(HawkConfig.SUBTITLE_TV, isTv);
+            }else {
+                isTv = Hawk.get(HawkConfig.SUBTITLE_TV, false);
+            }
         }
         return isTv;
     }
