@@ -246,7 +246,6 @@ public class DetailActivity extends BaseActivity {
                 String tip = "关闭";
                 if(fbx) tip = "开启";
                 alert("集数优化已"+tip);
-                start(mActivity, sourceKey, spId, vodInfo.name, wdPic);
                 return true;
             }
         });
