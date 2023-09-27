@@ -293,13 +293,13 @@ public class ApiConfig {
 
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
         String apiUrl2 = Hawk.get(HawkConfig.API_URL, _api);
-        if (apiUrl.isEmpty()) {
+        if (apiUrl2.isEmpty()) {
             callback.error("-1");
             return;
         }
         if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
-            if (!apiUrl.contains("?")) {
+            if (!apiUrl2.contains("?")) {
                 String pwd = Hawk.get(HawkConfig.MY_PWD,"");
                 String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
                 apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId;
