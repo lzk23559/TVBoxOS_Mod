@@ -2,19 +2,9 @@ package com.github.tvbox.osc.util;
 
 import android.os.Environment;
 import android.text.TextUtils;
-
 import com.github.tvbox.osc.base.App;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 
 public class FileUtils {
 
@@ -77,7 +67,6 @@ public class FileUtils {
     public static String readFileToString(String path, String charsetName) {
         // 定义返回结果
         String jsonString = "";
-
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(new FileInputStream(new File(path)), charsetName));// 读取文件

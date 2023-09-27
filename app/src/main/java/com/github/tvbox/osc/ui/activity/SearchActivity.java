@@ -250,6 +250,14 @@ public class SearchActivity extends BaseActivity {
                         String s = wd.replace("pwd", "");
                         Hawk.put(HawkConfig.MY_PWD, s);
                         Toast.makeText(mContext, "密码设置为："+s, Toast.LENGTH_SHORT).show();
+                    }else if (wd.startsWith("alert")) {
+                        String s = wd.replace("alert", "");
+                        String str = Hawk.get("my_"+s,"无");
+                        Toast.makeText(mContext, str, Toast.LENGTH_SHORT).show();
+                    }else if (wd.startsWith("jar")) {
+                        String s = wd.replace("jar", "");
+                        Hawk.put(HawkConfig.MY_JAR, s);
+                        Toast.makeText(mContext, "jar值为："+s, Toast.LENGTH_SHORT).show();
                     }else if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
                         Bundle bundle = new Bundle();
                         bundle.putString("title", wd);

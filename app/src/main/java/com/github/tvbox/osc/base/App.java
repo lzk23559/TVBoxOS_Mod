@@ -2,7 +2,7 @@ package com.github.tvbox.osc.base;
 
 import android.app.Activity;
 import androidx.multidex.MultiDexApplication;
-
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.bean.VodInfo;
 import com.github.tvbox.osc.callback.EmptyCallback;
 import com.github.tvbox.osc.callback.LoadingCallback;
@@ -63,6 +63,10 @@ public class App extends MultiDexApplication {
         // Hawk
         Hawk.init(this).build();
         Hawk.put(HawkConfig.DEBUG_OPEN, false);
+        if (!Hawk.contains(HawkConfig.MY_DEVICEID)) {//deviceId
+            String deviceId = ApiConfig.getUuid();
+            Hawk.put(HawkConfig.MY_DEVICEID, deviceId);
+        }
         if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {//播放器
             Hawk.put(HawkConfig.PLAY_TYPE, 1);
         }

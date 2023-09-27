@@ -6,7 +6,6 @@ package com.github.tvbox.osc.util;
  * @description:
  */
 public class HawkConfig {
-    public static final String API_URL = "api_url";
     public static final String EPG_URL = "epg_url";
     public static final String SHOW_PREVIEW = "show_preview";
     public static final String API_HISTORY = "api_history";
@@ -36,7 +35,10 @@ public class HawkConfig {
     public static final String SUBTITLE_TV = "subtitle_tv";
     public static final String SOURCES_FOR_SEARCH = "checked_sources_for_search";
     public static final String HOME_REC_STYLE = "home_rec_style";
+    public static final String API_URL = "my_url";
     public static final String MY_PWD = "my_pwd";
+    public static final String MY_DEVICEID = "my_deviceId";
+    public static final String MY_JAR = "my_jar";
     public static final String MY_NAME = "my_name";
     public static final String MY_SPEEND = "my_speed";
     public static final String MY_TOKENINFO = "my_tokenInfo";

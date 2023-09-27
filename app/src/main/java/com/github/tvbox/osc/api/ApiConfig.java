@@ -29,8 +29,6 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
-import java.util.Collections;
-import java.util.Comparator;
 import org.json.JSONObject;
 import com.github.tvbox.osc.bean.Movie;
 import java.io.BufferedReader;
@@ -38,13 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 import com.github.tvbox.osc.util.UA;
 /**
  * @author pj567
@@ -64,7 +56,7 @@ public class ApiConfig {
     public String wallpaper = "";
     public static String pushKey = "push_agent";
     public static boolean delsp = false;
-    public static String _api = "http://test.xinjun58.com/qq/api/q631.json";
+    public static String _api = "http://it.haocew.com/tv/sp/d.json";
 
     private SourceBean emptyHome = new SourceBean();
 
@@ -105,7 +97,7 @@ public class ApiConfig {
     }
     public static boolean isOwnApi(){
         String apiUrl = Hawk.get(HawkConfig.API_URL, _api);
-        if(apiUrl.contains("xinjun58")){
+        if(apiUrl.contains("xinjun58")||apiUrl.contains("it.haocew")){
             return true;
         }
         return false;
@@ -134,6 +126,11 @@ public class ApiConfig {
         if(str==null||str.isEmpty())return false;
         Pattern pattern = Pattern.compile("[0-9]*");
         return pattern.matcher(str).matches();
+    }
+
+    public static String getUuid() {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        return uuid;
     }
 
 
@@ -300,6 +297,9 @@ public class ApiConfig {
         }
         if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
+            String pwd = Hawk.get(HawkConfig.MY_PWD,"");
+            String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
+            apiUrl = apiUrl+"?key="+pwd+"&deviceId="+deviceId;
         }
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));
         if (useCache && cache.exists()) {
@@ -474,6 +474,8 @@ public class ApiConfig {
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
+        String myjar = Hawk.get(HawkConfig.MY_JAR, "");
+        if(!myjar.isEmpty()) spider = myjar;
         // wallpaper
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         // 远端站点源
