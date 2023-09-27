@@ -328,6 +328,13 @@ public class SearchActivity extends BaseActivity {
             }
         });
         setLoadSir(llLayout);
+        tvSearchCheckboxBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                jumpActivity(SettingActivity.class);
+                return true;
+            }
+        });
         tvSearchCheckboxBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

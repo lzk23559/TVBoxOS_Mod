@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-
+import com.github.tvbox.osc.ui.activity.SearchActivity;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseActivity;
@@ -195,6 +195,13 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 if (wp.exists())
                     wp.delete();
                 ((BaseActivity) requireActivity()).changeWallpaper(true);
+            }
+        });
+        findViewById(R.id.llHomeApi).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                SearchActivity.start(mActivity, "", "");
+                return true;
             }
         });
         findViewById(R.id.llHomeApi).setOnClickListener(new View.OnClickListener() {
