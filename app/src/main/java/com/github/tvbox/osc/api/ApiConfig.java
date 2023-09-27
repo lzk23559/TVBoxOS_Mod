@@ -40,6 +40,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.github.tvbox.osc.util.UA;
+import com.github.tvbox.osc.ui.activity.SearchActivity;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -376,7 +377,8 @@ public class ApiConfig {
                                 th.printStackTrace();
                             }
                         }
-                        callback.error("拉取配置失败\n" + (response.getException() != null ? response.getException().getMessage() : ""));
+                        SearchActivity.start(activity, "", "");
+                        //callback.error("拉取配置失败\n" + (response.getException() != null ? response.getException().getMessage() : ""));
                     }
 
                     public String convertResponse(okhttp3.Response response) throws Throwable {
