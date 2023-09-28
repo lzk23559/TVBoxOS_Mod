@@ -292,12 +292,7 @@ public class ApiConfig {
         return "".getBytes();
     }
 
-    public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
-        String apiUrl2 = Hawk.get(HawkConfig.API_URL, _api);
-        if (apiUrl2.isEmpty()) {
-            callback.error("-1");
-            return;
-        }
+    public static String getApiUrl(String apiUrl2){
         if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
             if (!apiUrl2.contains("?")) {
@@ -306,7 +301,16 @@ public class ApiConfig {
                 apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId;
             }
         }
-        String apiUrl = apiUrl2;
+        return apiUrl2;
+    }
+
+    public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
+        String apiUrl2 = Hawk.get(HawkConfig.API_URL, _api);
+        if (apiUrl2.isEmpty()) {
+            callback.error("-1");
+            return;
+        }
+        String apiUrl = getApiUrl(apiUrl2);
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(apiUrl));
         if (useCache && cache.exists()) {
             try {

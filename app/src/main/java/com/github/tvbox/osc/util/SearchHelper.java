@@ -17,6 +17,7 @@ public class SearchHelper {
         try {
             String api = Hawk.get(HawkConfig.API_URL, "");
             if(api.isEmpty())return null;
+            api = ApiConfig.getApiUrl(api);
             HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, new HashMap<>());
             mCheckSources = mCheckSourcesForApi.get(api);
         } catch (Exception e) {
@@ -32,7 +33,7 @@ public class SearchHelper {
             return;
         }
         HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH,null);
-
+        api = ApiConfig.getApiUrl(api);
         if(isAll){
             if (mCheckSourcesForApi == null) return;
             if (mCheckSourcesForApi.containsKey(api)) mCheckSourcesForApi.remove(api);
