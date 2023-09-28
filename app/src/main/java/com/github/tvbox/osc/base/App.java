@@ -70,6 +70,9 @@ public class App extends MultiDexApplication {
         if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {//播放器
             Hawk.put(HawkConfig.PLAY_TYPE, 1);
         }
+        if (!Hawk.contains(HawkConfig.API_URL)) {
+            Hawk.put(HawkConfig.API_URL, ApiConfig._api);
+        }
         if (!Hawk.contains(HawkConfig.IJK_CODEC)) {
             Hawk.put(HawkConfig.IJK_CODEC,"硬解码");
         }
