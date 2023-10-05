@@ -1167,16 +1167,15 @@ public class VodController extends BaseController {
         try {
             if(mPlayLoadNetSpeed.getVisibility()==VISIBLE){
                 listener.replay(false);
-            }else {
+            }else {       
+                int current = (int) mControlWrapper.getCurrentPosition()/1000;
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
                 int currentst = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f && currentst == 0) {
+                if (speed2 == 1.0f && currentst == 0 && current < 30 ) {
                     sdrest();
-                }else {
-                    int current = (int) mControlWrapper.getCurrentPosition()/1000;
+                }else {            
                     if(current<330){ 
-                        if(currentst==0||currentst==110){
-                        showBottom();                    
+                        if(currentst==0||currentst==110){                                        
                         mPlayerConfig.put("st", current);
                         updatePlayerCfgView();
                         listener.updatePlayerCfg();
