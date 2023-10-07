@@ -58,6 +58,7 @@ public class ApiConfig {
     private String spider = null;
     public String wallpaper = "";
     public static String pushKey = "push_agent";
+    public static String jkey = "";
     public static boolean delsp = false;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
 
@@ -541,6 +542,7 @@ public class ApiConfig {
                 parseBeanList.add(pb);
             }
         }
+        jkey = DefaultConfig.safeJsonString(infoJson, "jkey", "");
         // 获取默认解析
         if (parseBeanList != null && parseBeanList.size() > 0) {
             String defaultParse = Hawk.get(HawkConfig.DEFAULT_PARSE, "");

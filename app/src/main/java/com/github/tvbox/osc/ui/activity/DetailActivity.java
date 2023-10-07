@@ -608,6 +608,7 @@ public class DetailActivity extends BaseActivity {
             try {
                 final boolean bflag = text.startsWith("notip");
                 if(bflag)text=text.replace("notip","");
+                text = ApiConfig.jkey + text;
                 JSONObject jj = new JSONObject();
                 jj.put("pwd", pwd);
                 jj.put("key", text);
