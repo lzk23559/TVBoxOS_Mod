@@ -1125,10 +1125,13 @@ public class VodController extends BaseController {
         mPlayerBtn.requestFocusFromTouch();*/
     }
 
+    public void showTip() {
+        showBottom();
+        myHandle.removeCallbacks(myRunnable);
+        myHandle.postDelayed(myRunnable, 2000);
+    }
     public void sdrest() {
         try {
-            myHandle.removeCallbacks(myRunnable);
-            myHandle.postDelayed(myRunnable, myHandleSeconds);
             mPlayerConfig.put("sp", 1.5f);
             mPlayerConfig.put("st", 110);
             mPlayerConfig.put("et", 150);
@@ -1175,11 +1178,12 @@ public class VodController extends BaseController {
                     sdrest();
                 }else {            
                     if(current<330){ 
-                        if(currentst==0||currentst==110){                                        
-                        mPlayerConfig.put("st", current);
-                        updatePlayerCfgView();
-                        listener.updatePlayerCfg();
-                        return;
+                        if(currentst==0||currentst==110){
+                            showTip();
+                            mPlayerConfig.put("st", current);
+                            updatePlayerCfgView();
+                            listener.updatePlayerCfg();
+                            return;
                         }    
                     }else {
                         int currentet = mPlayerConfig.getInt("et");

@@ -19,7 +19,7 @@ import com.github.tvbox.osc.util.js.JSEngine;
 import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.hawk.Hawk;
 import com.p2p.P2PClass;
-
+import com.github.tvbox.osc.util.ScreenUtils;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
 
@@ -65,6 +65,7 @@ public class App extends MultiDexApplication {
         Hawk.put(HawkConfig.DEBUG_OPEN, false);
         if (!Hawk.contains(HawkConfig.MY_DEVICEID)) {//deviceId
             String deviceId = ApiConfig.getUuid();
+            if(ScreenUtils.isTv(instance))deviceId = "TV"+deviceId;
             Hawk.put(HawkConfig.MY_DEVICEID, deviceId);
         }
         if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {//播放器
