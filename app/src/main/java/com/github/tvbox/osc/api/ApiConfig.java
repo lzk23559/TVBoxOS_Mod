@@ -302,7 +302,7 @@ public class ApiConfig {
             if (apiUrl2.contains("/d.json")) {
                 String pwd = Hawk.get(HawkConfig.MY_PWD,"");
                 String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
-                apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId;
+                apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId+"&v="+ version;
             }
         }
         return apiUrl2;
