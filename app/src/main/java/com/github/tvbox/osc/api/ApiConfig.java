@@ -58,6 +58,9 @@ public class ApiConfig {
     private String spider = null;
     public String wallpaper = "";
     public static String pushKey = "push_agent";
+    public static String dmsg = "";
+    public static String smsg = "";
+    public static String version = "v1.0.231010";
     public static String jkey = "";
     public static boolean delsp = false;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
@@ -296,7 +299,7 @@ public class ApiConfig {
     public static String getApiUrl(String apiUrl2){
         if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
-            if (!apiUrl2.contains("?")) {
+            if (apiUrl2.contains("/d.json")) {
                 String pwd = Hawk.get(HawkConfig.MY_PWD,"");
                 String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
                 apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId;
@@ -490,6 +493,9 @@ public class ApiConfig {
         if(!myjar.isEmpty()) spider = myjar;
         // wallpaper
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
+        ApiConfig.smsg = DefaultConfig.safeJsonString(infoJson, "smsg", "");
+        ApiConfig.dmsg = DefaultConfig.safeJsonString(infoJson, "jkey", "");
+        String qqext = DefaultConfig.safeJsonString(infoJson, "qqext", "");
         // 远端站点源
         SourceBean firstSite = null;
         for (JsonElement opt : infoJson.get("sites").getAsJsonArray()) {
@@ -505,7 +511,11 @@ public class ApiConfig {
             sb.setFilterable(DefaultConfig.safeJsonInt(obj, "filterable", 1));
             sb.setPlayerUrl(DefaultConfig.safeJsonString(obj, "playUrl", ""));
             if(obj.has("ext") && (obj.get("ext").isJsonObject() || obj.get("ext").isJsonArray())){
-                sb.setExt(obj.get("ext").toString());
+                String _ext = obj.get("ext").toString();
+                if(!qqext.isEmpty()){
+                    if (_ext.contains("xinjun58")||_ext.equals("qqext")||) _ext = qqext;
+                }
+                sb.setExt(_ext);
             }else {
                 sb.setExt(DefaultConfig.safeJsonString(obj, "ext", ""));
             }

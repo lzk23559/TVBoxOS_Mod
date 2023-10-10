@@ -65,7 +65,10 @@ public class App extends MultiDexApplication {
         Hawk.put(HawkConfig.DEBUG_OPEN, false);
         if (!Hawk.contains(HawkConfig.MY_DEVICEID)) {//deviceId
             String deviceId = ApiConfig.getUuid();
-            if(ScreenUtils.isTv(instance))deviceId = "TV"+deviceId;
+            if(ScreenUtils.isTv(instance)){
+                deviceId = "TV"+deviceId;
+                Hawk.put(HawkConfig.HOME_REC_STYLE, true);
+            }
             Hawk.put(HawkConfig.MY_DEVICEID, deviceId);
         }
         if (!Hawk.contains(HawkConfig.PLAY_TYPE)) {//播放器

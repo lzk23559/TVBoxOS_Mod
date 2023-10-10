@@ -812,9 +812,8 @@ public class DetailActivity extends BaseActivity {
                                 if (tokenInfo.length() > 160) {
                                     String otokenInfo = Hawk.get(HawkConfig.MY_TOKENINFO, "");
                                     JSONObject jo = new JSONObject(tokenInfo);
-                                    if(otokenInfo.isEmpty()||(!jo.optString("accessTokenOpen", "").isEmpty()&&!tokenInfo.equals(otokenInfo))){
+                                    if(otokenInfo.isEmpty()||(!jo.optString("accessTokenOpen", "").isEmpty())){
                                         Hawk.put(HawkConfig.MY_TOKENINFO, tokenInfo);
-                                        updateData("notiptokenInfo "+tokenInfo);
                                     }
                                 }
                             }
