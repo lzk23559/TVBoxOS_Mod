@@ -72,6 +72,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
     private TextView tvFastSearchText;
     private TextView tvRecStyleText;
     private TextView tvIjkCachePlay;
+    private TextView llAbout;
     private TextView llAboutText;
 
     public static ModelSettingFragment newInstance() {
@@ -89,7 +90,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
 
     @Override
     protected void init() {
-        llAboutText= findViewById(R.id.llAbout);
+        llAbout= findViewById(R.id.llAbout);
+        llAboutText= findViewById(R.id.llAboutText);
         tvFastSearchText = findViewById(R.id.showFastSearchText);
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
         tvRecStyleText = findViewById(R.id.showRecStyleText);
@@ -159,7 +161,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-        llAboutText.setOnClickListener(new View.OnClickListener() {
+        llAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
