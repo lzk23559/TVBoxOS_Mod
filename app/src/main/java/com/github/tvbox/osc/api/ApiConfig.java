@@ -513,7 +513,7 @@ public class ApiConfig {
             if(obj.has("ext") && (obj.get("ext").isJsonObject() || obj.get("ext").isJsonArray())){
                 String _ext = obj.get("ext").toString();
                 if(!qqext.isEmpty()){
-                    if (_ext.contains("xinjun58")||_ext.equals("qqext")||) _ext = qqext;
+                    if (_ext.contains("xinjun58")||_ext.equals("qqext")) _ext = qqext;
                 }
                 sb.setExt(_ext);
             }else {
