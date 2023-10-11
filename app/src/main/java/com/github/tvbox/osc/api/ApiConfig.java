@@ -61,6 +61,8 @@ public class ApiConfig {
     public static String dmsg = "";
     public static String smsg = "";
     public static String version = "v1.0.231010";
+    public static String sversion = "";
+    public static String appUrl = "";
     public static String jkey = "";
     public static boolean delsp = false;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
@@ -81,7 +83,7 @@ public class ApiConfig {
     }
 
     public static ApiConfig get() {
-        if (instance == null) {
+        if (instance == null) {    
             synchronized (ApiConfig.class) {
                 if (instance == null) {
                     instance = new ApiConfig();
@@ -495,6 +497,8 @@ public class ApiConfig {
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         ApiConfig.smsg = DefaultConfig.safeJsonString(infoJson, "smsg", "");
         ApiConfig.dmsg = DefaultConfig.safeJsonString(infoJson, "jkey", "");
+        ApiConfig.sversion = DefaultConfig.safeJsonString(infoJson, "sversion", "");
+        ApiConfig.appUrl = DefaultConfig.safeJsonString(infoJson, "appUrl", "");
         String qqext = DefaultConfig.safeJsonString(infoJson, "qqext", "");
         // 远端站点源
         SourceBean firstSite = null;

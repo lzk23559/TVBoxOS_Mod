@@ -123,7 +123,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvPlay.setText(PlayerHelper.getPlayerName(Hawk.get(HawkConfig.PLAY_TYPE, 1)));
         tvRender.setText(PlayerHelper.getRenderName(Hawk.get(HawkConfig.PLAY_RENDER, 1)));
         tvIjkCachePlay.setText(Hawk.get(HawkConfig.IJK_CACHE_PLAY, false) ? "开启" : "关闭");
-        llAboutText.setText("关于 " + ApiConfig.version);
+        llAboutText.setText("关于 " + ApiConfig.version+ApiConfig.dmsg);
         findViewById(R.id.llDebug).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,6 +166,15 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 FastClickCheckUtil.check(v);
                 AboutDialog dialog = new AboutDialog(mActivity);
                 dialog.show();
+            }
+        });
+        llAbout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String tip = "";
+                if(!ApiConfig.sversion.isEmpty())tip = ",版本号为："+ApiConfig.sversion;
+                DetailActivity.copyInfo(mContext, "App安装地址已复制"+tip,ApiConfig.appUrl );
+                return true;
             }
         });
         findViewById(R.id.llWp).setOnClickListener(new View.OnClickListener() {

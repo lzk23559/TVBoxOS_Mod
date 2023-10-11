@@ -391,13 +391,13 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
-        tvName.setOnLongClickListener(new View.OnLongClickListener() {
+        tvName.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 copyInfo("已复制标题",vodInfo.name);
-                return true;
             }
         });
+
         tvDes.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -593,6 +593,14 @@ public class DetailActivity extends BaseActivity {
     public void copyInfo(String title,String text){
         if (text != null) {
             ClipboardManager cm = (ClipboardManager)getSystemService(mContext.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText(null, text));
+            alert(title);
+        }
+    }
+
+    public static boolean copyInfo(Context context,String title,String text) {
+        if (text != null) {
+            ClipboardManager cm = (ClipboardManager)getSystemService(context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(ClipData.newPlainText(null, text));
             alert(title);
         }
