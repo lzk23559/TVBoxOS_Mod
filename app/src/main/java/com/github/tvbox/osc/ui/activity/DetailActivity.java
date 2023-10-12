@@ -601,7 +601,7 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    public static boolean copyInfo(Context context,String title,String text) {
+    public static void copyInfo(Context context,String title,String text) {
         if (text != null) {
             ClipboardManager cm = (ClipboardManager)context.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(ClipData.newPlainText(null, text));
