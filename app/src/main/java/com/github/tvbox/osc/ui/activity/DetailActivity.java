@@ -402,6 +402,9 @@ public class DetailActivity extends BaseActivity {
             @Override
             public boolean onLongClick(View v) {
                 //copyInfo("已复制站点信息",DefaultConfig.siteJson);
+                Bundle bundle = new Bundle();
+                bundle.putString("mypush", "yes");
+                jumpActivity(PushActivity.class, bundle);
                 return true;
             }
         });
@@ -601,6 +604,14 @@ public class DetailActivity extends BaseActivity {
     public static boolean copyInfo(Context context,String title,String text) {
         if (text != null) {
             ClipboardManager cm = (ClipboardManager)getSystemService(context.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(ClipData.newPlainText(null, text));
+            alert(title);
+        }
+    }
+
+    public static boolean copyInfo(Context context,String title,String text) {
+        if (text != null) {
+            ClipboardManager cm = (ClipboardManager)context.getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(ClipData.newPlainText(null, text));
             alert(title);
         }

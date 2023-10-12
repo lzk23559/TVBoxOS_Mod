@@ -159,8 +159,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-        
-       findViewById(R.id.llAbout).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llAbout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
@@ -168,7 +167,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-        llAbout.setOnLongClickListener(new View.OnLongClickListener() {
+        findViewById(R.id.llAbout).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 String tip = "";
