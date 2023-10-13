@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-
+import java.util.HashMap;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
@@ -477,6 +477,7 @@ public class VodController extends BaseController {
                     for(int p = 0; p<speeds.size(); p++) {
                         if (speeds.get(p) == speedType) {
                             defaultPos = p;
+                            break;
                         }
                     }
 
@@ -516,7 +517,7 @@ public class VodController extends BaseController {
                         public boolean areContentsTheSame(@NonNull @NotNull Float oldItem, @NonNull @NotNull Float newItem) {
                             return oldItem.intValue() == newItem.intValue();
                         }
-                    }, renders, defaultPos);
+                    }, speeds, defaultPos);
                     dialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
