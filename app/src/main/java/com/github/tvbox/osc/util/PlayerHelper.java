@@ -148,6 +148,29 @@ public class PlayerHelper {
         }
     }
 
+    private static HashMap<Float, String> mPlayersSpeed = null;
+    public static HashMap<Float, String> getPlayersSpeed() {
+        if (mPlayersSpeed == null) {
+            HashMap<Float, String> playersSpeed = new HashMap<>();
+            float ds= 0.5f;
+            for (int i = 0; i < 11; i++) {
+                playersSpeed.put(ds, ds+"倍速");
+                ds= ds+0.25f;
+            }
+            mPlayersSpeed = playersSpeed;
+        }
+        return mPlayersSpeed;
+    }
+
+    public static String getSpeedName(float speedType) {
+        HashMap<Float, String> playersSpeed = getPlayersSpeed();
+        if (playersSpeed.containsKey(playType)) {
+            return playersSpeed.get(speedType);
+        } else {
+            return "1.0倍速";
+        }
+    }
+
     public static String getPlayerName(int playType) {
         HashMap<Integer, String> playersInfo = getPlayersInfo();
         if (playersInfo.containsKey(playType)) {

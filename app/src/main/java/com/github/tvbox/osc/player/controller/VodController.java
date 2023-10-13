@@ -468,16 +468,56 @@ public class VodController extends BaseController {
             public void onClick(View view) {
                 myHandle.removeCallbacks(myRunnable);
                 myHandle.postDelayed(myRunnable, myHandleSeconds);
+                FastClickCheckUtil.check(view);
                 try {
-                    float speed = (float) mPlayerConfig.getDouble("sp");
-                    speed += 0.25f;
-                    if (speed > 3)
-                        speed = 0.5f;
-                    mPlayerConfig.put("sp", speed);
-                    updatePlayerCfgView();
-                    listener.updatePlayerCfg();
-                    speed_old = speed;
-                    mControlWrapper.setSpeed(speed);
+                    float speedType = (float) mPlayerConfig.getDouble("sp");
+                    int defaultPos = 2;
+                    HashMap<Float, String> mPlayersSpeed = PlayerHelper.getPlayersSpeed();
+                    ArrayList<Float> speeds = new ArrayList<Float>(mPlayersSpeed.keySet());
+                    for(int p = 0; p<speeds.size(); p++) {
+                        if (speeds.get(p) == speedType) {
+                            defaultPos = p;
+                        }
+                    }
+
+                    SelectDialog<Float> dialog = new SelectDialog<>(mActivity);
+                    dialog.setTip("请选择播放倍速");
+                    dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<Float>() {
+                        @Override
+                        public void click(Float value, int pos) {
+                            try {
+                                dialog.cancel();
+                                float thisSpeedType = speeds.get(pos);
+                                if (thisSpeedType != speedType) {
+                                    mPlayerConfig.put("sp", thisSpeedType);
+                                    updatePlayerCfgView();
+                                    listener.updatePlayerCfg();
+                                    speed_old = thisSpeedType;
+                                    mControlWrapper.setSpeed(thisSpeedType);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            mPlayerSpeedBtn.requestFocus();
+                            mPlayerSpeedBtn.requestFocusFromTouch();
+                        }
+
+                        @Override
+                        public String getDisplay(Float val) {
+                            return PlayerHelper.getSpeedName(val);
+                        }
+                    }, new DiffUtil.ItemCallback<Float>() {
+                        @Override
+                        public boolean areItemsTheSame(@NonNull @NotNull Float oldItem, @NonNull @NotNull Float newItem) {
+                            return oldItem.intValue() == newItem.intValue();
+                        }
+
+                        @Override
+                        public boolean areContentsTheSame(@NonNull @NotNull Float oldItem, @NonNull @NotNull Float newItem) {
+                            return oldItem.intValue() == newItem.intValue();
+                        }
+                    }, renders, defaultPos);
+                    dialog.show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
