@@ -500,7 +500,7 @@ public class ApiConfig {
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         ApiConfig.smsg = DefaultConfig.safeJsonString(infoJson, "smsg", "");
         ApiConfig.dmsg = jkey+" "+japi;
-        String apkv = Hawk.get(MY_APKV,"");
+        String apkv = Hawk.get(HawkConfig.MY_APKV,"");
         if(!apkv.isEmpty())ApiConfig.dmsg = apkv+ApiConfig.dmsg;
         ApiConfig.sversion = DefaultConfig.safeJsonString(infoJson, "sversion", "");
         ApiConfig.appUrl = DefaultConfig.safeJsonString(infoJson, "appUrl", "");

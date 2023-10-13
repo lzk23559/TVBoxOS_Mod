@@ -288,7 +288,7 @@ public class HomeActivity extends BaseActivity {
                 String pre = "",hname="";
                 if(ApiConfig.delsp)pre = "D.";
                 hname=pre + homeName;
-                String apkv = Hawk.get(MY_APKV,"");
+                String apkv = Hawk.get(HawkConfig.MY_APKV,"");
                 if(!apkv.isEmpty())hname = ApiConfig.dmsg;
                 tvName.setText(hname);
             }
