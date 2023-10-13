@@ -153,7 +153,7 @@ public class PlayerHelper {
         if (mPlayersSpeed == null) {
             HashMap<Float, String> playersSpeed = new HashMap<>();
             float ds= 0.5f;
-            for (int i = 0; i < 11; i++) {
+            for (int i = 0; i < 12; i++) {
                 playersSpeed.put(ds, ds+"倍速");
                 ds= ds+0.25f;
             }
