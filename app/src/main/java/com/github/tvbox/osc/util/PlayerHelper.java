@@ -16,12 +16,12 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.LinkHashMap；
 import tv.danmaku.ijk.media.player.IjkLibLoader;
 import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory;
 import xyz.doikki.videoplayer.player.AndroidMediaPlayerFactory;
 import xyz.doikki.videoplayer.player.PlayerFactory;
-import xyz.doikki.videoplayer.player.VideoView;
+import xyz.doikki.videoplayer.plVideoView;
 import xyz.doikki.videoplayer.render.RenderViewFactory;
 import xyz.doikki.videoplayer.render.TextureRenderViewFactory;
 
@@ -151,9 +151,9 @@ public class PlayerHelper {
     private static HashMap<Float, String> mPlayersSpeed = null;
     public static HashMap<Float, String> getPlayersSpeed() {
         if (mPlayersSpeed == null) {
-            HashMap<Float, String> playersSpeed = new HashMap<>();
+            HashMap<Float, String> playersSpeed = new LinkHashMap<>();
             float ds= 0.5f;
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < 15; i++) {
                 playersSpeed.put(ds, ds+"倍速");
                 ds= ds+0.25f;
             }
