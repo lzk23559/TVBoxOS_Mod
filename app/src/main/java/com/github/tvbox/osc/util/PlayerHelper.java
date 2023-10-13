@@ -164,7 +164,7 @@ public class PlayerHelper {
 
     public static String getSpeedName(float speedType) {
         HashMap<Float, String> playersSpeed = getPlayersSpeed();
-        if (playersSpeed.containsKey(playType)) {
+        if (playersSpeed.containsKey(speedType)) {
             return playersSpeed.get(speedType);
         } else {
             return "1.0倍速";
