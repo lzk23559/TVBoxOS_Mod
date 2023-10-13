@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkHashMap；
+import java.util.LinkedHashMap；
 import tv.danmaku.ijk.media.player.IjkLibLoader;
 import xyz.doikki.videoplayer.exo.ExoMediaPlayerFactory;
 import xyz.doikki.videoplayer.player.AndroidMediaPlayerFactory;
@@ -151,7 +151,7 @@ public class PlayerHelper {
     private static HashMap<Float, String> mPlayersSpeed = null;
     public static HashMap<Float, String> getPlayersSpeed() {
         if (mPlayersSpeed == null) {
-            HashMap<Float, String> playersSpeed = new LinkHashMap<>();
+            HashMap<Float, String> playersSpeed = new LinkedHashMap<>();
             float ds= 0.5f;
             for (int i = 0; i < 15; i++) {
                 playersSpeed.put(ds, ds+"倍速");
