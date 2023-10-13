@@ -60,10 +60,11 @@ public class ApiConfig {
     public static String pushKey = "push_agent";
     public static String dmsg = "";
     public static String smsg = "";
-    public static String version = "v1.0.231010";
+    public static String version = "v1.1.231013";
     public static String sversion = "";
     public static String appUrl = "";
     public static String jkey = "";
+    public static String japi = "";
     public static boolean delsp = false;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
 
@@ -493,10 +494,14 @@ public class ApiConfig {
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
         String myjar = Hawk.get(HawkConfig.MY_JAR, "");
         if(!myjar.isEmpty()) spider = myjar;
+        jkey = DefaultConfig.safeJsonString(infoJson, "jkey", "");
+        japi = DefaultConfig.safeJsonString(infoJson, "japi", "");
         // wallpaper
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         ApiConfig.smsg = DefaultConfig.safeJsonString(infoJson, "smsg", "");
-        ApiConfig.dmsg = DefaultConfig.safeJsonString(infoJson, "jkey", "");
+        ApiConfig.dmsg = jkey+" "+japi;
+        String apkv = Hawk.get(MY_APKV,"");
+        if(!apkv.isEmpty())ApiConfig.dmsg = apkv+ApiConfig.dmsg;
         ApiConfig.sversion = DefaultConfig.safeJsonString(infoJson, "sversion", "");
         ApiConfig.appUrl = DefaultConfig.safeJsonString(infoJson, "appUrl", "");
         String qqext = DefaultConfig.safeJsonString(infoJson, "qqext", "");
@@ -556,7 +561,6 @@ public class ApiConfig {
                 parseBeanList.add(pb);
             }
         }
-        jkey = DefaultConfig.safeJsonString(infoJson, "jkey", "");
         // 获取默认解析
         if (parseBeanList != null && parseBeanList.size() > 0) {
             String defaultParse = Hawk.get(HawkConfig.DEFAULT_PARSE, "");

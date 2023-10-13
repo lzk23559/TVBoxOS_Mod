@@ -285,9 +285,12 @@ public class HomeActivity extends BaseActivity {
         if (home != null) {
             String homeName = home.getName();
             if (homeName != null && !homeName.isEmpty()){
-                String pre = "";
+                String pre = "",hname="";
                 if(ApiConfig.delsp)pre = "D.";
-                tvName.setText(pre + homeName);
+                hname=pre + homeName;
+                String apkv = Hawk.get(MY_APKV,"");
+                if(!apkv.isEmpty())hname = ApiConfig.dmsg;
+                tvName.setText(hname);
             }
         }
         if (dataInitOk && jarInitOk) {

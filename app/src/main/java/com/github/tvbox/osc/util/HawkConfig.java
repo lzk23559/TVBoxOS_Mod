@@ -37,6 +37,7 @@ public class HawkConfig {
     public static final String HOME_REC_STYLE = "home_rec_style";
     public static final String API_URL = "my_url";
     public static final String MY_PWD = "my_pwd";
+    public static final String MY_APKV = "my_apkv";
     public static final String MY_DEVICEID = "my_deviceId";
     public static final String MY_JAR = "my_jar";
     public static final String MY_NAME = "my_name";

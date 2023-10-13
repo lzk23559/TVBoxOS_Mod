@@ -1174,23 +1174,26 @@ public class VodController extends BaseController {
                 int current = (int) mControlWrapper.getCurrentPosition()/1000;
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
                 int currentst = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f && currentst == 0 && current < 30 ) {
+                if (speed2 == 1.0f && currentst == 0 && current < 6 ) {
                     sdrest();
                 }else {            
                     if(current<330){ 
                         if(currentst==0||currentst==110){
-                            showTip();
-                            mPlayerConfig.put("st", current);
-                            updatePlayerCfgView();
-                            listener.updatePlayerCfg();
-                            return;
-                        }    
+                            int currentet = mPlayerConfig.getInt("et");
+                            if(currentet==0||currentet==150){
+                                showTip();
+                                mPlayerConfig.put("st", current);
+                                updatePlayerCfgView();
+                                listener.updatePlayerCfg();
+                                return;
+                            }
+                        }
                     }else {
                         int currentet = mPlayerConfig.getInt("et");
                         if(currentet==0||currentet==150){
-                        int duration = (int) mControlWrapper.getDuration()/1000;
-                        int cd = duration - current;
-                        if(cd<330) mPlayerConfig.put("et", cd);
+                            int duration = (int) mControlWrapper.getDuration()/1000;
+                            int cd = duration - current;
+                            if(cd<330) mPlayerConfig.put("et", cd);
                         }    
                     }
                     updatePlayerCfgView();
