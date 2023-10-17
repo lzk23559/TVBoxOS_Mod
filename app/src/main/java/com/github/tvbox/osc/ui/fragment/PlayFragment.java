@@ -349,10 +349,8 @@ public class PlayFragment extends BaseLazyFragment {
     void setSubtitleViewTextStyle(int style) {
         if (style == 0) {
             mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_FFFFFF));
-            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_CC000000));
         } else if (style == 1) {
             mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_F063BE));
-            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
         }
     }
 
