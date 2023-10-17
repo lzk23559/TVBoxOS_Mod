@@ -60,7 +60,7 @@ public class ApiConfig {
     public static String pushKey = "push_agent";
     public static String dmsg = "";
     public static String smsg = "";
-    public static String version = "v1.1.231013";
+    public static String version = "v2.1.231017";
     public static String sversion = "";
     public static String appUrl = "";
     public static String jkey = "";
@@ -520,13 +520,14 @@ public class ApiConfig {
             sb.setFilterable(DefaultConfig.safeJsonInt(obj, "filterable", 1));
             sb.setPlayerUrl(DefaultConfig.safeJsonString(obj, "playUrl", ""));
             if(obj.has("ext") && (obj.get("ext").isJsonObject() || obj.get("ext").isJsonArray())){
-                String _ext = obj.get("ext").toString();
-                if(!qqext.isEmpty()){
-                    if (_ext.contains("xinjun58")||_ext.equals("qqext")) _ext = qqext;
-                }
-                sb.setExt(_ext);
+                sb.setExt(obj.get("ext").toString());
             }else {
                 sb.setExt(DefaultConfig.safeJsonString(obj, "ext", ""));
+            }
+            String _ext = sb.getExt();
+            if(!qqext.isEmpty()&&!_ext.isEmpty()){
+                if (_ext.contains("xinjun58")||_ext.equals("qqext")) _ext = qqext;
+                sb.setExt(_ext);
             }
             sb.setJar(DefaultConfig.safeJsonString(obj, "jar", ""));
             sb.setPlayerType(DefaultConfig.safeJsonInt(obj, "playerType", -1));

@@ -45,6 +45,8 @@ public class HawkConfig {
     public static final String MY_TOKENINFO = "my_tokenInfo";
     public static final String MY_VIDEO_DETAIL = "my_video_detail";
     public static final String MY_BX = "my_bx";
+    public static final String MY_CURSIZE = "my_curSize";
+    public static final String MY_CURSTYLE = "my_curStyle";
     public static final String TIME_FLAG = "my_time_flag";//右上角 播放进度和时间
     public static final String NOW_DATE = "now_date"; //当前日期
     public static final String REMOTE_TVBOX = "remote_tvbox_host";

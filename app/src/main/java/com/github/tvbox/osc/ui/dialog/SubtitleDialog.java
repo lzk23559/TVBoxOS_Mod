@@ -5,9 +5,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
+import com.github.tvbox.osc.util.HawkConfig;
+import com.orhanobut.hawk.Hawk;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.SubtitleHelper;
@@ -86,6 +86,7 @@ public class SubtitleDialog extends BaseDialog {
                 }
                 subtitleSizeText.setText(Integer.toString(curSize));
                 SubtitleHelper.setTextSize(curSize);
+                Hawk.put(HawkConfig.MY_CURSIZE,curSize);
                 mSubtitleViewListener.setTextSize(curSize);
             }
         });
@@ -100,6 +101,7 @@ public class SubtitleDialog extends BaseDialog {
                 }
                 subtitleSizeText.setText(Integer.toString(curSize));
                 SubtitleHelper.setTextSize(curSize);
+                Hawk.put(HawkConfig.MY_CURSIZE,curSize);
                 mSubtitleViewListener.setTextSize(curSize);
             }
         });
@@ -162,24 +164,24 @@ public class SubtitleDialog extends BaseDialog {
         subtitleStyleOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int style = 0;
-                dismiss();
-                mSubtitleViewListener.setTextStyle(style);
-                Toast.makeText(getContext(), "设置样式成功", Toast.LENGTH_SHORT).show();
+                setCurStyle(0);
             }
         });
 
         subtitleStyleTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int style = 1;
-                dismiss();
-                mSubtitleViewListener.setTextStyle(style);
-                Toast.makeText(getContext(), "设置样式成功", Toast.LENGTH_SHORT).show();
+                setCurStyle(1);
             }
         });
     }
 
+    public void setCurStyle(int type) {
+        dismiss();
+        mSubtitleViewListener.setTextStyle(style);
+        Hawk.put(HawkConfig.MY_CURSTYLE,style);
+        Toast.makeText(getContext(), "设置样式成功", Toast.LENGTH_SHORT).show();
+    }
     public void setLocalFileChooserListener(LocalFileChooserListener localFileChooserListener) {
         mLocalFileChooserListener = localFileChooserListener;
     }
@@ -198,6 +200,10 @@ public class SubtitleDialog extends BaseDialog {
 
     public void setSubtitleViewListener(SubtitleViewListener subtitleViewListener) {
         mSubtitleViewListener = subtitleViewListener;
+        int curSize = Hawk.get(HawkConfig.MY_CURSIZE, 16);
+        int style = Hawk.get(HawkConfig.MY_CURSTYLE, 0);
+        mSubtitleViewListener.setTextSize(curSize);
+        mSubtitleViewListener.setTextStyle(style);
     }
 
     public interface SubtitleViewListener {

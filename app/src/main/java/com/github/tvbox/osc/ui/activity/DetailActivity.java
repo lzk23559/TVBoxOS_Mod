@@ -334,7 +334,32 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
-        tvTag.setOnClickListener(new View.OnClickListener() {
+        tvType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tvType.getText().startsWith("阿里")) {
+                    String tagInfo = vodInfo.tag;
+                    if (tokenInfo != null) {
+                        tagInfo = tokenInfo;
+                        copyInfo("已复制token","tokenInfo "+tagInfo);
+                    }
+                }
+            }
+        });
+        tvType.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (tvType.getText().startsWith("阿里")) {
+                    String tagInfo = vodInfo.tag;
+                    if (tokenInfo != null) {
+                        tagInfo = tokenInfo;
+                        alert(tagInfo);
+                    }
+                }
+                return true;
+            }
+        });
+        /*tvTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tagInfo = vodInfo.tag;
@@ -343,7 +368,7 @@ public class DetailActivity extends BaseActivity {
                 }
                 copyInfo("已复制token",tagInfo);
             }
-        });
+        });*/
 
         tvTag.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
