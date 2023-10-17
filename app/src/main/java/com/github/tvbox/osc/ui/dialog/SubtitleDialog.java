@@ -176,7 +176,7 @@ public class SubtitleDialog extends BaseDialog {
         });
     }
 
-    public void setCurStyle(int type) {
+    public void setCurStyle(int style) {
         dismiss();
         mSubtitleViewListener.setTextStyle(style);
         Hawk.put(HawkConfig.MY_CURSTYLE,style);

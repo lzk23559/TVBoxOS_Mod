@@ -337,7 +337,7 @@ public class DetailActivity extends BaseActivity {
         tvType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tvType.getText().startsWith("阿里")) {
+                if (tvType.getText().equals("阿里云盘")) {
                     String tagInfo = vodInfo.tag;
                     if (tokenInfo != null) {
                         tagInfo = tokenInfo;
@@ -349,7 +349,7 @@ public class DetailActivity extends BaseActivity {
         tvType.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (tvType.getText().startsWith("阿里")) {
+                if (tvType.getText().equals("阿里云盘")) {
                     String tagInfo = vodInfo.tag;
                     if (tokenInfo != null) {
                         tagInfo = tokenInfo;
