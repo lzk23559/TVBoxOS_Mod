@@ -251,7 +251,7 @@ public class PlayActivity extends BaseActivity {
             mController.mSubtitleView.setVisibility(View.GONE);
             mController.mSubtitleView.setSubtitlePath(path);
             mController.mSubtitleView.setVisibility(View.VISIBLE);
-        }
+        }else mController.mSubtitleView.setVisibility(View.GONE);
     }
 
     void selectMySubtitle() throws Exception {
