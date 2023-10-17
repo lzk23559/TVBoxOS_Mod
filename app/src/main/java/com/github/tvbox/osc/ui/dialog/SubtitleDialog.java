@@ -200,10 +200,6 @@ public class SubtitleDialog extends BaseDialog {
 
     public void setSubtitleViewListener(SubtitleViewListener subtitleViewListener) {
         mSubtitleViewListener = subtitleViewListener;
-        int curSize = Hawk.get(HawkConfig.MY_CURSIZE, 16);
-        int style = Hawk.get(HawkConfig.MY_CURSTYLE, 0);
-        mSubtitleViewListener.setTextSize(curSize);
-        mSubtitleViewListener.setTextStyle(style);
     }
 
     public interface SubtitleViewListener {

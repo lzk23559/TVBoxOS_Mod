@@ -77,7 +77,7 @@ import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.Response;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 import com.orhanobut.hawk.Hawk;
-
+import com.github.tvbox.osc.util.ScreenUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -349,7 +349,7 @@ public class PlayFragment extends BaseLazyFragment {
         if (style == 0) {
             mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_FFFFFF));
         } else if (style == 1) {
-            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_FFB6C1));
+            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_F063BE));
         }
     }
 
@@ -576,6 +576,12 @@ public class PlayFragment extends BaseLazyFragment {
             trackInfo = ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).getTrackInfo();
             if (trackInfo != null && trackInfo.getSubtitle().size() > 0) {
                 mController.mSubtitleView.hasInternal = true;
+                int dsize=16;
+                if (ScreenUtils.isTv(getContext()))dsize=20;
+                int curSize = Hawk.get(HawkConfig.MY_CURSIZE, dsize);
+                int style = Hawk.get(HawkConfig.MY_CURSTYLE, 0);
+                mController.mSubtitleView.setTextSize(curSize)
+                setSubtitleViewTextStyle(style);
             }
             ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).setOnTimedTextListener(new IMediaPlayer.OnTimedTextListener() {
                 @Override

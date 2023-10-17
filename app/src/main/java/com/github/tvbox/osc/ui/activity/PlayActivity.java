@@ -33,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.tvbox.osc.cache.RoomDataManger;
-
+import com.github.tvbox.osc.util.ScreenUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -274,6 +274,7 @@ public class PlayActivity extends BaseActivity {
             @Override
             public void selectInternalSubtitle() {
                 selectMyInternalSubtitle();
+
             }
             @Override
             public void setTextStyle(int style) {
@@ -332,7 +333,7 @@ public class PlayActivity extends BaseActivity {
         if (style == 0) {
             mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
         } else if (style == 1) {
-            mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_FFB6C1));
+            mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_F063BE));
         }
     }
 
@@ -415,6 +416,7 @@ public class PlayActivity extends BaseActivity {
         List<TrackInfoBean> bean = trackInfo.getSubtitle();
         if (bean.size() < 1) return;
         bean.get(0).selected=true;
+
         SelectDialog<TrackInfoBean> dialog = new SelectDialog<>(PlayActivity.this);
         dialog.setTip("切换内置字幕");
         dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<TrackInfoBean>() {
@@ -557,6 +559,12 @@ public class PlayActivity extends BaseActivity {
             trackInfo = ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).getTrackInfo();
             if (trackInfo != null && trackInfo.getSubtitle().size() > 0) {
                 mController.mSubtitleView.hasInternal = true;
+                int dsize=16;
+                if (ScreenUtils.isTv(mContext))dsize=20;
+                int curSize = Hawk.get(HawkConfig.MY_CURSIZE, dsize);
+                int style = Hawk.get(HawkConfig.MY_CURSTYLE, 0);
+                mController.mSubtitleView.setTextSize(curSize)
+                setSubtitleViewTextStyle(style);
             }
             ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).setOnTimedTextListener(new IMediaPlayer.OnTimedTextListener() {
                 @Override
