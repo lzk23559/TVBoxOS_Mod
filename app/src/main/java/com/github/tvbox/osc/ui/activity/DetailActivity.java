@@ -337,8 +337,6 @@ public class DetailActivity extends BaseActivity {
         tvType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                alert(tvType.getText());
-                alert(tvType.getText().toString().equals("阿里云盘"));
                 String tagInfo = vodInfo.tag;
                 if (tokenInfo != null) {
                     tagInfo = tokenInfo;
