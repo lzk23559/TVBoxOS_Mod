@@ -948,7 +948,7 @@ public class DetailActivity extends BaseActivity {
                             if (mVideo.pic != null) {
                                 if (ApiConfig.isPic(mVideo.pic)&&mVideo.pic.contains("doubanio")) {
                                     spPic = mVideo.pic;
-                                    if(sourceKey.equals("push_agentqq")&&!spPic.contains(wdPic)){
+                                    if(sourceKey.equals("push_agentqq")&&!spPic.contains(wdPic)&&!wdPic.contains(spPic)){
                                         updateData("notip" + spId + " " + spPic);
                                     }
                                     wdPic = spPic;
