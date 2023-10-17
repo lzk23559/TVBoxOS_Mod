@@ -274,7 +274,6 @@ public class PlayActivity extends BaseActivity {
             @Override
             public void selectInternalSubtitle() {
                 selectMyInternalSubtitle();
-
             }
             @Override
             public void setTextStyle(int style) {
@@ -332,8 +331,10 @@ public class PlayActivity extends BaseActivity {
     void setSubtitleViewTextStyle(int style) {
         if (style == 0) {
             mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
+            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_CC000000));
         } else if (style == 1) {
             mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_F063BE));
+            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
         }
     }
 
