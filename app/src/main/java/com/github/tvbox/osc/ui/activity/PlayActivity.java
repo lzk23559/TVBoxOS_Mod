@@ -169,6 +169,7 @@ public class PlayActivity extends BaseActivity {
         mPlayLoading = findViewById(R.id.play_loading);
         mPlayLoadErr = findViewById(R.id.play_load_error);
         mController = new VodController(this);
+        mController.mSubtitleView.setVisibility(View.GONE);
         mController.setCanChangePosition(true);
         mController.setEnableInNormal(true);
         mController.setGestureEnabled(true);
@@ -331,10 +332,8 @@ public class PlayActivity extends BaseActivity {
     void setSubtitleViewTextStyle(int style) {
         if (style == 0) {
             mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
-            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_CC000000));
         } else if (style == 1) {
             mController.mSubtitleView.setTextColor(getBaseContext().getResources().getColorStateList(R.color.color_F063BE));
-            mController.mSubtitleView.setShadowColor(getBaseContext().getResources().getColorStateList(R.color.color_FFFFFF));
         }
     }
 

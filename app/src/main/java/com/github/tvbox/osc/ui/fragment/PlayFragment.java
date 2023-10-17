@@ -187,6 +187,7 @@ public class PlayFragment extends BaseLazyFragment {
         mPlayLoading = findViewById(R.id.play_loading);
         mPlayLoadErr = findViewById(R.id.play_load_error);
         mController = new VodController(requireContext());
+        mController.mSubtitleView.setVisibility(View.GONE);
         mController.setCanChangePosition(true);
         mController.setEnableInNormal(true);
         mController.setGestureEnabled(true);
@@ -268,7 +269,7 @@ public class PlayFragment extends BaseLazyFragment {
             mController.mSubtitleView.setVisibility(View.GONE);
             mController.mSubtitleView.setSubtitlePath(path);
             mController.mSubtitleView.setVisibility(View.VISIBLE);
-        }
+        } else mController.mSubtitleView.setVisibility(View.GONE);
     }
 
     void selectMySubtitle() throws Exception {
