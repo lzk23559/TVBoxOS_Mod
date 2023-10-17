@@ -563,7 +563,7 @@ public class PlayActivity extends BaseActivity {
                 if (ScreenUtils.isTv(mContext))dsize=20;
                 int curSize = Hawk.get(HawkConfig.MY_CURSIZE, dsize);
                 int style = Hawk.get(HawkConfig.MY_CURSTYLE, 0);
-                mController.mSubtitleView.setTextSize(curSize)
+                mController.mSubtitleView.setTextSize(curSize);
                 setSubtitleViewTextStyle(style);
             }
             ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).setOnTimedTextListener(new IMediaPlayer.OnTimedTextListener() {
