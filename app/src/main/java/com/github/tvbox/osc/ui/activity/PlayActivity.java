@@ -555,6 +555,7 @@ public class PlayActivity extends BaseActivity {
     private void initSubtitleView() {
         TrackInfo trackInfo = null;
         if (mVideoView.getMediaPlayer() instanceof IjkMediaPlayer) {
+            ApiConfig.subflag = true;
             trackInfo = ((IjkMediaPlayer)(mVideoView.getMediaPlayer())).getTrackInfo();
             if (trackInfo != null && trackInfo.getSubtitle().size() > 0) {
                 mController.mSubtitleView.hasInternal = true;
@@ -575,6 +576,10 @@ public class PlayActivity extends BaseActivity {
                     }
                 }
             });
+        }else {
+            ApiConfig.subflag = false;
+            mController.mSubtitleView.setVisibility(View.GONE);
+            return;
         }
         mController.mSubtitleView.bindToMediaPlayer(mVideoView.getMediaPlayer());
         mController.mSubtitleView.setPlaySubtitleCacheKey(subtitleCacheKey);

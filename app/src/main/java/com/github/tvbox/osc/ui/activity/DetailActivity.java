@@ -173,6 +173,14 @@ public class DetailActivity extends BaseActivity {
     public static void start(Activity activity, String key, String id, String name, String pic) {
         start(activity,key,id,name,pic,true);
     }
+    public static void start(Activity activity,String keyIdName) {
+        String [] arr = idName.split(",");
+        String key = arr[0];
+        String id = arr[1];
+        String name = "";
+        if (arr.length > 2) name = arr[2];
+        start(activity,key,id,name,"",true);
+    }
     private void initView() {
         llLayout = findViewById(R.id.llLayout);
         llPlayerPlace = findViewById(R.id.previewPlayerPlace);
@@ -235,8 +243,13 @@ public class DetailActivity extends BaseActivity {
 
         //禁用播放地址焦点
         tvPlayUrl.setFocusable(false);
-
-        llPlayerFragmentContainerBlock.setOnClickListener((view -> toggleFullPreview()));
+        llPlayerFragmentContainerBlock.setOnClickListener(new View.OnClickListener() {
+            if(ApiConfig.isAli(spId)){
+                String endSP = sourceKey + "," + spId + "," + vodInfo.name;
+                Hawk.put(HawkConfig.MY_ENDSP, endSP);
+            }
+            toggleFullPreview();
+        });
         llPlayerFragmentContainerBlock.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -290,6 +303,7 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
+                Hawk.put(HawkConfig.MY_ENDSP, "");
                 if (showPreview) {
                     toggleFullPreview();
                     if(firstReverse){
@@ -1335,12 +1349,13 @@ public class DetailActivity extends BaseActivity {
         toggleSubtitleTextSize();
     }
 
-    int subtitleTextSize = 0;
     void toggleSubtitleTextSize() {
-        if(subtitleTextSize==0)subtitleTextSize  = SubtitleHelper.getTextSize(this);
-        if (!fullWindows) {
-            subtitleTextSize *= 0.6;
+        if (ApiConfig.subflag) {
+            int subtitleTextSize  = Hawk.get(HawkConfig.MY_CURSIZE, 16);
+            if (!fullWindows) {
+                subtitleTextSize *= 0.6;
+            }
+            EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SUBTITLE_SIZE_CHANGE, subtitleTextSize));
         }
-        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SUBTITLE_SIZE_CHANGE, subtitleTextSize));
     }
 }

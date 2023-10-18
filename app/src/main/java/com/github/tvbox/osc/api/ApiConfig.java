@@ -57,6 +57,7 @@ public class ApiConfig {
     private List<IJKCode> ijkCodes;
     private String spider = null;
     public String wallpaper = "";
+    public static subflag=false;
     public static String pushKey = "push_agent";
     public static String dmsg = "";
     public static String smsg = "";
