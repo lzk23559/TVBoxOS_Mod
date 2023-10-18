@@ -579,7 +579,6 @@ public class PlayActivity extends BaseActivity {
         }else {
             ApiConfig.subflag = false;
             mController.mSubtitleView.setVisibility(View.GONE);
-            return;
         }
         mController.mSubtitleView.bindToMediaPlayer(mVideoView.getMediaPlayer());
         mController.mSubtitleView.setPlaySubtitleCacheKey(subtitleCacheKey);
