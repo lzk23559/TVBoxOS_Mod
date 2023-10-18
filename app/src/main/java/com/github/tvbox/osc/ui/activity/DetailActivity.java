@@ -1023,8 +1023,10 @@ public class DetailActivity extends BaseActivity {
                                 jumpToPlay();
                                 llPlayerFragmentContainer.setVisibility(View.VISIBLE);
                                 llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
-                                toggleSubtitleTextSize();
                             }
+                            alert("fullWindows:" + fullWindows);
+                            if(fullWindows) toggleFullPreview()
+                            else toggleSubtitleTextSize();
                             // startQuickSearch();
                         } else {
                             mGridViewFlag.setVisibility(View.GONE);
@@ -1358,6 +1360,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     void toggleSubtitleTextSize() {
+        alert("toggle3:"+ApiConfig.subflag);
         if (ApiConfig.subflag) {
             int subtitleTextSize  = Hawk.get(HawkConfig.MY_CURSIZE, 16);
             if (!fullWindows) {
