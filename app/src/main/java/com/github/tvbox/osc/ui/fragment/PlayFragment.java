@@ -186,8 +186,7 @@ public class PlayFragment extends BaseLazyFragment {
         mPlayLoadTip = findViewById(R.id.play_load_tip);
         mPlayLoading = findViewById(R.id.play_loading);
         mPlayLoadErr = findViewById(R.id.play_load_error);
-        mController = new VodController(requireContext());
-        mController.mSubtitleView.setVisibility(View.GONE);
+        mController = new VodController(requireContext());        
         mController.setCanChangePosition(true);
         mController.setEnableInNormal(true);
         mController.setGestureEnabled(true);
@@ -348,9 +347,9 @@ public class PlayFragment extends BaseLazyFragment {
     @SuppressLint("UseCompatLoadingForColorStateLists")
     void setSubtitleViewTextStyle(int style) {
         if (style == 0) {
-            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_FFFFFF));
+            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_FFFFFF));            
         } else if (style == 1) {
-            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_F063BE));
+            mController.mSubtitleView.setTextColor(getContext().getResources().getColorStateList(R.color.color_F063BE));            
         }
     }
 
