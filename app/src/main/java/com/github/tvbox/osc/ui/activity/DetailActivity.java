@@ -159,6 +159,7 @@ public class DetailActivity extends BaseActivity {
         initView();
         initViewModel();
         initData();
+        toggleSubtitleTextSize();
     }
 
     public static void start(Activity activity, String key, String id, String name, String pic, boolean clean, boolean fullWindows) {
@@ -1024,8 +1025,10 @@ public class DetailActivity extends BaseActivity {
                                 llPlayerFragmentContainer.setVisibility(View.VISIBLE);
                                 llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
                             }
-                            if(fullWindows) toggleFullPreview();
-                            else toggleSubtitleTextSize();
+                            if(fullWindows) {
+                                fullWindows = false;
+                                toggleFullPreview();
+                            }
                             // startQuickSearch();
                         } else {
                             mGridViewFlag.setVisibility(View.GONE);
