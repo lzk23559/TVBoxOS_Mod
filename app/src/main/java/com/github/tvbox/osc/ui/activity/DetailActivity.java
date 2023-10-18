@@ -1025,7 +1025,7 @@ public class DetailActivity extends BaseActivity {
                                 llPlayerFragmentContainerBlock.setVisibility(View.VISIBLE);
                             }
                             alert("fullWindows:" + fullWindows);
-                            if(fullWindows) toggleFullPreview()
+                            if(fullWindows) toggleFullPreview();
                             else toggleSubtitleTextSize();
                             // startQuickSearch();
                         } else {
