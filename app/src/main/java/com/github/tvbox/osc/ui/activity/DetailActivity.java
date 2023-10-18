@@ -174,7 +174,7 @@ public class DetailActivity extends BaseActivity {
         start(activity,key,id,name,pic,true);
     }
     public static void start(Activity activity,String keyIdName) {
-        String [] arr = idName.split(",");
+        String [] arr = keyIdName.split(",");
         String key = arr[0];
         String id = arr[1];
         String name = "";
