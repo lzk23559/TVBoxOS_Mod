@@ -244,11 +244,14 @@ public class DetailActivity extends BaseActivity {
         //禁用播放地址焦点
         tvPlayUrl.setFocusable(false);
         llPlayerFragmentContainerBlock.setOnClickListener(new View.OnClickListener() {
-            if(ApiConfig.isAli(spId)){
-                String endSP = sourceKey + "," + spId + "," + vodInfo.name;
-                Hawk.put(HawkConfig.MY_ENDSP, endSP);
+            @Override
+            public void onClick(View v) {
+                if(ApiConfig.isAli(spId)){
+                    String endSP = sourceKey + "," + spId + "," + vodInfo.name;
+                    Hawk.put(HawkConfig.MY_ENDSP, endSP);
+                }
+                toggleFullPreview();
             }
-            toggleFullPreview();
         });
         llPlayerFragmentContainerBlock.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
