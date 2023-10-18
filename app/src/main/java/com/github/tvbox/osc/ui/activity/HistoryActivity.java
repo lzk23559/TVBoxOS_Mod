@@ -106,7 +106,7 @@ public class HistoryActivity extends BaseActivity {
                         historyAdapter.remove(position);
                         RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);
                     } else {
-                        DetailActivity.start( HistoryActivity.this, vodInfo.sourceKey, vodInfo.id, vodInfo.name, vodInfo.pic);
+                        DetailActivity.start(HistoryActivity.this, vodInfo.sourceKey, vodInfo.id, vodInfo.name, vodInfo.pic, true, true);
                     }
                 }
             }

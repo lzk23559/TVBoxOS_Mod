@@ -161,17 +161,21 @@ public class DetailActivity extends BaseActivity {
         initData();
     }
 
-    public static void start(Activity activity, String key, String id, String name, String pic,boolean clean) {
+    public static void start(Activity activity, String key, String id, String name, String pic, boolean clean, boolean fullWindows) {
         Intent newIntent = new Intent(activity, DetailActivity.class);
         newIntent.putExtra("wdName", name);
         newIntent.putExtra("sourceKey", key);
         newIntent.putExtra("id", id);
         newIntent.putExtra("wdPic", pic);
+        newIntent.putExtra("fullWindows", fullWindows);
         if(clean)newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         activity.startActivity(newIntent);
     }
+    public static void start(Activity activity, String key, String id, String name, String pic,boolean clean) {
+        start(activity, key, id, name, pic, clean, false);
+    }
     public static void start(Activity activity, String key, String id, String name, String pic) {
-        start(activity,key,id,name,pic,true);
+        start(activity, key, id, name, pic, true, false);
     }
     public static void start(Activity activity,String keyIdName) {
         String [] arr = keyIdName.split(",");
@@ -179,7 +183,7 @@ public class DetailActivity extends BaseActivity {
         String id = arr[1];
         String name = "";
         if (arr.length > 2) name = arr[2];
-        start(activity,key,id,name,"",true);
+        start(activity, key, id, name, "", true, true);
     }
     private void initView() {
         llLayout = findViewById(R.id.llLayout);
@@ -1076,6 +1080,7 @@ public class DetailActivity extends BaseActivity {
             if(!wdPic.isEmpty()) wdPic = wdPic.split("\\?")[0];
             spId = bundle.getString("id", null);
             sourceKey = bundle.getString("sourceKey", "");
+            fullWindows = bundle.getBoolean("fullWindows", false);
             if(!wdName.isEmpty())wdName = wdName.split("\\?")[0];
             if(sourceKey.equals("push_agentqq")){
                 String[] idInfo = spId.split(",");
