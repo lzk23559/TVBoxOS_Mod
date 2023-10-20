@@ -374,7 +374,7 @@ public class ApiConfig {
                                 th.printStackTrace();
                             }
                             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
+                            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(activity, endSp);
                             callback.success();
                         } catch (Throwable th) {
                             th.printStackTrace();
