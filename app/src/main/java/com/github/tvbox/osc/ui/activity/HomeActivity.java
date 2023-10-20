@@ -317,8 +317,6 @@ public class HomeActivity extends BaseActivity {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
-                                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                                if(!endSp.isEmpty()) DetailActivity.start(mActivity, endSp);
                             }
                         }, 50);
                     }

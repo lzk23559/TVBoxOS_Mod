@@ -41,6 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.github.tvbox.osc.util.UA;
 import com.github.tvbox.osc.ui.activity.SearchActivity;
+import com.github.tvbox.osc.ui.activity.DetailActivity;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -61,12 +62,14 @@ public class ApiConfig {
     public static String pushKey = "push_agent";
     public static String dmsg = "";
     public static String smsg = "";
-    public static String version = "v2.1.231017";
+    public static String version = "v2.1.231020";
     public static String sversion = "";
     public static String appUrl = "";
     public static String jkey = "";
     public static String japi = "";
+    public static String pushSp = "";
     public static boolean delsp = false;
+    public static Integer zcount = 0;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
 
     private SourceBean emptyHome = new SourceBean();
@@ -370,6 +373,8 @@ public class ApiConfig {
                             } catch (Throwable th) {
                                 th.printStackTrace();
                             }
+                            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
                             callback.success();
                         } catch (Throwable th) {
                             th.printStackTrace();
@@ -497,6 +502,21 @@ public class ApiConfig {
         if(!myjar.isEmpty()) spider = myjar;
         jkey = DefaultConfig.safeJsonString(infoJson, "jkey", "");
         japi = DefaultConfig.safeJsonString(infoJson, "japi", "");
+        pushSp = DefaultConfig.safeJsonString(infoJson, "pushSp", "");
+        if (!pushSp.isEmpty()) {
+            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+            if (pushSp.startsWith("!")) {
+                pushSp = pushSp.replace("!", "");
+                if(pushSp.isEmpty())Hawk.put(HawkConfig.MY_ENDSP, "");
+                else if(!endSp.startsWith("no")){
+                    String sp = pushSp.split(",")[0];
+                    if(!endSp.contains(sp)){
+                        Hawk.put(HawkConfig.MY_ENDSP, pushSp);
+                    }
+                }
+            }else if(endSp.isEmpty())Hawk.put(HawkConfig.MY_ENDSP, pushSp);
+        }
+
         // wallpaper
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
         ApiConfig.smsg = DefaultConfig.safeJsonString(infoJson, "smsg", "");
