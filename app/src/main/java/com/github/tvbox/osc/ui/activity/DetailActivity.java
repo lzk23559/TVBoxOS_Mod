@@ -984,23 +984,31 @@ public class DetailActivity extends BaseActivity {
                             mGridView.setVisibility(View.VISIBLE);
                             tvPlay.setVisibility(View.VISIBLE);
                             mEmptyPlayList.setVisibility(View.GONE);
-                            VodInfo vodInfoRecord = getRoomData(vodInfo);
 
+                            boolean vflag=false;
                             // 读取历史记录
-                            if (vodInfoRecord != null) {
-//                                vodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
-//                                vodInfo.playFlag = vodInfoRecord.playFlag;
-//                                vodInfo.playerCfg = vodInfoRecord.playerCfg;
-//                                vodInfo.reverseSort = vodInfoRecord.reverseSort;
-//                                vodInfo.progressKey = vodInfoRecord.progressKey;
-                                App.getInstance().setVodInfo(vodInfoRecord);
-                            } else {
+                            VodInfo vodInfoRecord = RoomDataManger.getVodInfo(vodInfo.sourceKey, vodInfo.id);
+                            if (vodInfoRecord == null) {
+                                vodInfoRecord = getRoomData(vodInfo);
+                                if (vodInfoRecord != null)vflag=true;
+                            }
+                            if (vodInfoRecord != null){
+                                if(!vflag)vodInfo = vodInfoRecord;
+                                else {
+                                    vodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
+                                    vodInfo.playFlag = vodInfoRecord.playFlag;
+                                    vodInfo.playerCfg = vodInfoRecord.playerCfg;
+                                    vodInfo.reverseSort = vodInfoRecord.reverseSort;
+                                    vodInfo.progressKey = vodInfoRecord.progressKey;
+                                    insertVod(firstsourceKey, vodInfo);
+                                }
+                            }else{
                                 vodInfo.playIndex = 0;
                                 vodInfo.playFlag = null;
                                 vodInfo.playerCfg = "";
                                 vodInfo.reverseSort = false;
                             }
-
+                            App.getInstance().setVodInfo(vodInfo);
                             if (vodInfo.reverseSort) {
                                 vodInfo.reverse();
                             }
@@ -1057,22 +1065,20 @@ public class DetailActivity extends BaseActivity {
     }
 
     public VodInfo getRoomData(VodInfo info){
-        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(info.sourceKey, info.id);
-        if (vodInfoRecord == null&& info.id.contains("aliyundrive")) {
+        VodInfo sinfo = null;
+        if (info.id.contains("aliyundrive")) {
             List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(100);
             List<VodInfo> vodInfoList = new ArrayList<>();
-            VodInfo sinfo = null;
             for (VodInfo vInfo : allVodRecord) {
                 if (vInfo.name.equals(info.name)) {
                     sinfo = vInfo;
+                    if(sinfo.progressKey==null)
                     sinfo.progressKey = ApiConfig.getProgressKey(sinfo);
                     break;
                 }
             }
-            return sinfo;
-        }else {
-            return vodInfoRecord;
         }
+        return sinfo;
     }
 
     private String getHtml(String label, String content) {
@@ -1278,7 +1284,7 @@ public class DetailActivity extends BaseActivity {
         } catch (Throwable th) {
             vodInfo.playNote = "";
         }
-        RoomDataManger.insertVodRecord(sourceKey, vodInfo);
+        if(vodInfo.id.contains("aliyundrive")) RoomDataManger.insertVodRecord(sourceKey, vodInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));
     }
 
