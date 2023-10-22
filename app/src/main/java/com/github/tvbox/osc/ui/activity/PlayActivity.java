@@ -706,7 +706,7 @@ public class PlayActivity extends BaseActivity {
             Bundle bundle = intent.getExtras();
 //            mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
             mVodInfo = App.getInstance().getVodInfo();
-            sourceKey = bundle.getString("sourceKey");
+            sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
             sourceBean = ApiConfig.get().getSource(sourceKey);
 
             VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
