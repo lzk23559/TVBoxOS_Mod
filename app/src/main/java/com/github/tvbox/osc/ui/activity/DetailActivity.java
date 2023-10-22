@@ -1043,6 +1043,8 @@ public class DetailActivity extends BaseActivity {
                             mEmptyPlayList.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                        if(!endSp.isEmpty()&&endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+spId);
                         showEmpty();
                         llPlayerFragmentContainer.setVisibility(View.GONE);
                         llPlayerFragmentContainerBlock.setVisibility(View.GONE);

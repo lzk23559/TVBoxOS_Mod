@@ -281,7 +281,6 @@ public class HomeActivity extends BaseActivity {
     private boolean jarInitOk = false;
     private boolean isInitOk = true;
     private void initData() {
-        DetailActivity.alert("d1:"+isInitOk);
         if(!isInitOk)return;
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
@@ -295,7 +294,6 @@ public class HomeActivity extends BaseActivity {
                 tvName.setText(hname);
             }
         }
-        DetailActivity.alert("d2:"+isInitOk);
         if (dataInitOk && jarInitOk && isInitOk) {
             isInitOk = false;
             showLoading();
