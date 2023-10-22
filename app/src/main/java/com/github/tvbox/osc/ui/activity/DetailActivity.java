@@ -1295,7 +1295,8 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ApiConfig.zcount =2;
+        ApiConfig.zcount =10;
+        alert("deonback:"+ApiConfig.zcount);
         if (fullWindows) {
             if (playFragment.onBackPressed())
                 return;
