@@ -303,7 +303,7 @@ public class HomeActivity extends BaseActivity {
             }
             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
             if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
-                Hawk.put(HawkConfig.MY_ENDSP, endSP+"***");
+                Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
                 DetailActivity.start(mActivity, endSp);
             }
             return;
