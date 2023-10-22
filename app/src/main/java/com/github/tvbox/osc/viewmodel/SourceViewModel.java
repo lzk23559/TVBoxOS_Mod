@@ -39,7 +39,6 @@ import com.github.tvbox.osc.player.thirdparty.RemoteTVBox;
 import androidx.annotation.NonNull;
 import java.util.concurrent.CountDownLatch;
 import java.net.URLDecoder;
-import com.github.tvbox.osc.ui.activity.DetailActivity;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -502,8 +501,8 @@ public class SourceViewModel extends ViewModel {
                 public void run() {
                     try {
                         String rid = id, sid = "";
-                        String[] idInfo = id.split("\\$\\$\\$");
                         if((sourceKey.startsWith("ali_")||ApiConfig.isAli(id))&&!wdName.isEmpty()){
+                            String[] idInfo = id.split("\\$\\$\\$");
                             if (idInfo.length == 1) {
                                 rid = rid + "$$$$$$" + wdName;
                             }else if(idInfo.length>2) {
@@ -531,15 +530,9 @@ public class SourceViewModel extends ViewModel {
                         Spider sp = ApiConfig.get().getCSP(sourceBean);
                         List<String> ids = new ArrayList<>();
                         ids.add(rid);
-                        String dstr = sp.detailContent(ids);
-                        DetailActivity.alert("dstr:"+dstr);
-                        if (dstr==null||TextUtils.isEmpty(dstr)) {
-                            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                            if(endSp.contains(idInfo[0]))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
-                        }
-                        json(detailResult, dstr, sourceBean.getKey());
-                    } catch (Exception e) {
-                        DetailActivity.alert("detailjson:"+e.getMessage());
+                        json(detailResult, sp.detailContent(ids), sourceBean.getKey());
+                    } catch (Throwable th) {
+                        th.printStackTrace();
                     }
                 }
             };
