@@ -1030,8 +1030,8 @@ public class DetailActivity extends BaseActivity {
                                 toggleFullPreview();
                             }
                             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                            if(endSp.contains(spId)){
-                                endSp = endSp.repalce("***", "");
+                            if(!endSp.isEmpty()&&endSp.contains(spId)){
+                                endSp = endSp.replace("***", "");
                                 Hawk.put(HawkConfig.MY_ENDSP, endSp);
                             }
                             // startQuickSearch();
