@@ -533,7 +533,7 @@ public class SourceViewModel extends ViewModel {
                         ids.add(rid);
                         String dstr = sp.detailContent(ids);
                         DetailActivity.alert("dstr:"+dstr);
-                        if (TextUtils.isEmpty(dstr)) {
+                        if (dstr==null||TextUtils.isEmpty(dstr)) {
                             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                             if(endSp.contains(idInfo[0]))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
                         }

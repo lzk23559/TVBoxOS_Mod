@@ -290,7 +290,6 @@ public class HomeActivity extends BaseActivity {
                 String apkv = Hawk.get(HawkConfig.MY_APKV,"");
                 if(!apkv.isEmpty())hname = hname+ApiConfig.dmsg;
                 tvName.setText(hname);
-                DetailActivity.alert("home:" + hname);
             }
         }
         if (dataInitOk && jarInitOk) {
@@ -300,11 +299,6 @@ public class HomeActivity extends BaseActivity {
                 LOG.e("有");
             } else {
                 LOG.e("无");
-            }
-            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-            if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
-                Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
-                DetailActivity.start(mActivity, endSp);
             }
             return;
         }
@@ -322,6 +316,11 @@ public class HomeActivity extends BaseActivity {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
+                                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                                if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
+                                    Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
+                                    DetailActivity.start(mActivity, endSp);
+                                }
                             }
                         }, 50);
                     }
@@ -424,7 +423,6 @@ public class HomeActivity extends BaseActivity {
                                         @Override
                                         public void run() {
                                             dialog.hide();
-                                            DetailActivity.alert("error");
                                             reHomes();
                                         }
                                     });
