@@ -720,16 +720,16 @@ public class PlayFragment extends BaseLazyFragment {
     public void setData(Bundle bundle) {
 //        mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
         mVodInfo = App.getInstance().getVodInfo();
-        sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
+        sourceKey = bundle.getString("sourceKey");
         sourceBean = ApiConfig.get().getSource(sourceKey);
 
-//        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
-//        // 读取历史记录
-//        if (vodInfoRecord != null) {
-//            mVodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
-//            mVodInfo.reverseSort = vodInfoRecord.reverseSort;
-//            this.reverseSort = mVodInfo.reverseSort;
-//        }
+        VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
+        // 读取历史记录
+        if (vodInfoRecord != null) {
+            mVodInfo.playIndex = Math.max(vodInfoRecord.playIndex, 0);
+            mVodInfo.reverseSort = vodInfoRecord.reverseSort;
+            this.reverseSort = mVodInfo.reverseSort;
+        }
         initPlayerCfg();
         play(false);
     }
