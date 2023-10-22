@@ -101,7 +101,10 @@ public class ApiConfig {
     }
 
     public static String getProgressKey(VodInfo mVodInfo){
-        String subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex;
+        String subtitleCacheKey = "";
+        if (mVodInfo.id.contains("aliyundrive")) {
+            subtitleCacheKey = mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex;
+        }else subtitleCacheKey = mVodInfo.sourceKey + "-" + mVodInfo.id + "-" + mVodInfo.playFlag + "-" + mVodInfo.playIndex;
         return subtitleCacheKey;
     }
 
