@@ -990,7 +990,7 @@ public class DetailActivity extends BaseActivity {
                             VodInfo vodInfoRecord = RoomDataManger.getVodInfo(vodInfo.sourceKey, vodInfo.id);
                             if (vodInfoRecord == null) {
                                 vodInfoRecord = getRoomData(vodInfo);
-                                if (vodInfoRecord != null)vflag=true;
+                                vflag=true;
                             }
                             if (vodInfoRecord != null){
                                 if(!vflag)vodInfo = vodInfoRecord;
