@@ -290,6 +290,7 @@ public class HomeActivity extends BaseActivity {
                 String apkv = Hawk.get(HawkConfig.MY_APKV,"");
                 if(!apkv.isEmpty())hname = hname+ApiConfig.dmsg;
                 tvName.setText(hname);
+                DetailActivity.alert("home:" + hname);
             }
         }
         if (dataInitOk && jarInitOk) {
