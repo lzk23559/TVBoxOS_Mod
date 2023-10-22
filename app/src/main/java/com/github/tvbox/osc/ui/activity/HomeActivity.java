@@ -317,14 +317,14 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void success() {
                         jarInitOk = true;
-                        mHandler.post(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
                             }
-                        });
+                        }, 50);
                     }
 
                     @Override
@@ -366,12 +366,12 @@ public class HomeActivity extends BaseActivity {
                 if (ApiConfig.get().getSpider().isEmpty()) {
                     jarInitOk = true;
                 }
-                mHandler.post(new Runnable() {
+                mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         initData();
                     }
-                });
+                }, 50);
             }
 
             @Override
