@@ -279,7 +279,10 @@ public class HomeActivity extends BaseActivity {
 
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
+    private boolean isInitOk = true;
     private void initData() {
+        DetailActivity.alert("d1:"+isInitOk);
+        if(!isInitOk)return;
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
             String homeName = home.getName();
@@ -292,13 +295,21 @@ public class HomeActivity extends BaseActivity {
                 tvName.setText(hname);
             }
         }
-        if (dataInitOk && jarInitOk) {
+        DetailActivity.alert("d2:"+isInitOk);
+        if (dataInitOk && jarInitOk && isInitOk) {
+            isInitOk = false;
             showLoading();
             sourceViewModel.getSort(home.getKey());
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {
                 LOG.e("无");
+            }
+            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+            if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
+                Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
+                DetailActivity.start(mActivity, endSp);
+                return;
             }
             return;
         }
@@ -315,12 +326,6 @@ public class HomeActivity extends BaseActivity {
                             public void run() {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
-                                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                                if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
-                                    Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
-                                    DetailActivity.start(mActivity, endSp);
-                                    return;
-                                }
                                 initData();
                             }
                         }, 50);
