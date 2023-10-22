@@ -532,6 +532,7 @@ public class SourceViewModel extends ViewModel {
                         List<String> ids = new ArrayList<>();
                         ids.add(rid);
                         String dstr = sp.detailContent(ids);
+                        DetailActivity.alert("dstr:"+dstr);
                         if (TextUtils.isEmpty(dstr)) {
                             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                             if(endSp.contains(idInfo[0]))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
@@ -1182,7 +1183,6 @@ public class SourceViewModel extends ViewModel {
 
     private AbsXml json(MutableLiveData<AbsXml> result, String json, String sourceKey) {
         try {
-            if(TextUtils.isEmpty(json))throw new Exception("无数据");
             AbsJson absJson = new Gson().fromJson(json, new TypeToken<AbsJson>() {
             }.getType());
             AbsXml data = absJson.toAbsXml();

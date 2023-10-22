@@ -311,7 +311,7 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void success() {
                         jarInitOk = true;
-                        mHandler.postDelayed(new Runnable() {
+                        mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                /* if (!useCacheConfig)
@@ -320,7 +320,7 @@ public class HomeActivity extends BaseActivity {
                                 String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                                 if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
                             }
-                        }, 50);
+                        });
                     }
 
                     @Override

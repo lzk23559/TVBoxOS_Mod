@@ -184,7 +184,7 @@ public class DetailActivity extends BaseActivity {
         String id = arr[1];
         String name = "";
         if (arr.length > 2) name = arr[2];
-        start(activity, key, id, name, "", true, true);
+        start(activity, key, id, name, "", false, true);
     }
     private void initView() {
         llLayout = findViewById(R.id.llLayout);
