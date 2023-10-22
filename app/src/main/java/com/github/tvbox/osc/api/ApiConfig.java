@@ -52,7 +52,6 @@ public class ApiConfig {
     public static String japi = "";
     public static String pushSp = "";
     public static boolean delsp = false;
-    public static Integer zcount = 0;
     public static String _api = "http://it.haocew.com/tv/sp/d.json";
 
     private SourceBean emptyHome = new SourceBean();

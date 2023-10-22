@@ -1038,6 +1038,9 @@ public class DetailActivity extends BaseActivity {
                             mEmptyPlayList.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        alert("dmsg");
+                        String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                        if(endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+spId);
                         showEmpty();
                         llPlayerFragmentContainer.setVisibility(View.GONE);
                         llPlayerFragmentContainerBlock.setVisibility(View.GONE);
@@ -1295,8 +1298,6 @@ public class DetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        ApiConfig.zcount =10;
-        alert("deonback:"+ApiConfig.zcount);
         if (fullWindows) {
             if (playFragment.onBackPressed())
                 return;

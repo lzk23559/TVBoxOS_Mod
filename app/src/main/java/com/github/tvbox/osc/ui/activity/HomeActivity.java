@@ -316,13 +316,9 @@ public class HomeActivity extends BaseActivity {
                             public void run() {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
-                                DetailActivity.alert("home:"+ApiConfig.zcount);
                                 initData();
-                                if (ApiConfig.zcount < 1) {
-                                    ApiConfig.zcount =1;
-                                    String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                                    if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
-                                }
+                                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                                if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
                             }
                         }, 50);
                     }

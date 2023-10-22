@@ -532,14 +532,13 @@ public class SourceViewModel extends ViewModel {
                         List<String> ids = new ArrayList<>();
                         ids.add(rid);
                         String dstr = sp.detailContent(ids);
-                        DetailActivity.alert("json:"+dstr);
                         if (TextUtils.isEmpty(dstr)) {
                             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                             if(endSp.contains(idInfo[0]))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
                         }
                         json(detailResult, dstr, sourceBean.getKey());
-                    } catch (Throwable th) {
-                        th.printStackTrace();
+                    } catch (Exception e) {
+                        DetailActivity.alert("detailjson:"+e.getMessage());
                     }
                 }
             };
