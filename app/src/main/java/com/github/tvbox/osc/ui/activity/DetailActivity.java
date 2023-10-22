@@ -1029,6 +1029,11 @@ public class DetailActivity extends BaseActivity {
                                 fullWindows = false;
                                 toggleFullPreview();
                             }
+                            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                            if(endSp.contains(spId)){
+                                endSp = endSp.repalce("***", "");
+                                Hawk.put(HawkConfig.MY_ENDSP, endSp);
+                            }
                             // startQuickSearch();
                         } else {
                             mGridViewFlag.setVisibility(View.GONE);
@@ -1038,9 +1043,6 @@ public class DetailActivity extends BaseActivity {
                             mEmptyPlayList.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        alert("dmsg");
-                        String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                        if(endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+spId);
                         showEmpty();
                         llPlayerFragmentContainer.setVisibility(View.GONE);
                         llPlayerFragmentContainerBlock.setVisibility(View.GONE);

@@ -279,7 +279,6 @@ public class HomeActivity extends BaseActivity {
 
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
-    private boolean urlInitOk = true;
     private void initData() {
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
@@ -296,16 +295,15 @@ public class HomeActivity extends BaseActivity {
         if (dataInitOk && jarInitOk) {
             showLoading();
             sourceViewModel.getSort(home.getKey());
-            DetailActivity.alert("home:"+urlInitOk);
-            if (urlInitOk) {
-                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
-                urlInitOk=false;
-            }
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {
                 LOG.e("无");
+            }
+            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+            if(!endSp.isEmpty()&&!endSp.startsWith("no")&&!endSp.endsWith("***")){
+                Hawk.put(HawkConfig.MY_ENDSP, endSP+"***");
+                DetailActivity.start(mActivity, endSp);
             }
             return;
         }
@@ -425,6 +423,7 @@ public class HomeActivity extends BaseActivity {
                                         @Override
                                         public void run() {
                                             dialog.hide();
+                                            DetailActivity.alert("error");
                                             reHomes();
                                         }
                                     });
@@ -470,6 +469,7 @@ public class HomeActivity extends BaseActivity {
             mViewPager.setAdapter(pageAdapter);
             mViewPager.setCurrentItem(currentSelected, false);
         }
+
     }
 
     @Override
