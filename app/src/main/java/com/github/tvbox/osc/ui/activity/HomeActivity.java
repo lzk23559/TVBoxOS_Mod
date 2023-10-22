@@ -279,7 +279,7 @@ public class HomeActivity extends BaseActivity {
 
     private boolean dataInitOk = false;
     private boolean jarInitOk = false;
-
+    private boolean urlInitOk = true;
     private void initData() {
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (home != null) {
@@ -296,9 +296,12 @@ public class HomeActivity extends BaseActivity {
         if (dataInitOk && jarInitOk) {
             showLoading();
             sourceViewModel.getSort(home.getKey());
-            DetailActivity.alert("home");
-            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
+            DetailActivity.alert("home:"+urlInitOk);
+            if (urlInitOk) {
+                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
+                urlInitOk=false;
+            }
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {
@@ -314,14 +317,14 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void success() {
                         jarInitOk = true;
-                        mHandler.postDelayed(new Runnable() {
+                        mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
                             }
-                        }, 50);
+                        });
                     }
 
                     @Override
@@ -363,12 +366,12 @@ public class HomeActivity extends BaseActivity {
                 if (ApiConfig.get().getSpider().isEmpty()) {
                     jarInitOk = true;
                 }
-                mHandler.postDelayed(new Runnable() {
+                mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         initData();
                     }
-                }, 50);
+                });
             }
 
             @Override
