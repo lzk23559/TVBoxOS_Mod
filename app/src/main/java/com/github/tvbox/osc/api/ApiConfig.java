@@ -4,23 +4,14 @@ import android.app.Activity;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
-import com.github.tvbox.osc.bean.VodInfo;
 import com.github.catvod.crawler.JarLoader;
 import com.github.catvod.crawler.JsLoader;
 import com.github.catvod.crawler.Spider;
 import com.github.tvbox.osc.base.App;
-import com.github.tvbox.osc.bean.LiveChannelGroup;
-import com.github.tvbox.osc.bean.IJKCode;
-import com.github.tvbox.osc.bean.LiveChannelItem;
-import com.github.tvbox.osc.bean.ParseBean;
-import com.github.tvbox.osc.bean.SourceBean;
+import com.github.tvbox.osc.bean.*;
 import com.github.tvbox.osc.server.ControlManager;
-import com.github.tvbox.osc.util.AES;
-import com.github.tvbox.osc.util.AdBlocker;
-import com.github.tvbox.osc.util.DefaultConfig;
-import com.github.tvbox.osc.util.HawkConfig;
-import com.github.tvbox.osc.util.MD5;
-import com.github.tvbox.osc.util.VideoParseRuler;
+import com.github.tvbox.osc.ui.activity.SearchActivity;
+import com.github.tvbox.osc.util.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -30,18 +21,10 @@ import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 import org.json.JSONObject;
-import com.github.tvbox.osc.bean.Movie;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.github.tvbox.osc.util.UA;
-import com.github.tvbox.osc.ui.activity.SearchActivity;
-import com.github.tvbox.osc.ui.activity.DetailActivity;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -88,7 +71,7 @@ public class ApiConfig {
     }
 
     public static ApiConfig get() {
-        if (instance == null) {
+        if (instance == null) {    
             synchronized (ApiConfig.class) {
                 if (instance == null) {
                     instance = new ApiConfig();
@@ -373,8 +356,6 @@ public class ApiConfig {
                             } catch (Throwable th) {
                                 th.printStackTrace();
                             }
-                            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(activity, endSp);
                             callback.success();
                         } catch (Throwable th) {
                             th.printStackTrace();
