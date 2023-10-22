@@ -296,6 +296,9 @@ public class HomeActivity extends BaseActivity {
         if (dataInitOk && jarInitOk) {
             showLoading();
             sourceViewModel.getSort(home.getKey());
+            DetailActivity.alert("home");
+            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+            if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {
@@ -311,16 +314,14 @@ public class HomeActivity extends BaseActivity {
                     @Override
                     public void success() {
                         jarInitOk = true;
-                        mHandler.post(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                /* if (!useCacheConfig)
                                     Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();*/
                                 initData();
-                                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                                if(!endSp.isEmpty()&&!endSp.startsWith("no")) DetailActivity.start(mActivity, endSp);
                             }
-                        });
+                        }, 50);
                     }
 
                     @Override
