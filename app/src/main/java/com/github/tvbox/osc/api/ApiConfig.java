@@ -45,7 +45,7 @@ public class ApiConfig {
     public static String pushKey = "push_agent";
     public static String dmsg = "";
     public static String smsg = "";
-    public static String version = "v2.1.231020";
+    public static String version = "v2.1.231022";
     public static String sversion = "";
     public static String appUrl = "";
     public static String jkey = "";
@@ -474,6 +474,22 @@ public class ApiConfig {
         parseJson(apiUrl, sb.toString());
     }
 
+    private String getPushSp(String pushSp){
+        String str = "";
+        String [] arr = null;
+        if(pushSp.contains(",")) arr = pushSp.split(",");
+        else arr = pushSp.split(" ");
+        if (arr.length > 1) {
+            String url = arr[1],name=arr[0], key = pushKey;
+            if (arr[0].startsWith("http")) {
+                url = arr[0];
+                name = arr[1];
+            }
+            return pushKey + "," + url + "," + name;
+        }
+        return str;
+    }
+
     private void parseJson(String apiUrl, String jsonStr) {
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
@@ -489,12 +505,13 @@ public class ApiConfig {
                 pushSp = pushSp.replace("!", "");
                 if(pushSp.isEmpty())Hawk.put(HawkConfig.MY_ENDSP, "");
                 else if(!endSp.startsWith("no")){
-                    String sp = pushSp.split(",")[0];
+                    String _pushsp = getPushSp(pushSp);
+                    String sp = _pushsp.split(",")[1];
                     if(!endSp.contains(sp)){
-                        Hawk.put(HawkConfig.MY_ENDSP, pushSp);
+                        Hawk.put(HawkConfig.MY_ENDSP, _pushsp);
                     }
                 }
-            }else if(endSp.isEmpty())Hawk.put(HawkConfig.MY_ENDSP, pushSp);
+            }else if(endSp.isEmpty())Hawk.put(HawkConfig.MY_ENDSP, getPushSp(pushSp));
         }
 
         // wallpaper

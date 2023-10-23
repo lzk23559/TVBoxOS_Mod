@@ -1044,7 +1044,7 @@ public class DetailActivity extends BaseActivity {
                         }
                     } else {
                         String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                        if(!endSp.isEmpty()&&endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+spId);
+                        if(!endSp.isEmpty()&&endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
                         showEmpty();
                         llPlayerFragmentContainer.setVisibility(View.GONE);
                         llPlayerFragmentContainerBlock.setVisibility(View.GONE);
