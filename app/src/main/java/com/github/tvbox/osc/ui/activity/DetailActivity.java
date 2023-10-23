@@ -850,6 +850,7 @@ public class DetailActivity extends BaseActivity {
         sourceViewModel.detailResult.observe(this, new Observer<AbsXml>() {
             @Override
             public void onChanged(AbsXml absXml) {
+                boolean noflag = false;
                 try {
                     if (absXml != null && absXml.movie != null && absXml.movie.videoList != null && absXml.movie.videoList.size() > 0) {
                         showSuccess();
@@ -1018,7 +1019,6 @@ public class DetailActivity extends BaseActivity {
                             }
                             seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
                             mGridViewFlag.scrollToPosition(flagScrollTo);
-
                             refreshList();
                             if (showPreview) {
                                 jumpToPlay();
@@ -1029,11 +1029,7 @@ public class DetailActivity extends BaseActivity {
                                 fullWindows = false;
                                 toggleFullPreview();
                             }
-                            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                            if(!endSp.isEmpty()&&endSp.contains(spId)){
-                                endSp = endSp.replace("***", "");
-                                Hawk.put(HawkConfig.MY_ENDSP, endSp);
-                            }
+                            noflag = true;
                             // startQuickSearch();
                         } else {
                             mGridViewFlag.setVisibility(View.GONE);
@@ -1043,14 +1039,20 @@ public class DetailActivity extends BaseActivity {
                             mEmptyPlayList.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                        if(!endSp.isEmpty()&&endSp.contains(spId))Hawk.put(HawkConfig.MY_ENDSP, "no"+endSp);
                         showEmpty();
                         llPlayerFragmentContainer.setVisibility(View.GONE);
                         llPlayerFragmentContainerBlock.setVisibility(View.GONE);
                     }
                 } catch (Exception e) {
                     alert("错误信息de："+e.getMessage());
+                } finally {
+                    String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                    if (!endSp.isEmpty()) {
+                        String endstr = endSp;
+                        if(endSp.contains(spId)&&noflag)endstr = endSp.replace("***", "");
+                        if (!noflag) endstr = "no"+endstr;
+                        Hawk.put(HawkConfig.MY_ENDSP, endstr);
+                    }
                 }
             }
         });
@@ -1278,6 +1280,7 @@ public class DetailActivity extends BaseActivity {
         } catch (Throwable th) {
             vodInfo.playNote = "";
         }
+        vodInfo.progressKey = null;
         RoomDataManger.insertVodRecord(sourceKey, vodInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));
     }

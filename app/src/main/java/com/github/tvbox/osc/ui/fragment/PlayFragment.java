@@ -205,7 +205,7 @@ public class PlayFragment extends BaseLazyFragment {
         mController.setListener(new VodController.VodControlListener() {
             @Override
             public void playNext(boolean rmProgress) {
-                String preProgressKey = progressKey;
+                String preProgressKey = progressKeySave;
                 PlayFragment.this.playNext(rmProgress);
                 if (rmProgress && preProgressKey != null)
                     CacheManager.delete(MD5.string2MD5(preProgressKey), 0);
@@ -556,7 +556,7 @@ public class PlayFragment extends BaseLazyFragment {
                         } else {
                             PlayerHelper.updateCfg(mVideoView, mVodPlayerCfg);
                         }
-                        mVideoView.setProgressKey(progressKey);
+                        mVideoView.setProgressKey(progressKeySave);
                         if (headers != null) {
                             mVideoView.setUrl(url, headers);
                         } else {
@@ -934,9 +934,14 @@ public class PlayFragment extends BaseLazyFragment {
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();
         String subKey = ApiConfig.getProgressKey(mVodInfo);
-        if(mVodInfo.progressKey!=null)subKey= mVodInfo.progressKey;
+        if(mVodInfo.progressKey!=null){
+            progressKeySave = subKey.replace("-","") + vs.name;
+            subKey= mVodInfo.progressKey;
+        }
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
+        if(mVodInfo.progressKey==null)progressKeySave=progressKey;
+
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
@@ -981,6 +986,7 @@ public class PlayFragment extends BaseLazyFragment {
     private String playSubtitle;
     private String subtitleCacheKey;
     private String progressKey;
+    private String progressKeySave;
     private String parseFlag;
     private String webUrl;
     private String webUserAgent;

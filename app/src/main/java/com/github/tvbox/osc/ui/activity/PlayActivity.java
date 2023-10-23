@@ -538,7 +538,7 @@ public class PlayActivity extends BaseActivity {
                         } else {
                             PlayerHelper.updateCfg(mVideoView, mVodPlayerCfg);
                         }
-                        mVideoView.setProgressKey(progressKey);
+                        mVideoView.setProgressKey(progressKeySave);
                         if (headers != null) {
                             mVideoView.setUrl(url, headers);
                         } else {
@@ -899,9 +899,13 @@ public class PlayActivity extends BaseActivity {
         if(mVideoView!=null) mVideoView.release();
 
         String subKey = ApiConfig.getProgressKey(mVodInfo);
-        if(mVodInfo.progressKey!=null)subKey= mVodInfo.progressKey;
+        if(mVodInfo.progressKey!=null){
+            progressKeySave = subKey.replace("-","") + vs.name;
+            subKey= mVodInfo.progressKey;
+        }
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
+        if(mVodInfo.progressKey==null)progressKeySave=progressKey;
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
@@ -945,6 +949,7 @@ public class PlayActivity extends BaseActivity {
     private String playSubtitle;
     private String subtitleCacheKey;
     private String progressKey;
+    private String progressKeySave;
     private String parseFlag;
     private String webUrl;
     private String webUserAgent;

@@ -257,7 +257,14 @@ public class SearchActivity extends BaseActivity {
                     }else if (wd.startsWith("alert")) {
                         String s = wd.replaceFirst("alert", "");
                         String str = Hawk.get("my_"+s,"无");
+                        etSearch.setText(str);
                         Toast.makeText(mContext, str, Toast.LENGTH_SHORT).show();
+                    }else if (wd.startsWith("put")) {
+                        String s = wd.replaceFirst("put", "");
+                        String [] arr = s.split(" ");
+                        String value s.replace(arr[0] + " ", "");
+                        Hawk.put("my_"+arr[0], value);
+                        Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
                     }else if (wd.startsWith("jar")) {
                         String s = wd.replaceFirst("jar", "");
                         Hawk.put(HawkConfig.MY_JAR, s);
