@@ -1048,7 +1048,7 @@ public class DetailActivity extends BaseActivity {
                     String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                     if (!endSp.isEmpty()) {
                         String endstr = endSp;
-                        iendstr = endSp.replace("***", "");
+                        endstr = endSp.replace("***", "");
                         if (!noflag) endstr = "no"+endstr;
                         Hawk.put(HawkConfig.MY_ENDSP, endstr);
                     }
