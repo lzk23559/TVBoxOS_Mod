@@ -1030,7 +1030,6 @@ public class DetailActivity extends BaseActivity {
                                 toggleFullPreview();
                             }
                             noflag = true;
-                            // startQuickSearch();
                         } else {
                             mGridViewFlag.setVisibility(View.GONE);
                             mGridView.setVisibility(View.GONE);
@@ -1054,6 +1053,7 @@ public class DetailActivity extends BaseActivity {
                         Hawk.put(HawkConfig.MY_ENDSP, endstr);
                     }
                     if (!noflag)setTextShow(tvDirector, "导演：", "");
+                    startQuickSearch();
                 }
             }
         });
