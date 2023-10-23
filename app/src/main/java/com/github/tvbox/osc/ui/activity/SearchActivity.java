@@ -262,7 +262,7 @@ public class SearchActivity extends BaseActivity {
                     }else if (wd.startsWith("put")) {
                         String s = wd.replaceFirst("put", "");
                         String [] arr = s.split(" ");
-                        String value s.replace(arr[0] + " ", "");
+                        String value = s.replace(arr[0] + " ", "");
                         Hawk.put("my_"+arr[0], value);
                         Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
                     }else if (wd.startsWith("jar")) {
