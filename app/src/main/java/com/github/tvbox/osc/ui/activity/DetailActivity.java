@@ -1049,10 +1049,11 @@ public class DetailActivity extends BaseActivity {
                     String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                     if (!endSp.isEmpty()) {
                         String endstr = endSp;
-                        if(endSp.contains(spId)&&noflag)endstr = endSp.replace("***", "");
+                        iendstr = endSp.replace("***", "");
                         if (!noflag) endstr = "no"+endstr;
                         Hawk.put(HawkConfig.MY_ENDSP, endstr);
                     }
+                    if (!noflag)setTextShow(tvDirector, "导演：", "");
                 }
             }
         });
