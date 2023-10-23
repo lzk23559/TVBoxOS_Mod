@@ -538,7 +538,8 @@ public class PlayActivity extends BaseActivity {
                         } else {
                             PlayerHelper.updateCfg(mVideoView, mVodPlayerCfg);
                         }
-                        mVideoView.setProgressKey(progressKeySave);
+                        mVideoView.setProgressKey(progressKey);
+                        mVideoView.setProgressKeySave(progressKeySave);
                         if (headers != null) {
                             mVideoView.setUrl(url, headers);
                         } else {

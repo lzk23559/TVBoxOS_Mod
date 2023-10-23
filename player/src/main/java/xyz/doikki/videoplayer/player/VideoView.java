@@ -71,6 +71,7 @@ public class VideoView<P extends AbstractPlayer> extends FrameLayout
     //--------- data sources ---------//
     protected String mUrl;//当前播放视频的地址
     protected String mProgressKey = null;
+    protected String mProgressKeySave = null;
     protected Map<String, String> mHeaders;//当前视频地址的请求头
     protected AssetFileDescriptor mAssetFileDescriptor;//assets文件
 
@@ -339,6 +340,7 @@ public class VideoView<P extends AbstractPlayer> extends FrameLayout
                 mAudioFocusHelper.abandonFocus();
             }
             mPlayerContainer.setKeepScreenOn(false);
+            saveProgress();
         }
     }
 
@@ -403,7 +405,7 @@ public class VideoView<P extends AbstractPlayer> extends FrameLayout
     protected void saveProgress() {
         if (mProgressManager != null && mCurrentPosition > 0) {
             L.d("saveProgress: " + mCurrentPosition);
-            mProgressManager.saveProgress(mProgressKey == null ? mUrl : mProgressKey, mCurrentPosition);
+            mProgressManager.saveProgress(mProgressKeySave == null ? mUrl : mProgressKeySave, mCurrentPosition);
         }
     }
 
@@ -570,7 +572,7 @@ public class VideoView<P extends AbstractPlayer> extends FrameLayout
         mCurrentPosition = 0;
         if (mProgressManager != null) {
             //播放完成，清除进度
-            mProgressManager.saveProgress(mProgressKey == null ? mUrl : mProgressKey, 0);
+            mProgressManager.saveProgress(mProgressKeySave == null ? mUrl : mProgressKeySave, 0);
         }
         setPlayState(STATE_PLAYBACK_COMPLETED);
     }
@@ -644,6 +646,10 @@ public class VideoView<P extends AbstractPlayer> extends FrameLayout
 
     public void setProgressKey(String key) {
         mProgressKey = key;
+    }
+
+    public void setProgressKeySave(String key) {
+        mProgressKeySave = key;
     }
 
     /**
