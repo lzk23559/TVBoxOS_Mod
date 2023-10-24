@@ -341,6 +341,7 @@ public class ApiConfig {
                     public void onSuccess(Response<String> response) {
                         try {
                             String json = response.body();
+                            if(json.equals("close")) throw new Exception(json);
                             parseJson(apiUrl, json);
                             try {
                                 File cacheDir = cache.getParentFile();
@@ -356,9 +357,11 @@ public class ApiConfig {
                                 th.printStackTrace();
                             }
                             callback.success();
-                        } catch (Throwable th) {
-                            th.printStackTrace();
-                            SearchActivity.start(activity, "", "");
+                        } catch (Exception e) {
+                            if(e.getMessage().equals("close")){
+                                String n = null;
+                                n.toString();
+                            } else SearchActivity.start(activity, "", "");
                             //callback.error("解析配置失败");
                         }
                     }
@@ -499,6 +502,7 @@ public class ApiConfig {
         jkey = DefaultConfig.safeJsonString(infoJson, "jkey", "");
         japi = DefaultConfig.safeJsonString(infoJson, "japi", "");
         pushSp = DefaultConfig.safeJsonString(infoJson, "pushSp", "");
+
         if (!pushSp.isEmpty()) {
             String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
             if (pushSp.startsWith("!")) {

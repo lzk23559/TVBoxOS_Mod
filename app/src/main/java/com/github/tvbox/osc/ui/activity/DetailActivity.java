@@ -324,6 +324,13 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
+        tvQuickSearch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                SearchActivity.start(mActivity, vodInfo.name, wdPic);
+                return true;
+            }
+        });
         tvQuickSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1035,7 +1042,11 @@ public class DetailActivity extends BaseActivity {
                             mGridView.setVisibility(View.GONE);
                             mSeriesGroupView.setVisibility(View.GONE);
                             tvPlay.setVisibility(View.GONE);
+                            tvSort.setVisibility(View.GONE);
+                            tvCollect.setVisibility(View.GONE);
+                            myPush.setVisibility(View.GONE);
                             mEmptyPlayList.setVisibility(View.VISIBLE);
+                            tvQuickSearch.requestFocus();
                         }
                     } else {
                         showEmpty();
@@ -1049,11 +1060,10 @@ public class DetailActivity extends BaseActivity {
                     if (!endSp.isEmpty()) {
                         String endstr = endSp;
                         endstr = endSp.replace("***", "");
-                        if (!noflag) endstr = "no"+endstr;
+                        if(endSp.contains(spId)&&!noflag&&!endSp.startsWith("no"))endstr = "no"+endstr;
                         Hawk.put(HawkConfig.MY_ENDSP, endstr);
                     }
                     if (!noflag)setTextShow(tvDirector, "导演：", "");
-                    startQuickSearch();
                 }
             }
         });
@@ -1185,6 +1195,8 @@ public class DetailActivity extends BaseActivity {
         hadQuickStart = true;
         OkGo.getInstance().cancelTag("quick_search");
         quickSearchWord.clear();
+        if(wdName==null||wdName.isEmpty()) wdName = vodInfo.name;
+        if(wdName!=null&&(wdName.equlas("未找到")||wdName.equlas("无名称"))) wdName = "";
         searchTitle = wdName;
         quickSearchData.clear();
         quickSearchWord.addAll(SearchHelper.splitWords(searchTitle));
