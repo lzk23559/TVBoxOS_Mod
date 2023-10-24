@@ -1291,11 +1291,11 @@ public class DetailActivity extends BaseActivity {
 
     private void insertVod(String sourceKey, VodInfo vodInfo) {
         try {
-            //if(ApiConfig.isPic(wdPic)&&!sourceKey.equals("push_agentqq"))vodInfo.pic = wdPic;
             vodInfo.playNote = vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).name;
         } catch (Throwable th) {
             vodInfo.playNote = "";
         }
+        alert("sourceKey:" + sourceKey + "   vodInfo:" + vodInfo.sourceKey);
         vodInfo.progressKey = null;
         RoomDataManger.insertVodRecord(sourceKey, vodInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));
