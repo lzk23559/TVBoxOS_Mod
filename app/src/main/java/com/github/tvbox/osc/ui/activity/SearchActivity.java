@@ -445,7 +445,7 @@ public class SearchActivity extends BaseActivity {
             wdPic = bundle.getString("pic", "");
             etSearch.setText(title);
             showLoading();
-            if(title.equlas("未找到")||title.equlas("无名称")) title = "";
+            if(title.equals("未找到")||title.equals("无名称")) title = "";
             if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
                 bundle.putString("title", title);
                 jumpActivity(FastSearchActivity.class, bundle);

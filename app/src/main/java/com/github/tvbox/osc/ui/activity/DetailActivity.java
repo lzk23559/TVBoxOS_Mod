@@ -1196,7 +1196,7 @@ public class DetailActivity extends BaseActivity {
         OkGo.getInstance().cancelTag("quick_search");
         quickSearchWord.clear();
         if(wdName==null||wdName.isEmpty()) wdName = vodInfo.name;
-        if(wdName!=null&&(wdName.equlas("未找到")||wdName.equlas("无名称"))) wdName = "";
+        if(wdName!=null&&(wdName.equals("未找到")||wdName.equals("无名称"))) wdName = "";
         searchTitle = wdName;
         quickSearchData.clear();
         quickSearchWord.addAll(SearchHelper.splitWords(searchTitle));
