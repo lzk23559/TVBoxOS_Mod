@@ -723,7 +723,7 @@ public class DetailActivity extends BaseActivity {
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
-            App.getInstance().setVodInfo(vodInfo);
+            //App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 if (previewVodInfo == null) {
                     try {
@@ -1023,6 +1023,7 @@ public class DetailActivity extends BaseActivity {
                             seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
                             mGridViewFlag.scrollToPosition(flagScrollTo);
                             refreshList();
+                            App.getInstance().setVodInfo(vodInfo);
                             if (showPreview) {
                                 jumpToPlay();
                                 llPlayerFragmentContainer.setVisibility(View.VISIBLE);
@@ -1289,14 +1290,14 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    private void insertVod(String sourceKey, VodInfo vodInfo) {
+    private void insertVod(String sourceKey, VodInfo vdInfo) {
         try {
-            vodInfo.playNote = vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).name;
+            vdInfo.playNote = vodInfo.seriesMap.get(vdInfo.playFlag).get(vdInfo.playIndex).name;
         } catch (Throwable th) {
-            vodInfo.playNote = "";
+            vdInfo.playNote = "";
         }
-        vodInfo.progressKey = null;
-        RoomDataManger.insertVodRecord(sourceKey, vodInfo);
+        vdInfo.progressKey = null;
+        RoomDataManger.insertVodRecord(sourceKey, vdInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));
     }
 
