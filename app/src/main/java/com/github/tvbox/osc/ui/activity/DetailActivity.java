@@ -724,8 +724,8 @@ public class DetailActivity extends BaseActivity {
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
-            vodInfo.progressKey=progressKey;
-            alert("dekey:"+vodInfo.progressKey);
+            ApiConfig.progressKey=progressKey;
+            alert("dekey:"+ApiConfig.progressKey);
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 /*if (previewVodInfo == null) {

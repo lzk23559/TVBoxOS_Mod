@@ -932,8 +932,8 @@ public class PlayFragment extends BaseLazyFragment {
         String playTitleInfo = mVodInfo.name + " " + vs.name;
         mController.setTitle(playTitleInfo);
 
-        mVodInfo = App.getInstance().getVodInfo();
-        DetailActivity.alert("F:mVodInfo.progressKey1:"+mVodInfo.progressKey);
+        mVodInfo.progressKey = ApiConfig.progressKey;
+        DetailActivity.alert("F:mVodInfo.progressKey:"+mVodInfo.progressKey);
         stopParse();
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();
@@ -945,7 +945,6 @@ public class PlayFragment extends BaseLazyFragment {
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
         if(mVodInfo.progressKey==null)progressKeySave=progressKey;
-        DetailActivity.alert("F:mVodInfo.progressKey2:"+App.getInstance().getVodInfo().progressKey);
 
         //重新播放清除现有进度
         if (reset) {
