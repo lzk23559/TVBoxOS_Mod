@@ -723,9 +723,9 @@ public class DetailActivity extends BaseActivity {
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
-            //App.getInstance().setVodInfo(vodInfo);
+            App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
-                if (previewVodInfo == null) {
+                /*if (previewVodInfo == null) {
                     try {
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -745,7 +745,7 @@ public class DetailActivity extends BaseActivity {
                     previewVodInfo.seriesMap = vodInfo.seriesMap;
 //                    bundle.putSerializable("VodInfo", previewVodInfo);
                     App.getInstance().setVodInfo(previewVodInfo);
-                }
+                }*/
                 playFragment.setData(bundle);
             } else {
                 jumpActivity(PlayActivity.class, bundle);
@@ -1023,7 +1023,6 @@ public class DetailActivity extends BaseActivity {
                             seriesFlagAdapter.setNewData(vodInfo.seriesFlags);
                             mGridViewFlag.scrollToPosition(flagScrollTo);
                             refreshList();
-                            App.getInstance().setVodInfo(vodInfo);
                             if (showPreview) {
                                 jumpToPlay();
                                 llPlayerFragmentContainer.setVisibility(View.VISIBLE);
