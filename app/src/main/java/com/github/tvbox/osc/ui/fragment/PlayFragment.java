@@ -933,7 +933,6 @@ public class PlayFragment extends BaseLazyFragment {
         mController.setTitle(playTitleInfo);
 
         mVodInfo.progressKey = ApiConfig.progressKey;
-        DetailActivity.alert("F:mVodInfo.progressKey:"+mVodInfo.progressKey);
         stopParse();
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();

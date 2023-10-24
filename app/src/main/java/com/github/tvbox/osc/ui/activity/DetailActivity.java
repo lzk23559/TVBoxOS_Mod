@@ -725,7 +725,6 @@ public class DetailActivity extends BaseActivity {
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
             ApiConfig.progressKey=progressKey;
-            alert("dekey:"+ApiConfig.progressKey);
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 /*if (previewVodInfo == null) {
