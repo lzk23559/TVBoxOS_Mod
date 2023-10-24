@@ -723,11 +723,11 @@ public class DetailActivity extends BaseActivity {
             //保存历史
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
-//            bundle.putSerializable("VodInfo", vodInfo);
+//          //bundle.putSerializable("VodInfo", vodInfo);
             ApiConfig.progressKey=progressKey;
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
-                /*if (previewVodInfo == null) {
+                if (previewVodInfo == null) {
                     try {
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         ObjectOutputStream oos = new ObjectOutputStream(bos);
@@ -745,9 +745,9 @@ public class DetailActivity extends BaseActivity {
                     previewVodInfo.playFlag = vodInfo.playFlag;
                     previewVodInfo.playIndex = vodInfo.playIndex;
                     previewVodInfo.seriesMap = vodInfo.seriesMap;
-//                    bundle.putSerializable("VodInfo", previewVodInfo);
+//                  //bundle.putSerializable("VodInfo", previewVodInfo);
                     App.getInstance().setVodInfo(previewVodInfo);
-                }*/
+                }
                 playFragment.setData(bundle);
             } else {
                 jumpActivity(PlayActivity.class, bundle);
