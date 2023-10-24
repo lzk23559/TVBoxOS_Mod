@@ -147,6 +147,7 @@ public class DetailActivity extends BaseActivity {
     private String spPic;
     private String spId;
     private String tokenInfo;
+    private String progressKey;
 
     @Override
     protected int getLayoutResID() {
@@ -723,7 +724,8 @@ public class DetailActivity extends BaseActivity {
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
-            alert("dekey:"+vodInfo.progressKey);
+            vodInfo.progressKey=progressKey;
+            alert("dekey:"+vodInfo.progressKey);            
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 /*if (previewVodInfo == null) {
@@ -1005,7 +1007,7 @@ public class DetailActivity extends BaseActivity {
                                 vodInfo.playerCfg = "";
                                 vodInfo.reverseSort = false;
                             }
-
+                            alert("d1:"+vodInfo.progressKey);
                             if (vodInfo.reverseSort) {
                                 vodInfo.reverse();
                             }
@@ -1083,6 +1085,7 @@ public class DetailActivity extends BaseActivity {
                 if (vInfo.name.equals(info.name)) {
                     sinfo = vInfo;
                     sinfo.progressKey = ApiConfig.getProgressKey(sinfo);
+                    progressKey = sinfo.progressKey;
                     break;
                 }
             }
