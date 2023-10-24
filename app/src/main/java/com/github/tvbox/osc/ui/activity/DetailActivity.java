@@ -1121,7 +1121,6 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void loadDetail(String vid, String key) {
-        alert("loadDetail sourceKey:" + key + "   spId:" + vid);
         if (vid != null) {
             vodId = vid;
             sourceKey = key;
@@ -1281,7 +1280,7 @@ public class DetailActivity extends BaseActivity {
             List<Movie.Video> data = new ArrayList<>();
             for (Movie.Video video : absXml.movie.videoList) {
                 // 去除当前相同的影片
-                if (video.sourceKey.equals(sourceKey) && video.id.equals(vodId))
+                if (video.sourceKey.equals(sourceKey) && video.id.equals(spId))
                     continue;
                 data.add(video);
             }
@@ -1296,7 +1295,6 @@ public class DetailActivity extends BaseActivity {
         } catch (Throwable th) {
             vodInfo.playNote = "";
         }
-        alert("sourceKey:" + sourceKey + "   vodInfo:" + vodInfo.sourceKey+ "   spId:" + vodInfo.id);
         vodInfo.progressKey = null;
         RoomDataManger.insertVodRecord(sourceKey, vodInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));

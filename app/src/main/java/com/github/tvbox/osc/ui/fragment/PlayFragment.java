@@ -104,7 +104,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import com.github.tvbox.osc.ui.activity.DetailActivity;
 import me.jessyan.autosize.AutoSize;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
@@ -942,7 +942,7 @@ public class PlayFragment extends BaseLazyFragment {
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
         if(mVodInfo.progressKey==null)progressKeySave=progressKey;
-
+        DetailActivity.alert("F:progressKey:"+progressKey+"\n progressKeySave:"+progressKeySave);
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
