@@ -725,7 +725,7 @@ public class DetailActivity extends BaseActivity {
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
             vodInfo.progressKey=progressKey;
-            alert("dekey:"+vodInfo.progressKey);            
+            alert("dekey:"+vodInfo.progressKey);
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 /*if (previewVodInfo == null) {
@@ -1007,7 +1007,6 @@ public class DetailActivity extends BaseActivity {
                                 vodInfo.playerCfg = "";
                                 vodInfo.reverseSort = false;
                             }
-                            alert("d1:"+vodInfo.progressKey);
                             if (vodInfo.reverseSort) {
                                 vodInfo.reverse();
                             }

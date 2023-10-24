@@ -723,6 +723,7 @@ public class PlayFragment extends BaseLazyFragment {
         mVodInfo = App.getInstance().getVodInfo();
         sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
         this.reverseSort = mVodInfo.reverseSort;
+
         /*sourceBean = ApiConfig.get().getSource(sourceKey);
         VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
         // 读取历史记录
@@ -931,6 +932,8 @@ public class PlayFragment extends BaseLazyFragment {
         String playTitleInfo = mVodInfo.name + " " + vs.name;
         mController.setTitle(playTitleInfo);
 
+        mVodInfo = App.getInstance().getVodInfo();
+        DetailActivity.alert("F:mVodInfo.progressKey1:"+mVodInfo.progressKey);
         stopParse();
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();
@@ -942,7 +945,8 @@ public class PlayFragment extends BaseLazyFragment {
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
         if(mVodInfo.progressKey==null)progressKeySave=progressKey;
-        DetailActivity.alert("F:mVodInfo.progressKey:"+mVodInfo.progressKey);
+        DetailActivity.alert("F:mVodInfo.progressKey2:"+App.getInstance().getVodInfo().progressKey);
+
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
