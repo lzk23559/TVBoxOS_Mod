@@ -723,6 +723,7 @@ public class DetailActivity extends BaseActivity {
             insertVod(firstsourceKey, vodInfo);
             bundle.putString("sourceKey", sourceKey);
 //            bundle.putSerializable("VodInfo", vodInfo);
+            alert("dekey:"+vodInfo.progressKey);
             App.getInstance().setVodInfo(vodInfo);
             if (showPreview) {
                 /*if (previewVodInfo == null) {
@@ -1087,6 +1088,7 @@ public class DetailActivity extends BaseActivity {
             }
             return sinfo;
         }else {
+            vodInfoRecord.progressKey = null;
             return vodInfoRecord;
         }
     }
