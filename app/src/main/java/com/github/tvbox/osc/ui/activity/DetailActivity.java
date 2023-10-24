@@ -1121,6 +1121,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void loadDetail(String vid, String key) {
+        alert("loadDetail sourceKey:" + key + "   spId:" + vid);
         if (vid != null) {
             vodId = vid;
             sourceKey = key;
@@ -1295,7 +1296,7 @@ public class DetailActivity extends BaseActivity {
         } catch (Throwable th) {
             vodInfo.playNote = "";
         }
-        alert("sourceKey:" + sourceKey + "   vodInfo:" + vodInfo.sourceKey);
+        alert("sourceKey:" + sourceKey + "   vodInfo:" + vodInfo.sourceKey+ "   spId:" + vodInfo.id);
         vodInfo.progressKey = null;
         RoomDataManger.insertVodRecord(sourceKey, vodInfo);
         EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_HISTORY_REFRESH));
