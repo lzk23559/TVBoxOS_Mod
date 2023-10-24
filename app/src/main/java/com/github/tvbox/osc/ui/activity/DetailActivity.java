@@ -717,7 +717,6 @@ public class DetailActivity extends BaseActivity {
     private void jumpToPlay() {
         if (vodInfo != null && vodInfo.seriesMap.get(vodInfo.playFlag).size() > 0) {
             preFlag = vodInfo.playFlag;
-            //更新播放地址
             //setTextShow(tvPlayUrl, "播放地址：", vodInfo.seriesMap.get(vodInfo.playFlag).get(vodInfo.playIndex).url);
             Bundle bundle = new Bundle();
             //保存历史
@@ -999,7 +998,6 @@ public class DetailActivity extends BaseActivity {
                                 vodInfo.playerCfg = vodInfoRecord.playerCfg;
                                 vodInfo.reverseSort = vodInfoRecord.reverseSort;
                                 vodInfo.progressKey = vodInfoRecord.progressKey;
-                                App.getInstance().setVodInfo(vodInfo);
                             } else {
                                 vodInfo.playIndex = 0;
                                 vodInfo.playFlag = null;
