@@ -988,9 +988,7 @@ public class DetailActivity extends BaseActivity {
                                 spPic = wdPic;
                             }
 
-                            mGridViewFlag.setVisibility(View.VISIBLE);
-                            mGridView.setVisibility(View.VISIBLE);
-                            tvPlay.setVisibility(View.VISIBLE);
+                            showBox(true);
                             mEmptyPlayList.setVisibility(View.GONE);
                             VodInfo vodInfoRecord = getRoomData(vodInfo);
 
@@ -1038,13 +1036,8 @@ public class DetailActivity extends BaseActivity {
                             }
                             noflag = true;
                         } else {
-                            mGridViewFlag.setVisibility(View.GONE);
-                            mGridView.setVisibility(View.GONE);
+                            showBox(false);
                             mSeriesGroupView.setVisibility(View.GONE);
-                            tvPlay.setVisibility(View.GONE);
-                            tvSort.setVisibility(View.GONE);
-                            tvCollect.setVisibility(View.GONE);
-                            myPush.setVisibility(View.GONE);
                             mEmptyPlayList.setVisibility(View.VISIBLE);
                             tvQuickSearch.requestFocus();
                         }
@@ -1067,6 +1060,18 @@ public class DetailActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    public void showBox(boolean flag){
+        int z = 0;
+        if(flag)z=View.VISIBLE;
+        else z = View.GONE;
+        mGridViewFlag.setVisibility(z);
+        mGridView.setVisibility(z);
+        tvPlay.setVisibility(z);
+        tvSort.setVisibility(z);
+        tvCollect.setVisibility(z);
+        myPush.setVisibility(z);
     }
 
     public VodInfo getRoomData(VodInfo info){
