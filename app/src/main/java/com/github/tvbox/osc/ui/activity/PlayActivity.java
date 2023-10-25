@@ -895,7 +895,7 @@ public class PlayActivity extends BaseActivity {
         setTip("正在获取播放信息", true, false);
         String playTitleInfo = mVodInfo.name + " " + vs.name;
         mController.setTitle(playTitleInfo);
-
+        mVodInfo.progressKey = ApiConfig.progressKey;
         stopParse();
         initParseLoadFound();
         if(mVideoView!=null) mVideoView.release();
@@ -908,6 +908,7 @@ public class PlayActivity extends BaseActivity {
         String subtitleCacheKey = subKey+ "-" + vs.name + "-subt";
         String progressKey = subKey.replace("-","") + vs.name;
         if(mVodInfo.progressKey==null)progressKeySave=progressKey;
+        ApiConfig.progressKey=null;
         //重新播放清除现有进度
         if (reset) {
             CacheManager.delete(MD5.string2MD5(progressKey), 0);
