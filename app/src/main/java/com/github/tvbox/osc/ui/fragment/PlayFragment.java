@@ -772,10 +772,10 @@ public class PlayFragment extends BaseLazyFragment {
             if (!mVodPlayerCfg.has("et")) {
                 mVodPlayerCfg.put("et", 0);
             }
+            DetailActivity.alert("p:getDouble:"+mVodPlayerCfg.getDouble("sp"));
         } catch (Throwable th) {
 
         }
-        DetailActivity.alert("p:getDouble:"+mVodPlayerCfg.getDouble("sp"));
         mController.setPlayerConfig(mVodPlayerCfg);
     }
 
