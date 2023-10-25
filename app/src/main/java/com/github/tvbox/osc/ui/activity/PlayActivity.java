@@ -706,9 +706,9 @@ public class PlayActivity extends BaseActivity {
         if (intent != null && intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
             mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
-            //mVodInfo = App.getInstance().getVodInfo();
             sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
             this.reverseSort = mVodInfo.reverseSort;
+            sourceBean = ApiConfig.get().getSource(sourceKey);
            /*
             sourceBean = ApiConfig.get().getSource(sourceKey);
             VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);

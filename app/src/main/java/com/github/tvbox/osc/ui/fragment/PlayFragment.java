@@ -723,7 +723,7 @@ public class PlayFragment extends BaseLazyFragment {
         //mVodInfo = App.getInstance().getVodInfo();
         sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
         this.reverseSort = mVodInfo.reverseSort;
-
+        sourceBean = ApiConfig.get().getSource(sourceKey);
         /*sourceBean = ApiConfig.get().getSource(sourceKey);
         VodInfo vodInfoRecord = RoomDataManger.getVodInfo(sourceKey, mVodInfo.id);
         // 读取历史记录
@@ -732,16 +732,8 @@ public class PlayFragment extends BaseLazyFragment {
             mVodInfo.reverseSort = vodInfoRecord.reverseSort;
             this.reverseSort = mVodInfo.reverseSort;
         }*/
-        DetailActivity.alert("p:playerCfg:"+mVodInfo.playerCfg);
         initPlayerCfg();
         play(false);
-    }
-
-    private void initData() {
-        /*Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-
-        }*/
     }
 
     void initPlayerCfg() {
@@ -772,7 +764,6 @@ public class PlayFragment extends BaseLazyFragment {
             if (!mVodPlayerCfg.has("et")) {
                 mVodPlayerCfg.put("et", 0);
             }
-            DetailActivity.alert("p:getDouble:"+mVodPlayerCfg.getDouble("sp"));
         } catch (Throwable th) {
 
         }
