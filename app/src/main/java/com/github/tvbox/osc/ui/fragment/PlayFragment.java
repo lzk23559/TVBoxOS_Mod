@@ -732,6 +732,7 @@ public class PlayFragment extends BaseLazyFragment {
             mVodInfo.reverseSort = vodInfoRecord.reverseSort;
             this.reverseSort = mVodInfo.reverseSort;
         }*/
+        DetailActivity.alert("p:playerCfg:"+mVodInfo.playerCfg);
         initPlayerCfg();
         play(false);
     }
@@ -774,6 +775,7 @@ public class PlayFragment extends BaseLazyFragment {
         } catch (Throwable th) {
 
         }
+        DetailActivity.alert("p:getDouble:"+mVodPlayerCfg.getDouble("sp"));
         mController.setPlayerConfig(mVodPlayerCfg);
     }
 
