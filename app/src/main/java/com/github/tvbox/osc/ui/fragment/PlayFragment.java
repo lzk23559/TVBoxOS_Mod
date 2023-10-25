@@ -719,8 +719,8 @@ public class PlayFragment extends BaseLazyFragment {
     }
 
     public void setData(Bundle bundle) {
-//        mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
-        mVodInfo = App.getInstance().getVodInfo();
+        mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
+        //mVodInfo = App.getInstance().getVodInfo();
         sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
         this.reverseSort = mVodInfo.reverseSort;
 

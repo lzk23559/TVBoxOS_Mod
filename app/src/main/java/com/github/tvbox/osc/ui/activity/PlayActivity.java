@@ -705,8 +705,8 @@ public class PlayActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
-//            mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
-            mVodInfo = App.getInstance().getVodInfo();
+            mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
+            //mVodInfo = App.getInstance().getVodInfo();
             sourceKey = mVodInfo.sourceKey;//bundle.getString("sourceKey");
             this.reverseSort = mVodInfo.reverseSort;
            /*
