@@ -138,7 +138,7 @@ public class PlayFragment extends BaseLazyFragment {
     protected void init() {
         initView();
         initViewModel();
-        initData();
+        //initData();
     }
 
     public long getSavedProgress(String url) {
