@@ -1075,7 +1075,7 @@ public class DetailActivity extends BaseActivity {
 
     public VodInfo getRoomData(VodInfo info){
         VodInfo vodInfoRecord = RoomDataManger.getVodInfo(info.sourceKey, info.id);
-        if (vodInfoRecord == null&& info.id.contains("aliyundrive")) {
+        if (vodInfoRecord == null) { //&& info.id.contains("aliyundrive")
             List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(100);
             List<VodInfo> vodInfoList = new ArrayList<>();
             VodInfo sinfo = null;
