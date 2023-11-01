@@ -53,7 +53,7 @@ public class ApiConfig {
     public static String pushSp = "";
     public static boolean delsp = false;
     public static String progressKey;
-    public static String _api = "http://it.haocew.com/tv/sp/d.json";
+    public static String _api = "";
 
     private SourceBean emptyHome = new SourceBean();
 
@@ -94,7 +94,8 @@ public class ApiConfig {
     }
     public static boolean isOwnApi(){
         String apiUrl = Hawk.get(HawkConfig.API_URL, _api);
-        if(apiUrl.contains("xinjun58")||apiUrl.contains("it.haocew")){
+        String siteUrl = Hawk.get(HawkConfig.MY_SITE, "");
+        if(!siteUrl.isEmpty()&&apiUrl.contains(siteUrl)){
             return true;
         }
         return false;
@@ -106,7 +107,7 @@ public class ApiConfig {
     }
 
     public static boolean isPic(String wdPic){
-        if(!wdPic.isEmpty()&&!wdPic.contains(".xinjun58")&&!wdPic.contains("13263837859"))return true;
+        if(!wdPic.isEmpty()&&!wdPic.contains("13263837859"))return true;
         return false;
     }
     public static String isAgentImg(String pic){
@@ -301,7 +302,7 @@ public class ApiConfig {
     public void loadConfig(boolean useCache, LoadConfigCallback callback, Activity activity) {
         String apiUrl2 = Hawk.get(HawkConfig.API_URL, _api);
         if (apiUrl2.isEmpty()) {
-            callback.error("-1");
+            SearchActivity.start(activity, "", "");
             return;
         }
         String apiUrl = getApiUrl(apiUrl2);
@@ -549,7 +550,7 @@ public class ApiConfig {
             }
             String _ext = sb.getExt();
             if(!qqext.isEmpty()&&!_ext.isEmpty()){
-                if (_ext.contains("xinjun58")||_ext.equals("qqext")) _ext = qqext;
+                if (_ext.equals("qqext")) _ext = qqext;
                 sb.setExt(_ext);
             }
             sb.setJar(DefaultConfig.safeJsonString(obj, "jar", ""));

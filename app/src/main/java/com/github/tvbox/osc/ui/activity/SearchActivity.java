@@ -253,6 +253,11 @@ public class SearchActivity extends BaseActivity {
                         String s = wd.replaceFirst("apkv", "v");
                         Hawk.put(HawkConfig.MY_APKV, s);
                         Toast.makeText(mContext, "apkv值为："+s, Toast.LENGTH_SHORT).show();
+                    }else if (wd.startsWith("site")) {
+                        String s = wd.replaceFirst("site", "");
+                        Hawk.put(HawkConfig.API_URL, s);
+                        Hawk.put(HawkConfig.MY_SITE, s);
+                        Toast.makeText(mContext, "site值为："+s, Toast.LENGTH_SHORT).show();
                     }else if (wd.startsWith("alert")) {
                         String s = wd.replaceFirst("alert", "");
                         String str = Hawk.get("my_"+s,"无");

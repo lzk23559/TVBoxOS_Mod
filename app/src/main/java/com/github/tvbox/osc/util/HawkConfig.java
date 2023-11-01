@@ -48,6 +48,7 @@ public class HawkConfig {
     public static final String MY_CURSIZE = "my_curSize";
     public static final String MY_CURSTYLE = "my_curStyle";
     public static final String MY_ENDSP = "my_pushSp";
+    public static final String MY_SITE = "my_site";
     public static final String TIME_FLAG = "my_time_flag";//右上角 播放进度和时间
     public static final String NOW_DATE = "now_date"; //当前日期
     public static final String REMOTE_TVBOX = "remote_tvbox_host";

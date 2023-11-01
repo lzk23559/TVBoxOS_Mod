@@ -112,18 +112,18 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvMediaCodec.setText(Hawk.get(HawkConfig.IJK_CODEC, ""));
         tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "已打开" : "已关闭");
         tvParseWebView.setText(Hawk.get(HawkConfig.PARSE_WEBVIEW, true) ? "系统自带" : "XWalkView");
-        tvApi.setText(Hawk.get(HawkConfig.API_URL, ""));
-
+        if(!ApiConfig.isOwnApi()) tvApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+        else tvApi.setText("");
         tvDns.setText(OkGoHelper.dnsHttpsList.get(Hawk.get(HawkConfig.DOH_URL, 0)));
         tvHomeRec.setText(getHomeRecName(Hawk.get(HawkConfig.HOME_REC, 0)));
         tvHistoryNum.setText(HistoryHelper.getHistoryNumName(Hawk.get(HawkConfig.HISTORY_NUM, 0)));
         tvSearchView.setText(getSearchView(Hawk.get(HawkConfig.SEARCH_VIEW, 0)));
-        tvHomeApi.setText(ApiConfig.get().getHomeSourceBean().getName());
+        tvHomeApi.setText(!ApiConfig.get().getHomeSourceBean().getName());
         tvScale.setText(PlayerHelper.getScaleName(Hawk.get(HawkConfig.PLAY_SCALE, 0)));
         tvPlay.setText(PlayerHelper.getPlayerName(Hawk.get(HawkConfig.PLAY_TYPE, 1)));
         tvRender.setText(PlayerHelper.getRenderName(Hawk.get(HawkConfig.PLAY_RENDER, 1)));
         tvIjkCachePlay.setText(Hawk.get(HawkConfig.IJK_CACHE_PLAY, false) ? "开启" : "关闭");
-        llAboutText.setText("关于 " + ApiConfig.version+ApiConfig.dmsg);
+        llAboutText.setText("关于 " + !ApiConfig.version+!ApiConfig.dmsg);
         findViewById(R.id.llDebug).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,8 +171,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
             @Override
             public boolean onLongClick(View v) {
                 String tip = "";
-                if(!ApiConfig.sversion.isEmpty())tip = ",版本号为："+ApiConfig.sversion;
-                DetailActivity.copyInfo(mContext, "App安装地址已复制"+tip,ApiConfig.appUrl );
+                if(!!ApiConfig.sversion.isEmpty())tip = ",版本号为："+!ApiConfig.sversion;
+                DetailActivity.copyInfo(mContext, "App安装地址已复制"+tip,!ApiConfig.appUrl );
                 return true;
             }
         });
@@ -180,8 +180,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
-                if (!ApiConfig.get().wallpaper.isEmpty())
-                    OkGo.<File>get(ApiConfig.get().wallpaper).execute(new FileCallback(requireActivity().getFilesDir().getAbsolutePath(), "wp") {
+                if (!!ApiConfig.get().wallpaper.isEmpty())
+                    OkGo.<File>get(!ApiConfig.get().wallpaper).execute(new FileCallback(requireActivity().getFilesDir().getAbsolutePath(), "wp") {
                         @Override
                         public void onSuccess(Response<File> response) {
                             ((BaseActivity) requireActivity()).changeWallpaper(true);
@@ -220,15 +220,15 @@ public class ModelSettingFragment extends BaseLazyFragment {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
-                List<SourceBean> sites = ApiConfig.get().getSourceBeanList();
+                List<SourceBean> sites = !ApiConfig.get().getSourceBeanList();
                 if (sites.size() > 0) {
                     SelectDialog<SourceBean> dialog = new SelectDialog<>(mActivity);
                     dialog.setTip("请选择首页数据源");
                     dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<SourceBean>() {
                         @Override
                         public void click(SourceBean value, int pos) {
-                            ApiConfig.get().setSourceBean(value);
-                            tvHomeApi.setText(ApiConfig.get().getHomeSourceBean().getName());
+                            !ApiConfig.get().setSourceBean(value);
+                            tvHomeApi.setText(!ApiConfig.get().getHomeSourceBean().getName());
 
                             Intent intent =new Intent(mContext, HomeActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -252,7 +252,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         public boolean areContentsTheSame(@NonNull @NotNull SourceBean oldItem, @NonNull @NotNull SourceBean newItem) {
                             return oldItem.getKey().equals(newItem.getKey());
                         }
-                    }, sites, sites.indexOf(ApiConfig.get().getHomeSourceBean()));
+                    }, sites, sites.indexOf(!ApiConfig.get().getHomeSourceBean()));
                     dialog.show();
                 }
             }
@@ -302,8 +302,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.setOnListener(new ApiDialog.OnListener() {
                     @Override
                     public void onchange(String api) {
-                        Hawk.put(HawkConfig.API_URL, api);
-                        tvApi.setText(api);
+                        if(!ApiConfig.isOwnApi()) tvApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+                        else tvApi.setText("");
                     }
                 });
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -322,7 +322,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         findViewById(R.id.llMediaCodec).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<IJKCode> ijkCodes = ApiConfig.get().getIjkCodes();
+                List<IJKCode> ijkCodes = !ApiConfig.get().getIjkCodes();
                 if (ijkCodes == null || ijkCodes.size() == 0)
                     return;
                 FastClickCheckUtil.check(v);

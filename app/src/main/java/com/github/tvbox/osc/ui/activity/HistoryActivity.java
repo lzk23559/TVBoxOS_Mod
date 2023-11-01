@@ -129,16 +129,6 @@ public class HistoryActivity extends BaseActivity {
         List<VodInfo> vodInfoList = new ArrayList<>();
         for (VodInfo vodInfo : allVodRecord) {
             String sourceKey = vodInfo.sourceKey;
-            if (sourceKey != null) {
-                String name = ApiConfig.get().getSource(sourceKey).getName();
-                if ((vodInfo.pic==null||vodInfo.pic.isEmpty())||(vodInfo.pic!=null&&vodInfo.pic.contains("img.aliyundrive.com"))) {
-                    if (name.contains("易搜")) {
-                        vodInfo.pic = "https://f.haocew.com/image/tv/yiso.jpg";
-                    }else if (vodInfo.id.contains("aliyundrive")&&!vodInfo.pic.contains("xinjun58")) {
-                        vodInfo.pic = "http://image.xinjun58.com/sp/pic/bg/ali.jpg";
-                    }
-                }
-            }
             if (vodInfo.playNote != null && !vodInfo.playNote.isEmpty())vodInfo.note = "最近：" + vodInfo.playNote;
             vodInfoList.add(vodInfo);
         }
