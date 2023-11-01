@@ -227,8 +227,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<SourceBean>() {
                         @Override
                         public void click(SourceBean value, int pos) {
-                            !ApiConfig.get().setSourceBean(value);
-                            tvHomeApi.setText(!ApiConfig.get().getHomeSourceBean().getName());
+                            ApiConfig.get().setSourceBean(value);
+                            tvHomeApi.setText(ApiConfig.get().getHomeSourceBean().getName());
 
                             Intent intent =new Intent(mContext, HomeActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
