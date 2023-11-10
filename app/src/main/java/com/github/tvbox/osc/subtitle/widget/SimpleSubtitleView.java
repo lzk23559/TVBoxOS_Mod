@@ -105,13 +105,17 @@ public class SimpleSubtitleView extends TextView
             return;
         }
         String text = subtitle.content;
-        text = text.replaceAll("(?:\\r\\n)", "<br />");
-        text = text.replaceAll("(?:\\r)", "<br />");
-        text = text.replaceAll("(?:\\n)", "<br />");
-        text = text.replaceAll("\\\\N", "<br />");
-        text = text.replaceAll("\\{[\\s\\S]*?\\}", "");
-        text = text.replaceAll("^.*?,.*?,.*?,.*?,.*?,.*?,.*?,.*?,.*?,", "");
-        setText(Html.fromHtml(text));
+        if(text.endsWith("\b\f")){
+            setText(EMPTY_TEXT);
+        }else{
+            text = text.replaceAll("(?:\\r\\n)", "<br />");
+            text = text.replaceAll("(?:\\r)", "<br />");
+            text = text.replaceAll("(?:\\n)", "<br />");
+            text = text.replaceAll("\\\\N", "<br />");
+            text = text.replaceAll("\\{[\\s\\S]*?\\}", "");
+            text = text.replaceAll("^.*?,.*?,.*?,.*?,.*?,.*?,.*?,.*?,.*?,", "");
+            setText(Html.fromHtml(text));
+        }
     }
 
     @Override
@@ -241,7 +245,7 @@ public class SimpleSubtitleView extends TextView
     private void drawBackGroundText() {
         TextPaint tp = backGroundText.getPaint();
         //设置描边宽度
-        tp.setStrokeWidth(10);
+        tp.setStrokeWidth(3);
         //背景描边并填充全部
         tp.setStyle(Paint.Style.FILL_AND_STROKE);
         //设置描边颜色
