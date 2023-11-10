@@ -388,6 +388,7 @@ public class SearchActivity extends BaseActivity {
                     @Override
                     public void onSuccess(Response<String> response) {
                         try {
+                            ArrayList<String> hots = new ArrayList<>();
                             JsonObject mapResult = JsonParser.parseString(response.body())
                                     .getAsJsonObject()
                                     .get("data").getAsJsonObject()
