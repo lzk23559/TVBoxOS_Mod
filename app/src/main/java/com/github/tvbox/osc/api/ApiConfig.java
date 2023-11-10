@@ -290,11 +290,9 @@ public class ApiConfig {
     public static String getApiUrl(String apiUrl2){
         if (isOwnApi()) {
             if(Hawk.get(HawkConfig.HOME_REC, -1)<0) Hawk.put(HawkConfig.HOME_REC, 3);
-            if (apiUrl2.contains("/d.json")) {
-                String pwd = Hawk.get(HawkConfig.MY_PWD,"");
-                String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
-                apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId+"&v="+ version;
-            }
+            String pwd = Hawk.get(HawkConfig.MY_PWD,"");
+            String deviceId = Hawk.get(HawkConfig.MY_DEVICEID,"");
+            apiUrl2 = apiUrl2+"?key="+pwd+"&deviceId="+deviceId+"&v="+ version;
         }
         return apiUrl2;
     }
