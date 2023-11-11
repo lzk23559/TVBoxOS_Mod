@@ -56,12 +56,18 @@ public class ApiDialog extends BaseDialog {
         tvAddress = findViewById(R.id.tvAddress);
         inputApi = findViewById(R.id.input);
         //内置网络接口在此处添加
-        inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+        if(!ApiConfig.isOwnApi()) inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+        else inputApi.setText("");
+
         findViewById(R.id.inputSubmit).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Hawk.put(HawkConfig.API_URL, ApiConfig._api);
-                inputApi.setText(ApiConfig._api);
+                String _api = Hawk.get(HawkConfig.MY_SITE, "");
+                if(_api.isEmpty()) {
+                    _api = ApiConfig._api;
+                    inputApi.setText(_api);
+                }else inputApi.setText("");
+                Hawk.put(HawkConfig.API_URL, _api);
                 return true;
             }
         });
