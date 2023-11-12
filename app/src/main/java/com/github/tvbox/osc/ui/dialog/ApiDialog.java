@@ -91,8 +91,21 @@ public class ApiDialog extends BaseDialog {
             @Override
             public void onClick(View v) {
                 ArrayList<String> history = Hawk.get(HawkConfig.API_HISTORY, new ArrayList<String>());
-                if (history.isEmpty())
-                    return;
+                history.add("https://api.zalman2022.repl.co/api.json");
+                history.add("https://weixine.net/ysc.json");
+                history.add("http://yydsys.top/duo");
+                history.add("http://xhww.fun:63/小米/DEMO.json");
+                history.add("http://饭太硬.top/tv");
+                history.add("http://cdn.qiaoji8.com/tvbox.json");
+                history.add("http://我不是.肥猫.love:63/接口禁止贩卖");
+                history.add("https://ghproxy.com/raw.githubusercontent.com/FongMi/CatVodSpider/main/json/config.json");
+                history.add("http://itvbox.cc/tvbox/云星日记/1.m3u8");
+                history.add("https://神器每日推送.tk/pz.json");
+                history.add("https://agit.ai/Yoursmile7/TVBox/raw/branch/master/XC.json");
+                history.add("http://tt.58cxz.com/video/4k.json");
+                history.add("http://tv.nxog.top/api.php?mz=xb&id=1&b=欧歌");
+                history.add("http://weixine.link:33/");
+                if (history.isEmpty()) return;
                 String current = Hawk.get(HawkConfig.API_URL, "");
                 int idx = 0;
                 if (history.contains(current))
