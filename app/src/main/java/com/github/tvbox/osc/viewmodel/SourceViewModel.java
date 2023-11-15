@@ -60,7 +60,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import java.io.IOException;
+import okhttp3.Request;
 /**
  * @author pj567
  * @date :2020/12/18
@@ -564,167 +568,152 @@ public class SourceViewModel extends ViewModel {
             detailResult.postValue(null);
         }
     }
-    // searchContent
-    public void getSearch(String sourceKey, String wd) {
-        SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
+    private OkHttpClient okHttpClient = new OkHttpClient();
+    public void getSearch(String key, String wd) {
+        SourceBean sourceBean = ApiConfig.get().getSource(key);
         int type = sourceBean.getType();
+        
         if (type == 3) {
+        // 处理类型为 3 的请求
             try {
                 Spider sp = ApiConfig.get().getCSP(sourceBean);
                 String search = sp.searchContent(wd, false);
-                if(!TextUtils.isEmpty(search)){
-                    json(searchResult, search, sourceBean.getKey());
-                } else {
-                    json(searchResult, "", sourceBean.getKey());    
-                }
+                handleSearchResult(search, sourceBean.getKey());
             } catch (Throwable th) {
                 th.printStackTrace();
-                json(searchResult, "", sourceBean.getKey());
+                handleSearchResult("", sourceBean.getKey());
             }
-        } else if (type == 0 || type == 1) {
-            OkGo.<String>get(sourceBean.getApi())
-                    .params("wd", wd)
-                    .params("ac", "detail")
+        } else if (type == 0 || type == 1 || type == 4) {
+        // 处理类型为 0、1、4 的请求
+            Request request = new Request.Builder()
+                    .url(sourceBean.getApi() + "?wd=" + wd + getAdditionalParams(type))
                     .tag("search")
-                    .execute(new AbsCallback<String>() {
-                        @Override
-                        public String convertResponse(okhttp3.Response response) throws Throwable {
-                            if (response.body() != null) {
-                                return response.body().string();
-                            } else {
-                                throw new IllegalStateException("网络请求错误");
-                            }
-                        }
+                    .build();
 
-                        @Override
-                        public void onSuccess(Response<String> response) {
-                            if (type == 0) {
-                                String xml = response.body();
-                                xml(searchResult, xml, sourceBean.getKey());
-                            } else {
-                                String json = response.body();
-                                json(searchResult, json, sourceBean.getKey());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Response<String> response) {
-                            super.onError(response);
-                            // searchResult.postValue(null);
-                            EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SEARCH_RESULT, null));
-                        }
-                    });
-        }else if (type == 4) {
-            OkGo.<String>get(sourceBean.getApi())
-                .params("wd", wd)
-                .params("ac" ,"detail")
-                .params("quick" ,"false")
-                .tag("search")
-                .execute(new AbsCallback<String>() {
-                    @Override
-                    public String convertResponse(okhttp3.Response response) throws Throwable {
-                        if (response.body() != null) {
-                            return response.body().string();
-                        } else {
-                            throw new IllegalStateException("网络请求错误");
-                        }
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                    try {
+                        String responseBody = response.body().string();
+                        handleSearchResult(responseBody, sourceBean.getKey());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        onError(call, e);
                     }
+                }
 
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                            String json = response.body();
-                        LOG.i(json);
-                            json(searchResult, json, sourceBean.getKey());
-                    }
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                    onError(call, e);
+                }
+            });
+        } else {
+            handleSearchResult("", sourceBean.getKey());
+        }
+    }
+    private String getAdditionalParams(int type) {
+    // 根据类型添加额外的参数
+        if (type == 1|| type == 0) {
+            return "&ac=detail";
+        } else if (type == 4) {
+            return "&ac=detail&quick=false";
+        } else {
+            return "";
+        }
+    }
 
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        // searchResult.postValue(null);
-                        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SEARCH_RESULT, null));
-                    }
-                });
+    private void handleSearchResult(String result, String key) {
+    // 处理搜索结果
+        if (result != null) {
+            if (key.equals("0")) {
+                xml(searchResult, result, key);
+            } else {
+                json(searchResult, result, key);
+            }
         } else {
             searchResult.postValue(null);
         }
     }
+
+    private void onError(Call call, Exception e) {
+    // 处理错误
+        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SEARCH_RESULT, null));
+    }
+	         
     // searchContent
-    public void getQuickSearch(String sourceKey, String wd) {
-        SourceBean sourceBean = ApiConfig.get().getSource(sourceKey);
+    public void getQuickSearch(String key, String wd) {
+        SourceBean sourceBean = ApiConfig.get().getSource(key);
         int type = sourceBean.getType();
+        
         if (type == 3) {
+        // 处理类型为 3 的请求
             try {
                 Spider sp = ApiConfig.get().getCSP(sourceBean);
-                json(quickSearchResult, sp.searchContent(wd, true), sourceBean.getKey());
+                String quick_search = sp.searchContent(wd, true);
+                handquickSearchResult(quick_search, sourceBean.getKey());
             } catch (Throwable th) {
                 th.printStackTrace();
+                handquickSearchResult("", sourceBean.getKey());
             }
-        } else if (type == 0 || type == 1) {
-            OkGo.<String>get(sourceBean.getApi())
-                    .params("wd", wd)
-                    .params("ac", "detail")
+        } else if (type == 0 || type == 1 || type == 4) {
+        // 处理类型为 0、1、4 的请求
+            Request request = new Request.Builder()
+                    .url(sourceBean.getApi() + "?wd=" + wd + getAddquickParams(type))
                     .tag("quick_search")
-                    .execute(new AbsCallback<String>() {
-                        @Override
-                        public String convertResponse(okhttp3.Response response) throws Throwable {
-                            if (response.body() != null) {
-                                return response.body().string();
-                            } else {
-                                throw new IllegalStateException("网络请求错误");
-                            }
-                        }
+                    .build();
 
-                        @Override
-                        public void onSuccess(Response<String> response) {
-                            if (type == 0) {
-                                String xml = response.body();
-                                xml(quickSearchResult, xml, sourceBean.getKey());
-                            } else {
-                                String json = response.body();
-                                json(quickSearchResult, json, sourceBean.getKey());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Response<String> response) {
-                            super.onError(response);
-                            // quickSearchResult.postValue(null);
-                            EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH_RESULT, null));
-                        }
-                    });
-        }else if (type == 4) {
-            OkGo.<String>get(sourceBean.getApi())
-                .params("wd", wd)
-                .params("ac" ,"detail")
-                .params("quick" ,"true")
-                .tag("search")
-                .execute(new AbsCallback<String>() {
-                    @Override
-                    public String convertResponse(okhttp3.Response response) throws Throwable {
-                        if (response.body() != null) {
-                            return response.body().string();
-                        } else {
-                            throw new IllegalStateException("网络请求错误");
-                        }
+            Call call = okHttpClient.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                    try {
+                        String responseBody = response.body().string();
+                        handquickSearchResult(responseBody, sourceBean.getKey());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        oneError(call, e);
                     }
+                }
 
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        String json = response.body();
-                        LOG.i(json);
-                        json(quickSearchResult, json, sourceBean.getKey());
-                    }
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                    oneError(call, e);
+                }
+            });
+        } else {
+            handquickSearchResult("", sourceBean.getKey());
+        }
+    }
+    private String getAddquickParams(int type) {
+    // 根据类型添加额外的参数
+        if (type == 1|| type == 0) {
+            return "&ac=detail";
+        } else if (type == 4) {
+            return "&ac=detail&quick=true";
+        } else {
+            return "";
+        }
+    }
 
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        // searchResult.postValue(null);
-                        EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_SEARCH_RESULT, null));
-                    }
-                });
+	    private void handquickSearchResult(String result, String key) {
+    // 处理搜索结果
+        if (result != null) {
+            if (key.equals("0")) {
+                xml(quickSearchResult, result, key);
+            } else {
+                json(quickSearchResult, result, key);
+            }
         } else {
             quickSearchResult.postValue(null);
         }
+    }
+
+    private void oneError(Call call, Exception e) {
+    // 处理错误
+		EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH_RESULT, null));
     }
     // playerContent
     public void getPlay(String sourceKey, String playFlag, String progressKey, String url, String subtitleKey) {

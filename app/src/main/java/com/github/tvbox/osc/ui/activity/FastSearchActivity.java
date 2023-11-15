@@ -197,7 +197,7 @@ public class FastSearchActivity extends BaseActivity {
                         if (searchExecutorService != null) {
                             pauseRunnable = searchExecutorService.shutdownNow();
                             searchExecutorService = null;
-                            JsLoader.load();
+                            JsLoader.stopAll();
                         }
                     } catch (Throwable th) {
                         th.printStackTrace();
@@ -224,7 +224,7 @@ public class FastSearchActivity extends BaseActivity {
                         if (searchExecutorService != null) {
                             pauseRunnable = searchExecutorService.shutdownNow();
                             searchExecutorService = null;
-                            JsLoader.load();
+                            JsLoader.stopAll();
                         }
                     } catch (Throwable th) {
                         th.printStackTrace();
@@ -383,8 +383,9 @@ public class FastSearchActivity extends BaseActivity {
             if (searchExecutorService != null) {
                 searchExecutorService.shutdownNow();
                 searchExecutorService = null;
-                JsLoader.load();
+                JsLoader.stopAll();
             }
+              
         } catch (Throwable th) {
             th.printStackTrace();
         } finally {
