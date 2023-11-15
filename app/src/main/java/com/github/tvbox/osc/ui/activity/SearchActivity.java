@@ -367,13 +367,9 @@ public class SearchActivity extends BaseActivity {
         initCheckedSourcesForSearch();
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("title")) {
-            String title = intent.getStringExtra("title");
-            showLoading();
-            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                Bundle bundle = new Bundle();
-                bundle.putString("title", title);
-                jumpActivity(FastSearchActivity.class, bundle);
-            }else {
+            if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
+                String title = intent.getStringExtra("title");
+                showLoading();
                 search(title);
             }
         }
@@ -411,13 +407,9 @@ public class SearchActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void server(ServerEvent event) {
         if (event.type == ServerEvent.SERVER_SEARCH) {
-            String title = (String) event.obj;
-            showLoading();
-            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                Bundle bundle = new Bundle();
-                bundle.putString("title", title);
-                jumpActivity(FastSearchActivity.class, bundle);
-            }else{
+            if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
+                String title = (String) event.obj;
+                showLoading();
                 search(title);
             }
         }
@@ -451,9 +443,11 @@ public class SearchActivity extends BaseActivity {
         showLoading();
         etSearch.setText(title);
         this.searchTitle = title;
-        mGridView.setVisibility(View.INVISIBLE);
-        searchAdapter.setNewData(new ArrayList<>());
-        searchResult();
+        if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
+            mGridView.setVisibility(View.INVISIBLE);
+            searchAdapter.setNewData(new ArrayList<>());
+            searchResult();
+		}
     }
 
     private ExecutorService searchExecutorService = null;
