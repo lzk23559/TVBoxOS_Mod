@@ -171,9 +171,12 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", wordAdapter.getItem(position));
-                    jumpActivity(FastSearchActivity.class, bundle);
+                    String selectedItem = wordAdapter.getItem(position).trim();
+                    etSearch.setText(selectedItem);
+                    searchTitle = selectedItem;
+                    Intent newIntent = new Intent(mContext, FastSearchActivity.class);
+                    newIntent.putExtra("title", searchTitle);
+                    startActivity(newIntent);
                 }else {
                     search(wordAdapter.getItem(position));
                 }
@@ -220,9 +223,12 @@ public class SearchActivity extends BaseActivity {
                 String wd = etSearch.getText().toString().trim();
                 if (!TextUtils.isEmpty(wd)) {
                     if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title", wd);
-                        jumpActivity(FastSearchActivity.class, bundle);
+                        String selectedItem = wd;
+                        etSearch.setText(selectedItem);
+                        searchTitle = selectedItem;
+                        Intent newIntent = new Intent(mContext, FastSearchActivity.class);
+                        newIntent.putExtra("title", searchTitle);
+                        startActivity(newIntent);
                     }else {
                         search(wd);
                     }
