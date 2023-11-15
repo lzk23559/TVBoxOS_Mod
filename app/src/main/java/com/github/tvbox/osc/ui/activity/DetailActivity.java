@@ -252,9 +252,9 @@ public class DetailActivity extends BaseActivity {
                 String sousuoname  = mVideo.name;
                 if (!TextUtils.isEmpty(sousuoname)) {
                     if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title", wd);
-                        jumpActivity(FastSearchActivity.class, bundle);
+                        Intent newIntent = new Intent(mContext, FastSearchActivity.class);
+                        newIntent.putExtra("title", sousuoname);
+                        startActivity(newIntent);
                     }
                 }else{
                     startQuickSearch();
