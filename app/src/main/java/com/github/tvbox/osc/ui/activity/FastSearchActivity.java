@@ -419,13 +419,16 @@ public class FastSearchActivity extends BaseActivity {
         }
 
         for (String key : siteKey) {
-	        searchExecutorService.execute(() -> {
-	            try {
-	                sourceViewModel.executeSearchRequest(key, searchTitle);
-	            } catch (Exception e) {
-	                e.printStackTrace();
-	            }
-	        });
+            searchExecutorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        sourceViewModel.getSearch(key, searchTitle);
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
         }
     }
 
