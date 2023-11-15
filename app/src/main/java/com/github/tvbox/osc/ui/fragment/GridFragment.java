@@ -213,7 +213,11 @@ public class GridFragment extends BaseLazyFragment {
                     }
                     else{
                         if(video.id == null || video.id.isEmpty() || video.id.startsWith("msearch:")){
-                            jumpActivity(SearchActivity.class, bundle);
+                            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) && enableFastSearch()){
+                                jumpActivity(FastSearchActivity.class, bundle);
+                            }else {
+                                jumpActivity(SearchActivity.class, bundle);
+                            }
                         }else {
                             jumpActivity(DetailActivity.class, bundle);
                         }
