@@ -367,15 +367,11 @@ public class SearchActivity extends BaseActivity {
         initCheckedSourcesForSearch();
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("title")) {
+
             String title = intent.getStringExtra("title");
             showLoading();
-            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                Bundle bundle = new Bundle();
-                bundle.putString("title", title);
-                jumpActivity(FastSearchActivity.class, bundle);
-            }else {
-                search(title);
-            }
+            search(title);
+
         }
         // 加载热词
         OkGo.<String>get("https://node.video.qq.com/x/api/hot_search")
@@ -413,13 +409,8 @@ public class SearchActivity extends BaseActivity {
         if (event.type == ServerEvent.SERVER_SEARCH) {
             String title = (String) event.obj;
             showLoading();
-            if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                Bundle bundle = new Bundle();
-                bundle.putString("title", title);
-                jumpActivity(FastSearchActivity.class, bundle);
-            }else{
-                search(title);
-            }
+            search(title);
+
         }
     }
 
