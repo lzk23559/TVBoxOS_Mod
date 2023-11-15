@@ -249,32 +249,41 @@ public class DetailActivity extends BaseActivity {
         tvQuickSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startQuickSearch();
-                QuickSearchDialog quickSearchDialog = new QuickSearchDialog(DetailActivity.this);
-                EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH, quickSearchData));
-                EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH_WORD, quickSearchWord));
-                quickSearchDialog.show();
-                if (pauseRunnable != null && pauseRunnable.size() > 0) {
-                    searchExecutorService = Executors.newFixedThreadPool(5);
-                    for (Runnable runnable : pauseRunnable) {
-                        searchExecutorService.execute(runnable);
+                String sousuoname  = mVideo.name;
+                if (!TextUtils.isEmpty(sousuoname)) {
+                    if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", wd);
+                        jumpActivity(FastSearchActivity.class, bundle);
                     }
-                    pauseRunnable.clear();
-                    pauseRunnable = null;
-                }
-                quickSearchDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        try {
-                            if (searchExecutorService != null) {
-                                pauseRunnable = searchExecutorService.shutdownNow();
-                                searchExecutorService = null;
-                            }
-                        } catch (Throwable th) {
-                            th.printStackTrace();
+                }else{
+                    startQuickSearch();
+                    QuickSearchDialog quickSearchDialog = new QuickSearchDialog(DetailActivity.this);
+                    EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH, quickSearchData));
+                    EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_QUICK_SEARCH_WORD, quickSearchWord));
+                    quickSearchDialog.show();
+                    if (pauseRunnable != null && pauseRunnable.size() > 0) {
+                        searchExecutorService = Executors.newFixedThreadPool(5);
+                        for (Runnable runnable : pauseRunnable) {
+                            searchExecutorService.execute(runnable);
                         }
+                        pauseRunnable.clear();
+                        pauseRunnable = null;
                     }
-                });
+                    quickSearchDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            try {
+                                if (searchExecutorService != null) {
+                                    pauseRunnable = searchExecutorService.shutdownNow();
+                                    searchExecutorService = null;
+                                }
+                            } catch (Throwable th) {
+                                th.printStackTrace();
+                            }
+                        }
+                    });
+                }                    
             }
         });
         tvCollect.setOnClickListener(new View.OnClickListener() {
