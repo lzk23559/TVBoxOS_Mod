@@ -171,12 +171,9 @@ public class SearchActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                    String selectedItem = wordAdapter.getItem(position).trim();
-                    etSearch.setText(selectedItem);
-                    searchTitle = selectedItem;
-                    Intent newIntent = new Intent(mContext, FastSearchActivity.class);
-                    newIntent.putExtra("title", searchTitle);
-                    startActivity(newIntent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", wordAdapter.getItem(position));
+                    jumpActivity(FastSearchActivity.class, bundle);
                 }else {
                     search(wordAdapter.getItem(position));
                 }
@@ -223,12 +220,9 @@ public class SearchActivity extends BaseActivity {
                 String wd = etSearch.getText().toString().trim();
                 if (!TextUtils.isEmpty(wd)) {
                     if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        String selectedItem = wd;
-                        etSearch.setText(selectedItem);
-                        searchTitle = selectedItem;
-                        Intent newIntent = new Intent(mContext, FastSearchActivity.class);
-                        newIntent.putExtra("title", searchTitle);
-                        startActivity(newIntent);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", wd);
+                        jumpActivity(FastSearchActivity.class, bundle);
                     }else {
                         search(wd);
                     }
@@ -373,11 +367,11 @@ public class SearchActivity extends BaseActivity {
         initCheckedSourcesForSearch();
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("title")) {
-            if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
-                String title = intent.getStringExtra("title");
-                showLoading();
-                search(title);
-            }
+
+            String title = intent.getStringExtra("title");
+            showLoading();
+            search(title);
+
         }
         // 加载热词
         OkGo.<String>get("https://node.video.qq.com/x/api/hot_search")
@@ -413,11 +407,10 @@ public class SearchActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void server(ServerEvent event) {
         if (event.type == ServerEvent.SERVER_SEARCH) {
-            if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
-                String title = (String) event.obj;
-                showLoading();
-                search(title);
-            }
+            String title = (String) event.obj;
+            showLoading();
+            search(title);
+
         }
     }
 
@@ -449,11 +442,9 @@ public class SearchActivity extends BaseActivity {
         showLoading();
         etSearch.setText(title);
         this.searchTitle = title;
-        if (!Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)) {
-            mGridView.setVisibility(View.INVISIBLE);
-            searchAdapter.setNewData(new ArrayList<>());
-            searchResult();
-		}
+        mGridView.setVisibility(View.INVISIBLE);
+        searchAdapter.setNewData(new ArrayList<>());
+        searchResult();
     }
 
     private ExecutorService searchExecutorService = null;
