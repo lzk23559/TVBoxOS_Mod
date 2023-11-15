@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.view.ViewGroup;
+import me.jessyan.autosize.utils.AutoSizeUtils;
+import com.owen.tvrecyclerview.widget.TvRecyclerView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 
@@ -205,6 +209,12 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 if (sites.size() > 0) {
                     SelectDialog<SourceBean> dialog = new SelectDialog<>(mActivity);
                     dialog.setTip("请选择首页数据源");
+                    TvRecyclerView tvRecyclerView = dialog.findViewById(R.id.list);
+                    int spanCount = 3; // 固定显示三列
+                    tvRecyclerView.setLayoutManager(new V7GridLayoutManager(dialog.getContext(), spanCount));
+                    ConstraintLayout cl_root = dialog.findViewById(R.id.cl_root);
+                    ViewGroup.LayoutParams clp = cl_root.getLayoutParams();
+                    clp.width = AutoSizeUtils.mm2px(dialog.getContext(), 780);
                     dialog.setAdapter(new SelectDialogAdapter.SelectDialogInterface<SourceBean>() {
                         @Override
                         public void click(SourceBean value, int pos) {
