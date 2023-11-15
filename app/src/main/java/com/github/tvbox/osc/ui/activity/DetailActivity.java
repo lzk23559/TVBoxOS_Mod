@@ -249,13 +249,11 @@ public class DetailActivity extends BaseActivity {
         tvQuickSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sousuoname  = mVideo.name;
-                if (!TextUtils.isEmpty(sousuoname)) {
-                    if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title", sousuoname);
-                        jumpActivity(FastSearchActivity.class, bundle);
-                    }
+                if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+                    String sousuoname  = mVideo.name;
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", sousuoname);
+                    jumpActivity(FastSearchActivity.class, bundle);
                 }else{
                     startQuickSearch();
                     QuickSearchDialog quickSearchDialog = new QuickSearchDialog(DetailActivity.this);
