@@ -111,6 +111,7 @@ public class HomeActivity extends BaseActivity {
     protected void init() {
         EventBus.getDefault().register(this);
         ControlManager.get().startServer();
+        ApiConfig.version = DefaultConfig.getAppVersionName(mContext);
         initView();
         initViewModel();
         useCacheConfig = false;
