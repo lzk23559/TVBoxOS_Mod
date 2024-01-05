@@ -87,7 +87,7 @@ public class ApiConfig {
 
     public static boolean isAli(String id){
         if(id==null)return false;
-        if(id.contains("aliyundrive")&&id.contains("alipan")){
+        if(id.contains("aliyundrive")||id.contains("alipan")){
             return true;
         }
         return false;
