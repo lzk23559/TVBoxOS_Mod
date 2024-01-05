@@ -39,11 +39,9 @@ dependencies {
     implementation "androidx.annotation:annotation:1.3.0"
     implementation "com.google.android.exoplayer:exoplayer-core:${exoPlayerVersion}"
     implementation "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVersion}"
-    implementation "com.google.android.exoplayer:exoplayer-database:${exoPlayerVersion}"
-    implementation "com.google.android.exoplayer:exoplayer-datasource:${exoPlayerVersion}"
     implementation "com.google.android.exoplayer:exoplayer-hls:${exoPlayerVersion}"
-    implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:${exoPlayerVersion}"
-    implementation "com.google.android.exoplayer:exoplayer-ui:${exoPlayerVersion}"
-    implementation "com.google.android.exoplayer:extension-mediasession:${exoPlayerVersion}"
+    implementation "com.google.android.exoplayer:exoplayer-rtsp:${exoPlayerVersion}"
+    implementation "com.google.android.exoplayer:extension-rtmp:${exoPlayerVersion}"
+    implementation "com.google.android.exoplayer:extension-okhttp:${exoPlayerVersion}"
     api 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.5'
 }
