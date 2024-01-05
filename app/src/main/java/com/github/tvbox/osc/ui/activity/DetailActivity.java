@@ -255,8 +255,8 @@ public class DetailActivity extends BaseActivity {
                 if(ApiConfig.isAli(spId)){
                     String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
                     if (!endSp.equals("noauto")) {
-                        endSP = sourceKey + "," + spId + "," + vodInfo.name;
-                        Hawk.put(HawkConfig.MY_ENDSP, endSP);
+                        endSp = sourceKey + "," + spId + "," + vodInfo.name;
+                        Hawk.put(HawkConfig.MY_ENDSP, endSp);
                     }
                 }
                 toggleFullPreview();

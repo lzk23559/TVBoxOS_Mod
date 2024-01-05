@@ -163,6 +163,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                     Hawk.put(HawkConfig.MY_ENDSP, "noauto");
                     DetailActivity.alert("已关闭启动自动播放视频");
                 }
+                return true;
             }
         });
         tvSetting.setOnLongClickListener(new View.OnLongClickListener() {
