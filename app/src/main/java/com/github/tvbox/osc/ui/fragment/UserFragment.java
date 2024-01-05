@@ -152,6 +152,19 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                 return HomeActivity.reHome(mContext);
             }
         });
+        tvPush.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                if (endSp.equals("noauto")) {
+                    Hawk.put(HawkConfig.MY_ENDSP, "");
+                    DetailActivity.alert("已开启启动自动播放视频");
+                }else {
+                    Hawk.put(HawkConfig.MY_ENDSP, "noauto");
+                    DetailActivity.alert("已关闭启动自动播放视频");
+                }
+            }
+        });
         tvSetting.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

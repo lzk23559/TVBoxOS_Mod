@@ -253,8 +253,11 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(ApiConfig.isAli(spId)){
-                    String endSP = sourceKey + "," + spId + "," + vodInfo.name;
-                    Hawk.put(HawkConfig.MY_ENDSP, endSP);
+                    String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
+                    if (!endSp.equals("noauto")) {
+                        endSP = sourceKey + "," + spId + "," + vodInfo.name;
+                        Hawk.put(HawkConfig.MY_ENDSP, endSP);
+                    }
                 }
                 toggleFullPreview();
             }
@@ -1049,7 +1052,7 @@ public class DetailActivity extends BaseActivity {
                     alert("错误信息de："+e.getMessage());
                 } finally {
                     String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                    if (!endSp.isEmpty()) {
+                    if (!endSp.isEmpty()&&!endSp.equals("noauto")) {
                         String endstr = endSp;
                         endstr = endSp.replace("***", "");
                         if(endSp.contains(spId)&&!noflag&&!endSp.startsWith("no"))endstr = "no"+endstr;
