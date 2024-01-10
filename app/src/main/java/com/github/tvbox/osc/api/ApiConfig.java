@@ -94,7 +94,7 @@ public class ApiConfig {
     }
     public static boolean isOwnApi(){
         String apiUrl = Hawk.get(HawkConfig.API_URL, _api);
-        String siteUrl = Hawk.get(HawkConfig.MY_SITE, "");
+        String siteUrl = Hawk.get(HawkConfig.MY_SITE, _api);
         if(!siteUrl.isEmpty()&&apiUrl.contains(siteUrl)){
             return true;
         }
