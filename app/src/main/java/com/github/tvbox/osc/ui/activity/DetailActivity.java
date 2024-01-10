@@ -853,7 +853,7 @@ public class DetailActivity extends BaseActivity {
     private String removeHtmlTag(String info) {
         if (info == null)
             return "";
-        return info.replaceAll("\\<.*?\\>", "").replaceAll("\\s", "");
+        return info.replaceAll("<[^>]+>", "").replaceAll("\\s", "");
     }
 
     private void initViewModel() {
