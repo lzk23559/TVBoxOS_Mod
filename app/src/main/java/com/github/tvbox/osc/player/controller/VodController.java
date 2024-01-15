@@ -896,8 +896,10 @@ public class VodController extends BaseController {
     public void setTitle(String playTitleInfo) {
         String reg = ".*? 第?(\\d+)集?$";
         if(playTitleInfo!=null){
-            if(ApiConfig.matcher(reg, playTitleInfo).find())
-            jsnum = playTitleInfo.replaceAll(reg, "$1")+"集 ";
+            if(ApiConfig.matcher(reg, playTitleInfo).find()){
+                jsnum = playTitleInfo.replaceAll(reg, "$1")+"集 ";
+                DetailActivity.alert("播放:" + jsnum);
+            }
         } else jsnum = "";
         mPlayTitle.setText(playTitleInfo);
         mPlayTitle1.setText(playTitleInfo);
@@ -1215,7 +1217,7 @@ public class VodController extends BaseController {
                 int current = (int) mControlWrapper.getCurrentPosition()/1000;
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
                 int currentst = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f && currentst == 0 && current < 6 ) {
+                if (speed2 == 1.0f && currentst == 0 && current < 31 ) {
                     sdrest();
                 }else {            
                     if(current<330){ 
@@ -1252,7 +1254,7 @@ public class VodController extends BaseController {
             try {
                 float speed2 = (float) mPlayerConfig.getDouble("sp");
                 int currentst = mPlayerConfig.getInt("st");
-                if (speed2 == 1.0f && currentst == 0 && rightState == 1) {
+                if (currentst == 0 && rightState == 1) {
                     sdrest();
                     rightState = 0;
                 } else {
