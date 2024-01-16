@@ -53,7 +53,7 @@ public class ApiConfig {
     public static String pushSp = "";
     public static boolean delsp = false;
     public static String progressKey;
-    public static String _api = "http://m.baiyangbang.com/vd/d";
+    public static String _api = "";
 
     private SourceBean emptyHome = new SourceBean();
 
