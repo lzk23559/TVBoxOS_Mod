@@ -898,7 +898,7 @@ public class VodController extends BaseController {
         if(playTitleInfo!=null){
             if(ApiConfig.matcher(reg, playTitleInfo).find()){
                 jsnum = playTitleInfo.replaceAll(reg, "$1")+"集 ";
-                DetailActivity.alert("播放:" + jsnum);
+                DetailActivity.alert("播放：" + jsnum);
             }
         } else jsnum = "";
         mPlayTitle.setText(playTitleInfo);
