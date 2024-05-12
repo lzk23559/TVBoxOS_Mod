@@ -113,7 +113,7 @@ public class RemoteServer extends NanoHTTPD {
                     if (params.containsKey("do")) {
                         Object[] rs = ApiConfig.get().proxyLocal(params);
                         try {
-                            if (rs.length == 3) {
+                            if (rs.length >= 3) {
                                 int code = (int) rs[0];
                                 String mime = (String) rs[1];
                                 InputStream stream = rs[2] != null ? (InputStream) rs[2] : null;
