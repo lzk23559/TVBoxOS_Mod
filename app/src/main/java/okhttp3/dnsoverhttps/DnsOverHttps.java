@@ -262,7 +262,7 @@ public class DnsOverHttps implements Dns {
 
     private List<InetAddress> readResponse(String hostname, Response response) throws Exception {
         if (response.cacheResponse() == null && response.protocol() != Protocol.HTTP_2) {
-            Platform.get().log("Incorrect protocol: " + response.protocol(), Platform.WARN, null);
+            Platform.get().log(Platform.WARN, "Incorrect protocol: " + response.protocol(), null);
         }
 
         try {
