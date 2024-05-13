@@ -306,7 +306,7 @@ public class DnsOverHttps implements Dns {
     }
 
     static boolean isPrivateHost(String host) {
-        return PublicSuffixDatabase.Companion.get().getEffectiveTldPlusOne(host) == null;
+        return PublicSuffixDatabase.get().getEffectiveTldPlusOne(host) == null;
     }
 
     public static final class Builder {
