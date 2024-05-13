@@ -6,7 +6,10 @@ buildscript {
         mavenCentral()
         maven { url "https://jitpack.io" }
         //maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
-        maven { url 'http://home.jundie.top:81/xwalk/maven2' }
+        maven {
+            url 'http://home.jundie.top:81/xwalk/maven2'
+            allowInsecureProtocol true
+        }
 //        maven { url 'http://9xi4o.tk/maven2' }
     }
     dependencies {
@@ -14,6 +17,9 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        constraints {
+            classpath("com.google.guava:guava:29.0-jre")
+        }
     }
 }
 
@@ -25,7 +31,10 @@ allprojects {
         maven { url "https://jitpack.io" }
         //maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
 //        maven { url 'http://9xi4o.tk/maven2' }
-        maven { url 'http://home.jundie.top:81/xwalk/maven2' }
+        maven {
+            url 'http://home.jundie.top:81/xwalk/maven2'
+            allowInsecureProtocol true
+        }
     }
 }
 
