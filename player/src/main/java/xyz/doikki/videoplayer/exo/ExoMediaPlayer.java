@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
@@ -11,6 +12,7 @@ import androidx.media3.common.VideoSize;
 import androidx.media3.common.util.Clock;
 import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
+import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.LoadControl;
 import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SimpleExoPlayer;
@@ -32,7 +34,7 @@ import xyz.doikki.videoplayer.util.PlayerUtils;
 public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     public static Context mAppContext;
-    protected static SimpleExoPlayer mInternalPlayer;
+    protected static ExoPlayer mInternalPlayer;
     protected static MediaSource mMediaSource;
     protected static ExoMediaSourceHelper mMediaSourceHelper;
 
@@ -100,10 +102,14 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     @Override
     public void start() {
-        if (mInternalPlayer == null)
-            return;
-        System.gc();
-        mInternalPlayer.setPlayWhenReady(true);
+        try {
+            if (mInternalPlayer == null)
+                return;
+            System.gc();
+            mInternalPlayer.setPlayWhenReady(true);
+        } catch (Exception e) {
+            Toast.makeText(mAppContext, "播放失败:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -125,15 +131,19 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     @Override
     public void prepareAsync() {
-        if (mInternalPlayer == null)
-            return;
-        if (mMediaSource == null) return;
-        if (mSpeedPlaybackParameters != null) {
-            mInternalPlayer.setPlaybackParameters(mSpeedPlaybackParameters);
+        try {
+            if (mInternalPlayer == null)
+                return;
+            if (mMediaSource == null) return;
+            if (mSpeedPlaybackParameters != null) {
+                mInternalPlayer.setPlaybackParameters(mSpeedPlaybackParameters);
+            }
+            mIsPreparing = true;
+            mInternalPlayer.setMediaSource(mMediaSource);
+            mInternalPlayer.prepare();
+        } catch (Exception e) {
+            Toast.makeText(mAppContext, "播放失败:" + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        mIsPreparing = true;
-        mInternalPlayer.setMediaSource(mMediaSource);
-        mInternalPlayer.prepare();
     }
 
     @Override
