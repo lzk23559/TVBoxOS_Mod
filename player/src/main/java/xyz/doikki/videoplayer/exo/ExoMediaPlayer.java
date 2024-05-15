@@ -14,7 +14,6 @@ import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.LoadControl;
-import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SimpleExoPlayer;
 import androidx.media3.exoplayer.analytics.DefaultAnalyticsCollector;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
@@ -43,7 +42,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     private static boolean mIsPreparing;
 
     private static LoadControl mLoadControl;
-    private static RenderersFactory mRenderersFactory;
+    private static DefaultRenderersFactory mRenderersFactory;
     private static TrackSelector mTrackSelector;
 
     public ExoMediaPlayer(Context context) {
@@ -54,9 +53,11 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     @Override
     public void initPlayer() {
         if (mInternalPlayer == null) {
+            mRenderersFactory = new DefaultRenderersFactory(mAppContext);
+            mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
             mInternalPlayer = new SimpleExoPlayer.Builder(
                     mAppContext,
-                    mRenderersFactory == null ? mRenderersFactory = new DefaultRenderersFactory(mAppContext) : mRenderersFactory,
+                    mRenderersFactory,
                     mTrackSelector == null ? mTrackSelector = new DefaultTrackSelector(mAppContext) : mTrackSelector,
                     new DefaultMediaSourceFactory(mAppContext),
                     mLoadControl == null ? mLoadControl = new DefaultLoadControl() : mLoadControl,
@@ -73,18 +74,18 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         setOptions();
         System.gc();
     }
-
-    public void setTrackSelector(TrackSelector trackSelector) {
-        mTrackSelector = trackSelector;
-    }
-
-    public void setRenderersFactory(RenderersFactory renderersFactory) {
-        mRenderersFactory = renderersFactory;
-    }
-
-    public void setLoadControl(LoadControl loadControl) {
-        mLoadControl = loadControl;
-    }
+//
+//    public void setTrackSelector(TrackSelector trackSelector) {
+//        mTrackSelector = trackSelector;
+//    }
+//
+//    public void setRenderersFactory(RenderersFactory renderersFactory) {
+//        mRenderersFactory = renderersFactory;
+//    }
+//
+//    public void setLoadControl(LoadControl loadControl) {
+//        mLoadControl = loadControl;
+//    }
 
     @Override
     public void setDataSource(String path, Map<String, String> headers) {
