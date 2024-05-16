@@ -815,8 +815,8 @@ public class VodController extends BaseController {
             simStartPosition = (int) mControlWrapper.getCurrentPosition();
             simSeekPosition = simStartPosition;
         }
-        // 每次10秒
-        simSeekPosition += (65000.0f * dir);
+        // 毫秒单位
+        simSeekPosition += (30000.0f * dir);
         if (simSeekPosition > duration) simSeekPosition = duration;
         if (simSeekPosition < 0) simSeekPosition = 0;
         updateSeekUI(simStartPosition, simSeekPosition, duration);
