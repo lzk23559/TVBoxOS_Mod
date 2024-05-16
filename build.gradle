@@ -13,13 +13,10 @@ buildscript {
 //        maven { url 'http://9xi4o.tk/maven2' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.2"
+        classpath 'com.android.tools.build:gradle:7.4.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-//        constraints {
-//            classpath("com.google.guava:guava:29.0-jre")
-//        }
     }
 }
 

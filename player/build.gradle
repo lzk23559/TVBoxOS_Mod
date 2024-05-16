@@ -6,10 +6,8 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdkVersion 29
+        minSdkVersion 18
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
     }
 
     buildTypes {
@@ -41,6 +39,5 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer-rtsp:1.1.1"
     implementation "androidx.media3:media3-datasource-rtmp:1.1.1"
     implementation 'com.squareup.okhttp3:okhttp:3.12.11'
-//    api("com.google.guava:guava:29.0-jre")
     api 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'
 }

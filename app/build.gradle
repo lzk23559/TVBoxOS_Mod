@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId 'com.github.tvbox.osc'
-        minSdkVersion 29
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName '1.0.0'
@@ -20,10 +20,8 @@ android {
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
-        exclude 'META-INF/INDEX.LIST'
+        pickFirst('/META-INF/{AL2.0,LGPL2.1}')
+        pickFirst('META-INF/INDEX.LIST')
     }
 
     buildTypes {
@@ -54,12 +52,6 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
-        additionalParameters += '--multi-dex'
-        additionalParameters += '--set-max-idx-number=48000'
-        additionalParameters += '--minimal-main-dex'
-    }
 }
 
 dependencies {
@@ -76,8 +68,8 @@ dependencies {
     implementation files('libs/commons-lang3-3.12.0.jar')
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
     implementation 'com.squareup.okhttp3:okhttp:3.12.11'
-    annotationProcessor 'androidx.room:room-compiler:2.5.1'
-    implementation 'androidx.room:room-runtime:2.5.1'
+    annotationProcessor 'androidx.room:room-compiler:2.4.0'
+    implementation 'androidx.room:room-runtime:2.4.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.squareup.okio:okio:2.8.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
