@@ -20,6 +20,10 @@ android {
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+        exclude 'META-INF/INDEX.LIST'
     }
 
     buildTypes {
@@ -104,4 +108,6 @@ dependencies {
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
     implementation('xyz.doikki.android.dkplayer:player-ijk:3.3.7')
+    implementation 'cglib:cglib:2.2.2'
+    implementation 'org.apache.ant:ant:1.10.14'
 }
