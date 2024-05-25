@@ -1,7 +1,9 @@
 package com.github.tvbox.osc.base;
 
 import android.app.Activity;
+
 import androidx.multidex.MultiDexApplication;
+
 import com.github.catvod.crawler.JsLoader;
 import com.github.tvbox.osc.bean.VodInfo;
 import com.github.tvbox.osc.callback.EmptyCallback;
@@ -15,11 +17,11 @@ import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.OkGoHelper;
 import com.github.tvbox.osc.util.PlayerHelper;
-
 import com.kingja.loadsir.core.LoadSir;
 import com.orhanobut.hawk.Hawk;
 import com.p2p.P2PClass;
 import com.whl.quickjs.android.QuickJSLoader;
+
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.unit.Subunits;
 
@@ -33,6 +35,9 @@ public class App extends MultiDexApplication {
 
     private static P2PClass p;
     public static String burl;
+
+    private static String dashDataType;
+
     private static String dashData;
 
     @Override
@@ -104,8 +109,13 @@ public class App extends MultiDexApplication {
         return AppManager.getInstance().currentActivity();
     }
 
-    public void setDashData(String data) {
+    public void setDashData(String type, String data) {
+        dashDataType = type;
         dashData = data;
+    }
+
+    public String getDashDataType() {
+        return dashDataType;
     }
     public String getDashData() {
         return dashData;
