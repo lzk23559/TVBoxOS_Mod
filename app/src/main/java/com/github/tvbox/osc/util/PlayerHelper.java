@@ -56,20 +56,6 @@ public class PlayerHelper {
                     return new IjkMediaPlayer(context, codec);
                 }
             };
-            try {
-                tv.danmaku.ijk.media.player.IjkMediaPlayer.loadLibrariesOnce(new IjkLibLoader() {
-                    @Override
-                    public void loadLibrary(String s) throws UnsatisfiedLinkError, SecurityException {
-                        try {
-                            System.loadLibrary(s);
-                        } catch (Throwable th) {
-                            th.printStackTrace();
-                        }
-                    }
-                });
-            } catch (Throwable th) {
-                th.printStackTrace();
-            }
         } else if (playerType == 2) {
             playerFactory = ExoMediaPlayerFactory.create();
         } else {
