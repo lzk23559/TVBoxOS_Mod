@@ -61,7 +61,7 @@ public class ApiConfig {
     private List<IJKCode> ijkCodes;
     private String spider = null;
     public String wallpaper = "";
-
+    public JsonArray livePlayHeaders;
     private SourceBean emptyHome = new SourceBean();
 
     private JarLoader jarLoader = new JarLoader();
@@ -307,6 +307,8 @@ public class ApiConfig {
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
         // wallpaper
         wallpaper = DefaultConfig.safeJsonString(infoJson, "wallpaper", "");
+        // 直播播放请求头
+        livePlayHeaders = infoJson.getAsJsonArray("livePlayHeaders");
         // 远端站点源
         SourceBean firstSite = null;
         for (JsonElement opt : infoJson.get("sites").getAsJsonArray()) {
@@ -670,6 +672,10 @@ public class ApiConfig {
                 return code;
         }
         return ijkCodes.get(0);
+    }
+
+    public JsonArray getLivePlayHeaders() {
+        return livePlayHeaders;
     }
 
     String clanToAddress(String lanLink) {
