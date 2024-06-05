@@ -1005,7 +1005,7 @@ public class LivePlayActivity extends BaseActivity {
                     }
                     playUrl = shiyiUrl;
 
-                    mVideoView.setUrl(playUrl, setPlayHeaders(playUrl);
+                    mVideoView.setUrl(playUrl, setPlayHeaders(playUrl));
                     mVideoView.start();
                     epgListAdapter.setShiyiSelection(position, true, timeFormat.format(date));
                     epgListAdapter.notifyDataSetChanged();
@@ -1081,7 +1081,7 @@ public class LivePlayActivity extends BaseActivity {
                     }
                     playUrl = shiyiUrl;
 
-                    mVideoView.setUrl(playUrl, setPlayHeaders(playUrl);
+                    mVideoView.setUrl(playUrl, setPlayHeaders(playUrl));
                     mVideoView.start();
                     epgListAdapter.setShiyiSelection(position, true,timeFormat.format(date));
                     epgListAdapter.notifyDataSetChanged();
