@@ -47,10 +47,10 @@ public class SearchHelper {
         HashMap<String, String> mCheckSources = new HashMap<>();
         List<SourceBean> sourceBeanList = ApiConfig.get().getSourceBeanList();
         for (SourceBean bean : sourceBeanList) {
-            if (!bean.isSearchable()) {
-                continue;
-            }
             if (!mCheckSources.containsKey(bean.getKey())) {
+                if (!bean.isSearchable()) {
+                    continue;
+                }
                 mCheckSources.put(bean.getKey(), "1");
             }
         }
