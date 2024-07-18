@@ -45,12 +45,14 @@ public class SearchHelper {
 
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
-        List<SourceBean> sourceBeanList = ApiConfig.get().getSourceBeanList();
-        for (SourceBean bean : sourceBeanList) {
-            if (!mCheckSources.containsKey(bean.getKey())) {
-                if (!bean.isSearchable()) {
-                    continue;
-                }
+        HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, new HashMap<>());
+        for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
+            if (!bean.isSearchable()) {
+                continue;
+            }
+            if (mCheckSourcesForApi != null && mCheckSourcesForApi.containsKey(bean.getKey())) {
+                mCheckSources.put(bean.getKey(), "1");
+            } else {
                 mCheckSources.put(bean.getKey(), "1");
             }
         }
