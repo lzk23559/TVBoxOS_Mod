@@ -15,6 +15,7 @@
             android:background="@drawable/button_dialog_main"
             android:clickable="true"
             android:focusable="true"
+            android:button="@null"
             android:drawableLeft="@drawable/selector_checkbox"
             android:textSize="@dimen/ts_26"/>
     </LinearLayout>
