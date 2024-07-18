@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SearchHelper {
-    private static String api = Hawk.get(HawkConfig.API_URL, "");
     public static HashMap<String, String> getSourcesForSearch() {
+        String api = Hawk.get(HawkConfig.API_URL, "");
+        if (api.isEmpty()) {
+            return null;
+        }
         HashMap<String, String> mCheckSources;
         try {
-            if (api.isEmpty()) {
-                return null;
-            }
             HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, new HashMap<>());
             mCheckSources = mCheckSourcesForApi.get(api);
         } catch (Exception e) {
@@ -38,6 +38,7 @@ public class SearchHelper {
     }
 
     public static void putCheckedSources(HashMap<String, String> mCheckSources,boolean isAll) {
+        String api = Hawk.get(HawkConfig.API_URL, "");
         if (api.isEmpty()) {
             return;
         }
