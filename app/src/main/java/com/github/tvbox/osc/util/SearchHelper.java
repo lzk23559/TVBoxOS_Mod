@@ -28,9 +28,10 @@ public class SearchHelper {
         } else {
             HashMap<String, String> newSources = getSources();
             for (String key : newSources.keySet()) {
-                if (!mCheckSources.containsKey(key)) {
-                    mCheckSources.put(key, newSources.get(key));
+                if (mCheckSources.containsKey(key)) {
+                    continue;
                 }
+                mCheckSources.put(key, newSources.get(key));
             }
         }
         return mCheckSources;
