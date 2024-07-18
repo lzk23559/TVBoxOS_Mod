@@ -32,12 +32,22 @@ public class SearchHelper {
             return;
         }
         HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, null);
+        if (mCheckSourcesForApi == null) {
+            mCheckSourcesForApi = new HashMap<>();
+        }
         if (isAll) {
-            if (mCheckSourcesForApi == null) return;
-            if (mCheckSourcesForApi.containsKey(api)) mCheckSourcesForApi.remove(api);
+            mCheckSourcesForApi.remove(api);
         } else {
-            if (mCheckSourcesForApi == null) mCheckSourcesForApi = new HashMap<>();
-            mCheckSourcesForApi.put(api, mCheckSources);
+            HashMap<String, String> updatedSources = new HashMap<>();
+            for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
+                if (!bean.isSearchable()) {
+                    continue;
+                }
+                if (mCheckSources.containsKey(bean.getKey())) {
+                    updatedSources.put(bean.getKey(), "1");
+                }
+            }
+            mCheckSourcesForApi.put(api, updatedSources);
         }
         SearchActivity.setCheckedSourcesForSearch(mCheckSources);
         Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckSourcesForApi);
