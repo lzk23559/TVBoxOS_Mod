@@ -8,15 +8,16 @@ import com.orhanobut.hawk.Hawk;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 public class SearchHelper {
+    private static String api = Hawk.get(HawkConfig.API_URL, "");
     public static HashMap<String, String> getSourcesForSearch() {
-        String api = Hawk.get(HawkConfig.API_URL, "");
+    HashMap<String, String> mCheckSources;
         if (api.isEmpty()) {
             return null;
         }
-        HashMap<String, String> mCheckSources;
         try {
             HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, new HashMap<>());
             mCheckSources = mCheckSourcesForApi.get(api);
@@ -27,22 +28,22 @@ public class SearchHelper {
             mCheckSources = getSources();
         } else {
             HashMap<String, String> newSources = getSources();
-            for (String key : newSources.keySet()) {
-                if (mCheckSources.containsKey(key)) {
-                    continue;
+            for (Map.Entry<String, String> entry : newSources.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (!mCheckSources.containsKey(key)) {
+                    mCheckSources.put(key, value);
                 }
-                mCheckSources.put(key, newSources.get(key));
             }
         }
         return mCheckSources;
     }
 
     public static void putCheckedSources(HashMap<String, String> mCheckSources,boolean isAll) {
-        String api = Hawk.get(HawkConfig.API_URL, "");
         if (api.isEmpty()) {
             return;
         }
-        HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH,null);
+        HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, null);
         if (isAll) {
             if (mCheckSourcesForApi == null) {
                 return;
