@@ -65,11 +65,10 @@ public class SearchHelper {
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
         for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
-            if (!bean.isSearchable() || bean.getHide() == 1) {
-                mCheckSources.put(bean.getKey(), "0");
-            } else {
-                mCheckSources.put(bean.getKey(), "1");
+            if (!bean.isSearchable()) {
+                continue;
             }
+            mCheckSources.put(bean.getKey(), "1");
         }
         return mCheckSources;
     }
