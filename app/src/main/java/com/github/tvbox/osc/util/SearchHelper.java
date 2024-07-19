@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.util;
 
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.ui.activity.SearchActivity;
 import com.orhanobut.hawk.Hawk;
@@ -46,10 +47,10 @@ public class SearchHelper {
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
         for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
-            if (!bean.isSearchable() || bean.getHide() == 1) {
-                mCheckSources.put(bean.getKey(), "0");
-            } else if (bean.isSearchable() && bean.getHide() == 0) {
+            if (bean.isSearchable()) {
                 mCheckSources.put(bean.getKey(), "1");
+            } else {
+                mCheckSources.put(bean.getKey(), "0");
             }
         }
         return mCheckSources;
