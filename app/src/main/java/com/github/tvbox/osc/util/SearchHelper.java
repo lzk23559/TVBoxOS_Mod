@@ -12,16 +12,10 @@ import java.util.Map;
 import java.util.List;
 
 public class SearchHelper {
-    private static String api = Hawk.get(HawkConfig.API_URL, "");
     public static HashMap<String, String> getSourcesForSearch() {
     HashMap<String, String> mCheckSources;
-        if (api.isEmpty()) {
-            return null;
-        }
         try {
-            HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, new HashMap<>());
-            mCheckSources = mCheckSourcesForApi.get(api);
-            Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckSourcesForApi);
+            mCheckSources = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, null);
         } catch (Exception e) {
             return null;
         }
@@ -41,25 +35,7 @@ public class SearchHelper {
     }
 
     public static void putCheckedSources(HashMap<String, String> mCheckSources, boolean isAll) {
-        if (api.isEmpty()) {
-            return;
-        }
-        HashMap<String, HashMap<String, String>> mCheckSourcesForApi = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, null);
-        if (isAll) {
-            if (mCheckSourcesForApi == null) {
-                return;
-            }
-            if (mCheckSourcesForApi.containsKey(api)) {
-                mCheckSourcesForApi.remove(api);
-            }
-        } else {
-            if (mCheckSourcesForApi == null) {
-                mCheckSourcesForApi = new HashMap<>();
-            }
-            mCheckSourcesForApi.put(api, mCheckSources);
-        }
         SearchActivity.setCheckedSourcesForSearch(mCheckSources);
-        //Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckSourcesForApi);
     }
 
     public static HashMap<String, String> getSources() {
