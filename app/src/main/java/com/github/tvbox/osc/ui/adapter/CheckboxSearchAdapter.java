@@ -18,8 +18,10 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.SearchHelper;
-
+import com.github.tvbox.osc.util.HawkConfig;
 import org.jetbrains.annotations.NotNull;
+
+import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +54,6 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
     }
 
     public void setMCheckedSources() {
-//        LOG.i(data.size()+"size----size"+mCheckedSources.size());
         SearchHelper.putCheckedSources(mCheckedSources,data.size()==mCheckedSources.size());
     }
 
@@ -68,8 +69,13 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
         holder.oneSearchSource.setText(sourceBean.getName());
         holder.oneSearchSource.setOnCheckedChangeListener(null);
         if (mCheckedSources != null) {
-            holder.oneSearchSource.setChecked(mCheckedSources.containsKey(sourceBean.getKey()));
+            String value = mCheckedSources.get(sourceBean.getKey());
+            boolean isChecked = value != null && value.equals("1");
+            holder.oneSearchSource.setChecked(isChecked);
         }
+        /*if (mCheckedSources != null) {
+            holder.oneSearchSource.setChecked(mCheckedSources.containsKey(sourceBean.getKey()));
+        }*/
         holder.oneSearchSource.setTag(sourceBean);
         holder.oneSearchSource.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -77,7 +83,7 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
                 if (isChecked) {
                     mCheckedSources.put(sourceBean.getKey(), "1");
                 } else {
-                    mCheckedSources.remove(sourceBean.getKey());
+                    mCheckedSources.put(sourceBean.getKey(), "0");
                 }
                 notifyItemChanged(pos);
             }

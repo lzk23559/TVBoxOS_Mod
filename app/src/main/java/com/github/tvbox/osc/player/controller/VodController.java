@@ -573,8 +573,11 @@ public class VodController extends BaseController {
                 try {
                     int current = (int) mControlWrapper.getCurrentPosition();
                     int duration = (int) mControlWrapper.getDuration();
-                    if (current < duration / 2) return;
-                    mPlayerConfig.put("et", (duration - current)/1000);
+                    if (current < duration / 2) {
+                        Toast.makeText(getContext(), "播放进度过半才允许设定跳过片尾", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    mPlayerConfig.put("et", current / 1000);
                     updatePlayerCfgView();
                     listener.updatePlayerCfg();
                 } catch (JSONException e) {
@@ -770,7 +773,7 @@ public class VodController extends BaseController {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (et > 0 && position + (et * 1000) >= duration) {
+            if (et > 0 && (position / 1000) >= et) {
                 skipEnd = false;
                 listener.playNext(true);
             }

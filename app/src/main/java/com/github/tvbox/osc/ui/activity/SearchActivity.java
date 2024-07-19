@@ -484,8 +484,13 @@ public class SearchActivity extends BaseActivity {
             if (!bean.isSearchable()) {
                 continue;
             }
-            if (mCheckSources != null && !mCheckSources.containsKey(bean.getKey())) {
-                continue;
+            if (mCheckSources != null) {
+                if (!mCheckSources.containsKey(bean.getKey())) {
+                    continue;
+                }
+                if (mCheckSources.get(bean.getKey()).equals("0")) {
+                    continue;
+                }
             }
             siteKey.add(bean.getKey());
             allRunCount.incrementAndGet();
