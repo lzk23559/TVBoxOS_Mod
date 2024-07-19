@@ -77,9 +77,9 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    mCheckedSources.put(sourceBean.getKey(), "1");
+                    mCheckedSources.put(sourceBean.getKey(), 1);
                 } else {
-                    mCheckedSources.put(sourceBean.getKey(), "0");
+                    mCheckedSources.put(sourceBean.getKey(), 0);
                 }
                 notifyItemChanged(pos);
             }
