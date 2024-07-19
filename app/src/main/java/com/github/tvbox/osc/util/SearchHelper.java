@@ -41,7 +41,7 @@ public class SearchHelper {
 
     public static void putCheckedSources(HashMap<String, String> mCheckSources, boolean isAll) {
         SearchActivity.setCheckedSourcesForSearch(mCheckSources);
-        Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
+        Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckSources);
     }
 
     public static HashMap<String, String> getSources() {
