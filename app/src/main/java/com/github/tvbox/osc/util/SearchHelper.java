@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SearchHelper {
     public static HashMap<String, String> getSourcesForSearch() {
-    HashMap<String, String> mCheckSources;
+        HashMap<String, String> mCheckSources;
         try {
             mCheckSources = Hawk.get(HawkConfig.SOURCES_FOR_SEARCH, null);
         } catch (Exception e) {
@@ -46,10 +46,10 @@ public class SearchHelper {
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
         for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
-            if (bean.isSearchable()) {
-                mCheckSources.put(bean.getKey(), "1");
-            } else {
+            if (!bean.isSearchable() || bean.getHide() == 1) {
                 mCheckSources.put(bean.getKey(), "0");
+            } else if (bean.isSearchable() && bean.getHide() == 0) {
+                mCheckSources.put(bean.getKey(), "1");
             }
         }
         return mCheckSources;
