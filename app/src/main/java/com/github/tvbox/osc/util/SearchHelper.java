@@ -25,9 +25,14 @@ public class SearchHelper {
             HashMap<String, String> newSources = getSources();
             for (Map.Entry<String, String> entry : newSources.entrySet()) {
                 String key = entry.getKey();
-                String value = entry.getValue();
-                if (!mCheckSources.containsKey(key)) {
-                    mCheckSources.put(key, value);
+                String newValue = entry.getValue();
+                if (mCheckSources.containsKey(key)) {
+                    String oldValue = mCheckSources.get(key);
+                    if (!oldValue.equals(newValue)) {
+                        continue;
+                    }
+                } else {
+                    mCheckSources.put(key, newValue);
                 }
             }
         }
@@ -42,10 +47,10 @@ public class SearchHelper {
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
         for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
-            if (!bean.isSearchable()) {
-                mCheckSources.put(bean.getKey(), 0);
+            if (bean.isSearchable()) {
+                mCheckSources.put(bean.getKey(), "1");
             } else {
-                mCheckSources.put(bean.getKey(), 1);
+                mCheckSources.put(bean.getKey(), "0");
             }
         }
         return mCheckSources;
