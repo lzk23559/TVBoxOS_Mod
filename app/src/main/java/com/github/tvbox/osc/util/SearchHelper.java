@@ -36,15 +36,17 @@ public class SearchHelper {
 
     public static void putCheckedSources(HashMap<String, String> mCheckSources, boolean isAll) {
         SearchActivity.setCheckedSourcesForSearch(mCheckSources);
+        Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
     }
 
     public static HashMap<String, String> getSources() {
         HashMap<String, String> mCheckSources = new HashMap<>();
         for (SourceBean bean : ApiConfig.get().getSourceBeanList()) {
             if (!bean.isSearchable()) {
-                continue;
+                mCheckSources.put(bean.getKey(), "0");
+            } else {
+                mCheckSources.put(bean.getKey(), "1");
             }
-            mCheckSources.put(bean.getKey(), "1");
         }
         return mCheckSources;
     }
