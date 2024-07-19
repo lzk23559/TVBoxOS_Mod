@@ -21,6 +21,8 @@ import com.github.tvbox.osc.util.SearchHelper;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.orhanobut.hawk.Hawk;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +82,7 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
                     mCheckedSources.remove(sourceBean.getKey());
                 }
                 notifyItemChanged(pos);
+                Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
             }
         });
 
