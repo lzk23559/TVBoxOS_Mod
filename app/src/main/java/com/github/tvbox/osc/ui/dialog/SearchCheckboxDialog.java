@@ -116,6 +116,10 @@ public class SearchCheckboxDialog extends BaseDialog{
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
                 mCheckSourcees = new HashMap<>();
+                assert mSourceList != null;
+                for(SourceBean sourceBean : mSourceList) {
+                    mCheckSourcees.put(sourceBean.getKey(), "0");
+                }
                 checkboxSearchAdapter.setData(mSourceList, mCheckSourcees);
             }
         });
