@@ -78,11 +78,12 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mCheckedSources.put(sourceBean.getKey(), "1");
+                    Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
                 } else {
                     mCheckedSources.remove(sourceBean.getKey());
+                    Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
                 }
                 notifyItemChanged(pos);
-                Hawk.put(HawkConfig.SOURCES_FOR_SEARCH, mCheckedSources);
             }
         });
 
