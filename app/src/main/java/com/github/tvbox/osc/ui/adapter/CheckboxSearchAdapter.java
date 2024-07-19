@@ -54,7 +54,6 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
     }
 
     public void setMCheckedSources() {
-//        LOG.i(data.size()+"size----size"+mCheckedSources.size());
         SearchHelper.putCheckedSources(mCheckedSources,data.size()==mCheckedSources.size());
     }
 
@@ -70,8 +69,13 @@ public class CheckboxSearchAdapter extends ListAdapter<SourceBean, CheckboxSearc
         holder.oneSearchSource.setText(sourceBean.getName());
         holder.oneSearchSource.setOnCheckedChangeListener(null);
         if (mCheckedSources != null) {
-            holder.oneSearchSource.setChecked(mCheckedSources.containsKey(sourceBean.getKey()));
+            String value = mCheckedSources.get(sourceBean.getKey());
+            boolean isChecked = value != null && value.equals("1");
+            holder.oneSearchSource.setChecked(isChecked);
         }
+        /*if (mCheckedSources != null) {
+            holder.oneSearchSource.setChecked(mCheckedSources.containsKey(sourceBean.getKey()));
+        }*/
         holder.oneSearchSource.setTag(sourceBean);
         holder.oneSearchSource.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
