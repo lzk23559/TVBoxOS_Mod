@@ -18,7 +18,7 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.SearchHelper;
-
+import com.github.tvbox.osc.util.HawkConfig;
 import org.jetbrains.annotations.NotNull;
 
 import com.orhanobut.hawk.Hawk;
