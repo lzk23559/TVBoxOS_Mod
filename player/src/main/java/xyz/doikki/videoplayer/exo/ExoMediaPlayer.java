@@ -11,18 +11,12 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-//import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.util.Clock;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.analytics.AnalyticsCollector;
-
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
-//import com.google.android.exoplayer2.Tracks;
+import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -36,7 +30,7 @@ import xyz.doikki.videoplayer.player.AbstractPlayer;
 public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     protected Context mAppContext;
-    protected SimpleExoPlayer mMediaPlayer;
+    protected ExoPlayer mMediaPlayer;
     protected MediaSource mMediaSource;
     protected ExoMediaSourceHelper mMediaSourceHelper;
     protected ExoTrackNameProvider trackNameProvider;
@@ -62,7 +56,8 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         if (mRenderersFactory == null) {
             mRenderersFactory = new DefaultRenderersFactory(mAppContext);
         }
-        mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+      //  mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
+		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
         if (mTrackSelector == null) {
             mTrackSelector = new DefaultTrackSelector(mAppContext);
         }
@@ -70,7 +65,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mLoadControl = new DefaultLoadControl();
         }
         mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setTunnelingEnabled(true));
-        mMediaPlayer = new SimpleExoPlayer.Builder(
+        /*mMediaPlayer = new SimpleExoPlayer.Builder(
                 mAppContext,
                 mRenderersFactory,
                 mTrackSelector,
@@ -78,7 +73,11 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
                 mLoadControl,
                 DefaultBandwidthMeter.getSingletonInstance(mAppContext),
                 new AnalyticsCollector(Clock.DEFAULT))
-                .build();
+                .build();*/
+        mMediaPlayer = new ExoPlayer.Builder(mAppContext)
+                .setLoadControl(mLoadControl)
+                .setRenderersFactory(mRenderersFactory)
+                .setTrackSelector(mTrackSelector).build();
 
         setOptions();
 
@@ -283,11 +282,11 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     }
 
     @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-        Player.Listener.super.onTracksChanged(trackGroups, trackSelections);
-        trackNameProvider = new ExoTrackNameProvider(mAppContext.getResources());
-        mTrackSelections = trackSelections;
+    public void onTracksChanged(Tracks tracks) {
+        if (trackNameProvider == null)
+            trackNameProvider = new ExoTrackNameProvider(mAppContext.getResources());
     }
+
     @Override
     public void onPlaybackStateChanged(int playbackState) {
         if (mPlayerEventListener == null) return;
@@ -315,7 +314,9 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     }
 
     @Override
-    public void onPlayerError(ExoPlaybackException error) {
+    public void onPlayerError(@NonNull PlaybackException error) {
+        errorCode = error.errorCode;
+        Log.e("tag--", "" + error.errorCode);
         if (path != null) {
             setDataSource(path, headers);
             path = null;

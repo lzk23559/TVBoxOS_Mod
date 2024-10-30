@@ -6,11 +6,9 @@ import android.text.TextUtils;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.MediaItem;
-//import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.database.ExoDatabaseProvider;
-import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
-//import com.google.android.exoplayer2.database.StandaloneDatabaseProvider;
+import com.google.android.exoplayer2.database.StandaloneDatabaseProvider;
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSource;
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -32,6 +30,7 @@ import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvicto
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.exoplayer.ext.okhttp.OkHttpDataSource;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -88,7 +87,7 @@ public final class ExoMediaSourceHelper {
     public MediaSource getMediaSource(String uri, Map<String, String> headers, boolean isCache, int errorCode) {
         Uri contentUri = Uri.parse(uri);
         if ("rtmp".equals(contentUri.getScheme())) {
-            return new ProgressiveMediaSource.Factory(new RtmpDataSourceFactory(null))
+            return new ProgressiveMediaSource.Factory(new RtmpDataSource.Factory())
                     .createMediaSource(MediaItem.fromUri(contentUri));
         } else if ("rtsp".equals(contentUri.getScheme())) {
             return new RtspMediaSource.Factory().createMediaSource(MediaItem.fromUri(contentUri));
@@ -103,7 +102,11 @@ public final class ExoMediaSourceHelper {
         if (mHttpDataSourceFactory != null) {
             setHeaders(headers);
         }
-
+        if (errorCode == PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED) {
+            MediaItem.Builder builder = new MediaItem.Builder().setUri(uri);
+            builder.setMimeType(MimeTypes.APPLICATION_M3U8);
+            return new DefaultMediaSourceFactory(getDataSourceFactory(), getExtractorsFactory()).createMediaSource(getMediaItem(uri, errorCode));
+        }
         switch (contentType) {
             case C.TYPE_DASH:
                 return new DashMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
@@ -115,6 +118,12 @@ public final class ExoMediaSourceHelper {
         }
     }
 
+    private static MediaItem getMediaItem(String uri, int errorCode) {
+        MediaItem.Builder builder = new MediaItem.Builder().setUri(Uri.parse(uri.trim().replace("\\", "")));
+        if (errorCode == PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED)
+            builder.setMimeType(MimeTypes.APPLICATION_M3U8);
+        return builder.build();
+    }
 
     private static synchronized ExtractorsFactory getExtractorsFactory() {
         return new DefaultExtractorsFactory().setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS).setTsExtractorTimestampSearchBytes(TsExtractor.DEFAULT_TIMESTAMP_SEARCH_BYTES * 3);
@@ -123,9 +132,9 @@ public final class ExoMediaSourceHelper {
 
     private int inferContentType(String fileName) {
         fileName = fileName.toLowerCase();
-        if (fileName.contains(".mpd") || fileName.contains("type=mpd")) {
+        if (fileName.contains(".mpd")) {
             return C.TYPE_DASH;
-        } else if (fileName.contains(".m3u8") || fileName.contains("m3u8")) {
+        } else if (fileName.contains(".m3u8")) {
             return C.TYPE_HLS;
         } else {
             return C.TYPE_OTHER;
@@ -146,7 +155,7 @@ public final class ExoMediaSourceHelper {
         return new SimpleCache(
                 new File(mAppContext.getExternalCacheDir(), "exo-video-cache"),//缓存目录
                 new LeastRecentlyUsedCacheEvictor(512 * 1024 * 1024),//缓存大小，默认512M，使用LRU算法实现
-                new ExoDatabaseProvider(mAppContext));
+                new StandaloneDatabaseProvider(mAppContext));
     }
 
     /**
@@ -155,7 +164,7 @@ public final class ExoMediaSourceHelper {
      * @return A new DataSource factory.
      */
     private DataSource.Factory getDataSourceFactory() {
-        return new DefaultDataSourceFactory(mAppContext, getHttpDataSourceFactory());
+        return new DefaultDataSource.Factory(mAppContext, getHttpDataSourceFactory());
     }
 
     /**
