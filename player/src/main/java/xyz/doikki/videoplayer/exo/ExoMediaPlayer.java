@@ -22,6 +22,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.video.VideoSize;
+import com.google.android.exoplayer2.ext.ffmpeg.FfmpegAudioRenderer;
 
 import java.util.Map;
 
@@ -66,7 +67,8 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mLoadControl = new DefaultLoadControl();
         }
  //       mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setTunnelingEnabled(true));
-		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setTunnelingEnabled(true));
+//		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setTunnelingEnabled(true));
+		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setPreferredAudioLanguage("zh").setTunnelingEnabled(true));
         /*mMediaPlayer = new SimpleExoPlayer.Builder(
                 mAppContext,
                 mRenderersFactory,
