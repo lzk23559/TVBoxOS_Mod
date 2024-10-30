@@ -58,7 +58,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mRenderersFactory = new DefaultRenderersFactory(mAppContext);
         }
       //  mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);
-		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF);
+		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
         if (mTrackSelector == null) {
             mTrackSelector = new DefaultTrackSelector(mAppContext);
         }
@@ -177,8 +177,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
-        lastTotalRxBytes = 0;
-        lastTimeStamp = 0;
+
         mIsPreparing = false;
         mSpeedPlaybackParameters = null;
     }
@@ -250,17 +249,6 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             return mSpeedPlaybackParameters.speed;
         }
         return 1f;
-    }
-
-    private long lastTotalRxBytes = 0;
-
-    private long lastTimeStamp = 0;
-
-    private boolean unsupported() {
-        if (mAppContext == null) {
-            return true;
-        }
-        return TrafficStats.getUidRxBytes(mAppContext.getApplicationInfo().uid) == TrafficStats.UNSUPPORTED;
     }
 
     @Override
