@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId 'com.jvhuiys.player'
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion 24
+        targetSdkVersion 30
         versionCode 1
         versionName '20241029-2222'
         multiDexEnabled true
