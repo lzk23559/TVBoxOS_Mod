@@ -32,6 +32,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.ext.okhttp.OkHttpDataSource;
 
+import com.github.tvbox.osc.util.FileUtils;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -151,13 +153,12 @@ public final class ExoMediaSourceHelper {
                 .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR);
     }
 
-    private Cache newCache() {
+    private Cache newCache() {           //xuameng exo播放错误
         return new SimpleCache(
-                new File(mAppContext.getExternalCacheDir(), "exo-video-cache"),//缓存目录
+                new File(FileUtils.getExternalCachePath(), "exo-video-cache"),//缓存目录
                 new LeastRecentlyUsedCacheEvictor(512 * 1024 * 1024),//缓存大小，默认512M，使用LRU算法实现
                 new StandaloneDatabaseProvider(mAppContext));
     }
-
     /**
      * Returns a new DataSource factory.
      *
