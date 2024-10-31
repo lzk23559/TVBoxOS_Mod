@@ -25,6 +25,8 @@ import com.google.android.exoplayer2.video.VideoSize;
 
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.util.Clock;
+import com.google.android.exoplayer2.analytics.AnalyticsCollector;
 
 import java.util.Map;
 
@@ -55,8 +57,8 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         mMediaSourceHelper = ExoMediaSourceHelper.getInstance(context);
     }
 
-    @Override
-    public void initPlayer() {
+
+/*    public void initPlayer() {
         if (mRenderersFactory == null) {
             mRenderersFactory = new DefaultRenderersFactory(mAppContext);
         }
@@ -79,16 +81,47 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
                 new DefaultMediaSourceFactory(mAppContext),
                 mLoadControl,
                 DefaultBandwidthMeter.getSingletonInstance(mAppContext),
-//                new AnalyticsCollector(Clock.DEFAULT))
+                new AnalyticsCollector(Clock.DEFAULT))
                 .build();
-/*        mMediaPlayer = new ExoPlayer.Builder(mAppContext)
+        mMediaPlayer = new ExoPlayer.Builder(mAppContext)
                 .setLoadControl(mLoadControl)
                 .setRenderersFactory(mRenderersFactory)
                 .setTrackSelector(mTrackSelector).build();
-*/
+
         setOptions();
 
         mMediaPlayer.addListener(this);
+    }
+*/
+
+    @Override
+    public void initPlayer() {
+		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);       //XUAMENG扩展优先
+		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("中文").setPreferredAudioLanguage("zh").setTunnelingEnabled(true));
+        mMediaPlayer = new ExoPlayer.Builder(
+                mAppContext,
+                mRenderersFactory == null ? mRenderersFactory = new DefaultRenderersFactory(mAppContext) : mRenderersFactory,
+                mTrackSelector == null ? mTrackSelector = new DefaultTrackSelector(mAppContext) : mTrackSelector,
+                new DefaultMediaSourceFactory(mAppContext),
+                mLoadControl == null ? mLoadControl = new DefaultLoadControl() : mLoadControl,
+                DefaultBandwidthMeter.getSingletonInstance(mAppContext),
+                new AnalyticsCollector(Clock.DEFAULT))
+                .build();
+        setOptions();
+
+        mMediaPlayer.addListener(this);
+    }
+
+    public void setTrackSelector(TrackSelector trackSelector) {
+        mTrackSelector = trackSelector;
+    }
+
+    public void setRenderersFactory(RenderersFactory renderersFactory) {
+        mRenderersFactory = renderersFactory;
+    }
+
+    public void setLoadControl(LoadControl loadControl) {
+        mLoadControl = loadControl;
     }
 
     public DefaultTrackSelector getTrackSelector() {
