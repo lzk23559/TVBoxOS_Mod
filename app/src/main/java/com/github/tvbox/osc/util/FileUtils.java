@@ -18,6 +18,9 @@ import java.io.OutputStream;
 
 public class FileUtils {
 
+    public static File open(String str) {        //xuameng exo cache
+        return new File(getExternalCachePath() + "/qjscache_" + str + ".js");
+    }
     public static boolean writeSimple(byte[] data, File dst) {
         try {
             if (dst.exists())
@@ -129,7 +132,16 @@ public class FileUtils {
     public static File getCacheDir() {
         return App.getInstance().getCacheDir();
     }
-
+    public static File getExternalCacheDir() {       //xuameng
+        return App.getInstance().getExternalCacheDir();
+    }
+    public static String getExternalCachePath() {
+        File externalCacheDir = getExternalCacheDir();
+        if (externalCacheDir == null){
+            return getCachePath();
+        }
+        return externalCacheDir.getAbsolutePath();
+    }
     public static String getCachePath() {
         return getCacheDir().getAbsolutePath();
     }
@@ -171,6 +183,7 @@ public class FileUtils {
         String thunderCachePath = getCachePath() + "/thunder/";
         File ijkCacheDir = new File(ijkCachePath);
         File thunderCacheDir = new File(thunderCachePath);
+
         try {
             if (ijkCacheDir.exists()) cleanDirectory(ijkCacheDir);
         } catch (Exception e) {
