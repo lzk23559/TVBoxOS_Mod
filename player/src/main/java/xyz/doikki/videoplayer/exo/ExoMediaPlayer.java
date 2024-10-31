@@ -46,6 +46,8 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     private int errorCode = -100;
     private String path;
     private Map<String, String> headers;
+	private long lastTotalRxBytes = 0;
+  	private long lastTimeStamp = 0;
 
     public ExoMediaPlayer(Context context) {
         mAppContext = context.getApplicationContext();
@@ -179,7 +181,8 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
-
+        lastTotalRxBytes = 0;
+        lastTimeStamp = 0;
         mIsPreparing = false;
         mSpeedPlaybackParameters = null;
     }
