@@ -24,7 +24,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.video.VideoSize;
 
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 
 import java.util.Map;
 
@@ -84,7 +83,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         mMediaPlayer = new ExoPlayer.Builder(mAppContext)
                 .setLoadControl(mLoadControl)
                 .setRenderersFactory(mRenderersFactory)
-                .setMediaSourceFactory(new DefaultMediaSourceFactory(mAppContext, ExtractorsFactory.EMPTY))
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(mAppContext))
                 .setTrackSelector(mTrackSelector).build();
 
         setOptions();
