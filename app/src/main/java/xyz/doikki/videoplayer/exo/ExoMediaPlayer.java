@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.video.VideoSize;
 
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 
 import java.util.Map;
 
@@ -33,7 +34,7 @@ import xyz.doikki.videoplayer.util.PlayerUtils;
 public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     protected Context mAppContext;
-    protected ExoPlayer mMediaPlayer;
+    protected SimpleExoPlayer mMediaPlayer;
     protected MediaSource mMediaSource;
     protected ExoMediaSourceHelper mMediaSourceHelper;
     protected ExoTrackNameProvider trackNameProvider;
@@ -59,7 +60,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         if (mRenderersFactory == null) {
             mRenderersFactory = new DefaultRenderersFactory(mAppContext);
         }
-        mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);       //XUAMENG扩展优先
+ //       mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);       //XUAMENG扩展优先
 //		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
         if (mTrackSelector == null) {
             mTrackSelector = new DefaultTrackSelector(mAppContext);
@@ -80,7 +81,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
                 DefaultBandwidthMeter.getSingletonInstance(mAppContext),
                 new AnalyticsCollector(Clock.DEFAULT))
                 .build();*/
-        mMediaPlayer = new ExoPlayer.Builder(mAppContext)
+        mMediaPlayer = new SimpleExoPlayer.Builder(mAppContext)
                 .setLoadControl(mLoadControl)
                 .setRenderersFactory(mRenderersFactory)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(mAppContext))
