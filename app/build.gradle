@@ -103,4 +103,8 @@ dependencies {
     implementation('xyz.doikki.android.dkplayer:player-ijk:3.3.7')
     implementation 'cglib:cglib:2.2.2'
     implementation 'org.apache.ant:ant:1.10.14'
+    //支持http3
+    implementation('com.google.net.cronet:cronet-okhttp:0.1.0')
+//    implementation 'com.google.android.gms:play-services-cronet:18.0.1'
+    implementation('org.chromium.net:cronet-embedded:101.4951.41')
 }
