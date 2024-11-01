@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.RenderersFactory;
+//import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -28,8 +29,6 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.util.Clock;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.analytics.AnalyticsCollector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.RenderersFactory;
 
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     private LoadControl mLoadControl;
     private RenderersFactory mRenderersFactory;
-    private TrackSelector mTrackSelector;
+    private DefaultTrackSelector mTrackSelector;
 
     private int errorCode = -100;
     private String path;
@@ -89,7 +88,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     public DefaultTrackSelector getTrackSelector() {
         return mTrackSelector;
     }
-    public void setTrackSelector(TrackSelector trackSelector) {
+    public void setTrackSelector(DefaultTrackSelector trackSelector) {
         mTrackSelector = trackSelector;
     }
 
