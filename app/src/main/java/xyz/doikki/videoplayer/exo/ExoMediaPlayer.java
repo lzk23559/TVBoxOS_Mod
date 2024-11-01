@@ -72,20 +72,14 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 //		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setTunnelingEnabled(true));
 		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("中文").setPreferredAudioLanguage("zh").setTunnelingEnabled(true));
  //       mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage(Locale.getDefault().getISO3Language()).setTunnelingEnabled(true));
-		/*mMediaPlayer = new SimpleExoPlayer.Builder(
+		mMediaPlayer = new SimpleExoPlayer.Builder(
                 mAppContext,
                 mRenderersFactory,
                 mTrackSelector,
                 new DefaultMediaSourceFactory(mAppContext),
-                mLoadControl,
-                DefaultBandwidthMeter.getSingletonInstance(mAppContext),
-                new AnalyticsCollector(Clock.DEFAULT))
-                .build();*/
-        mMediaPlayer = new SimpleExoPlayer.Builder(
-                .setLoadControl(mLoadControl)
-                .setRenderersFactory(mRenderersFactory)
-                .setMediaSourceFactory(new DefaultMediaSourceFactory(mAppContext))
-                .setTrackSelector(mTrackSelector)).build();
+                mLoadControl)
+                .build();
+
 
         setOptions();
 
