@@ -47,7 +47,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     private boolean mIsPreparing;
 
     private LoadControl mLoadControl;
-    private RenderersFactory mRenderersFactory;
+    private DefaultRenderersFactory mRenderersFactory;
     private DefaultTrackSelector mTrackSelector;
 
     private int errorCode = -100;
@@ -75,8 +75,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
                 mTrackSelector == null ? mTrackSelector = new DefaultTrackSelector(mAppContext) : mTrackSelector,
                 new DefaultMediaSourceFactory(mAppContext),
                 mLoadControl == null ? mLoadControl = new DefaultLoadControl() : mLoadControl,
-                DefaultBandwidthMeter.getSingletonInstance(mAppContext),
-                new AnalyticsCollector(Clock.DEFAULT))
+                DefaultBandwidthMeter.getSingletonInstance(mAppContext))
                 .build();
 
 
@@ -92,7 +91,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
         mTrackSelector = trackSelector;
     }
 
-    public void setRenderersFactory(RenderersFactory renderersFactory) {
+    public void setRenderersFactory(DefaultRenderersFactory renderersFactory) {
         mRenderersFactory = renderersFactory;
     }
 
