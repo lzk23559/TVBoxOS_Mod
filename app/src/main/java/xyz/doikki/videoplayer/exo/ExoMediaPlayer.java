@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.RenderersFactory;
 //import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackException;
@@ -46,7 +47,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     private boolean mIsPreparing;
 
     private LoadControl mLoadControl;
-    private DefaultRenderersFactory mRenderersFactory;
+    private RenderersFactory mRenderersFactory;
     private DefaultTrackSelector mTrackSelector;
 
     private int errorCode = -100;
@@ -60,34 +61,23 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     @Override
     public void initPlayer() {
-        if (mRenderersFactory == null) {
-            mRenderersFactory = new DefaultRenderersFactory(mAppContext);
-        }
+
         mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER);       //XUAMENG扩展优先
 //		mRenderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
-        if (mTrackSelector == null) {
-            mTrackSelector = new DefaultTrackSelector(mAppContext);
-        }
-        if (mLoadControl == null) {
-            mLoadControl = new DefaultLoadControl();
-        }
+
  //       mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setTunnelingEnabled(true));
 //		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setTunnelingEnabled(true));
 		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("中文").setPreferredAudioLanguage("zh").setTunnelingEnabled(true));
  //       mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage(Locale.getDefault().getISO3Language()).setTunnelingEnabled(true));
-        mMediaPlayer = new SimpleExoPlayer.Builder(
+mMediaPlayer = new SimpleExoPlayer.Builder(
                 mAppContext,
-                mRenderersFactory,
-                mTrackSelector,
+                mRenderersFactory == null ? mRenderersFactory = new DefaultRenderersFactory(mAppContext) : mRenderersFactory,
+                mTrackSelector == null ? mTrackSelector = new DefaultTrackSelector(mAppContext) : mTrackSelector,
                 new DefaultMediaSourceFactory(mAppContext),
-                mLoadControl,
+                mLoadControl == null ? mLoadControl = new DefaultLoadControl() : mLoadControl,
                 DefaultBandwidthMeter.getSingletonInstance(mAppContext),
                 new AnalyticsCollector(Clock.DEFAULT))
                 .build();
-
-        setOptions();
-
-        mMediaPlayer.addListener(this);
 
 
         setOptions();
@@ -98,7 +88,17 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
     public DefaultTrackSelector getTrackSelector() {
         return mTrackSelector;
     }
+    public void setTrackSelector(TrackSelector trackSelector) {
+        mTrackSelector = trackSelector;
+    }
 
+    public void setRenderersFactory(RenderersFactory renderersFactory) {
+        mRenderersFactory = renderersFactory;
+    }
+
+    public void setLoadControl(LoadControl loadControl) {
+        mLoadControl = loadControl;
+    }
     @Override
     public void setDataSource(String path, Map<String, String> headers) {
         this.path = path;
