@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.RenderersFactory;
-//import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -29,6 +28,8 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.util.Clock;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.analytics.AnalyticsCollector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.RenderersFactory;
 
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     private LoadControl mLoadControl;
     private RenderersFactory mRenderersFactory;
-    private DefaultTrackSelector mTrackSelector;
+    private TrackSelector mTrackSelector;
 
     private int errorCode = -100;
     private String path;
@@ -69,7 +70,7 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 //		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("zh").setTunnelingEnabled(true));
 		mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage("中文").setPreferredAudioLanguage("zh").setTunnelingEnabled(true));
  //       mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage(Locale.getDefault().getISO3Language()).setTunnelingEnabled(true));
-mMediaPlayer = new SimpleExoPlayer.Builder(
+		mMediaPlayer = new SimpleExoPlayer.Builder(
                 mAppContext,
                 mRenderersFactory == null ? mRenderersFactory = new DefaultRenderersFactory(mAppContext) : mRenderersFactory,
                 mTrackSelector == null ? mTrackSelector = new DefaultTrackSelector(mAppContext) : mTrackSelector,
