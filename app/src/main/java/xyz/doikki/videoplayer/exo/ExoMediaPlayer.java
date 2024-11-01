@@ -81,11 +81,11 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
                 DefaultBandwidthMeter.getSingletonInstance(mAppContext),
                 new AnalyticsCollector(Clock.DEFAULT))
                 .build();*/
-        mMediaPlayer = new SimpleExoPlayer.Builder(mAppContext)
+        mMediaPlayer = new SimpleExoPlayer.Builder(
                 .setLoadControl(mLoadControl)
-                .setRenderersFactory(new DefaultRenderersFactory(mAppContext))
+                .setRenderersFactory(mRenderersFactory)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(mAppContext))
-                .setTrackSelector(mTrackSelector).build();
+                .setTrackSelector(mTrackSelector)).build();
 
         setOptions();
 
