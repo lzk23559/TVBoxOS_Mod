@@ -23,7 +23,7 @@
                 android:layout_width="@dimen/vs_240"
                 android:layout_height="306.0mm"
                 android:layout_marginLeft="11.0mm"
-                android:layout_marginTop="@dimen/vs_3"
+                android:layout_marginTop="@dimen/vs_7"
                 android:scaleType="fitXY"/>
             <View
                 android:id="@+id/previewPlayerPlace"
@@ -286,24 +286,24 @@
     </LinearLayout>
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/previewPlayer"
+        android:paddingLeft="2.0mm"
         android:visibility="gone"
         android:layout_width="@dimen/vs_470"
-        android:layout_height="305mm"
-        android:paddingLeft="2mm"
+        android:layout_height="304.0mm"
         android:layout_marginLeft="@dimen/vs_50"
-        android:layout_marginTop="@dimen/vs_14"
+        android:layout_marginTop="17mm"
         android:layout_marginBottom="@dimen/vs_10"
         android:layout_marginStart="@dimen/vs_50"/>
     <View
         android:id="@+id/previewPlayerBlock"
         android:background="@drawable/preview_player_block"
+        android:paddingLeft="2.0mm"
         android:focusable="true"
         android:visibility="gone"
         android:layout_width="@dimen/vs_470"
-        android:layout_height="305mm"
+        android:layout_height="304.0mm"
         android:layout_marginLeft="@dimen/vs_50"
-        android:paddingLeft="2mm"
-        android:layout_marginTop="@dimen/vs_14"
+        android:layout_marginTop="17mm"
         android:layout_marginBottom="@dimen/vs_10"
         android:layout_marginStart="@dimen/vs_50"/>
 </FrameLayout>
