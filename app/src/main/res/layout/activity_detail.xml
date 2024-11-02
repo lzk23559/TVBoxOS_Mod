@@ -21,9 +21,9 @@
             <ImageView
                 android:id="@+id/ivThumb"
                 android:layout_width="@dimen/vs_240"
-                android:layout_height="313.0mm"
+                android:layout_height="306.0mm"
                 android:layout_marginLeft="11.0mm"
-                android:layout_marginTop="@dimen/vs_7"
+                android:layout_marginTop="@dimen/vs_3"
                 android:scaleType="fitXY"/>
             <View
                 android:id="@+id/previewPlayerPlace"
@@ -159,8 +159,12 @@
                         android:focusable="true"
                         android:layout_width="@dimen/vs_120"
                         android:layout_height="@dimen/vs_40"
+                        android:layout_marginLeft="@dimen/vs_10"
+                        android:layout_marginTop="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
+                        android:layout_marginBottom="@dimen/vs_10"
                         android:text="立即播放"
+                        android:layout_marginStart="@dimen/vs_10"
                         android:layout_marginEnd="@dimen/vs_10"/>
                     <TextView
                         android:textSize="@dimen/vs_20"
@@ -171,7 +175,9 @@
                         android:focusable="true"
                         android:layout_width="@dimen/vs_120"
                         android:layout_height="@dimen/vs_40"
+                        android:layout_marginTop="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
+                        android:layout_marginBottom="@dimen/vs_10"
                         android:text="快速搜索"
                         android:layout_marginEnd="@dimen/vs_10"/>
                     <TextView
@@ -183,7 +189,9 @@
                         android:focusable="true"
                         android:layout_width="@dimen/vs_120"
                         android:layout_height="@dimen/vs_40"
+                        android:layout_marginTop="@dimen/vs_10"
                         android:layout_marginRight="@dimen/vs_10"
+                        android:layout_marginBottom="@dimen/vs_10"
                         android:text="倒序"
                         android:layout_marginEnd="@dimen/vs_10"/>
                     <TextView
@@ -195,7 +203,25 @@
                         android:focusable="true"
                         android:layout_width="@dimen/vs_120"
                         android:layout_height="@dimen/vs_40"
-                        android:text="加入收藏"/>
+                        android:layout_marginTop="@dimen/vs_10"
+                        android:layout_marginRight="@dimen/vs_10"
+                        android:layout_marginBottom="@dimen/vs_10"
+                        android:text="加入收藏"
+                        android:layout_marginEnd="@dimen/vs_10"/>
+                    <TextView
+                        android:textSize="@dimen/vs_20"
+                        android:textColor="@android:color/white"
+                        android:gravity="center"
+                        android:id="@+id/tvDesc"
+                        android:background="@drawable/button_detail_desc"
+                        android:focusable="true"
+                        android:layout_width="@dimen/vs_120"
+                        android:layout_height="@dimen/vs_40"
+                        android:layout_marginTop="@dimen/vs_10"
+                        android:layout_marginRight="@dimen/vs_10"
+                        android:layout_marginBottom="@dimen/vs_10"
+                        android:text="内容简介"
+                        android:layout_marginEnd="@dimen/vs_10"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -262,9 +288,10 @@
         android:id="@+id/previewPlayer"
         android:visibility="gone"
         android:layout_width="@dimen/vs_470"
-        android:layout_height="@dimen/vs_300"
+        android:layout_height="305mm"
+        android:paddingLeft="2mm"
         android:layout_marginLeft="@dimen/vs_50"
-        android:layout_marginTop="@dimen/vs_20"
+        android:layout_marginTop="@dimen/vs_14"
         android:layout_marginBottom="@dimen/vs_10"
         android:layout_marginStart="@dimen/vs_50"/>
     <View
@@ -273,9 +300,10 @@
         android:focusable="true"
         android:visibility="gone"
         android:layout_width="@dimen/vs_470"
-        android:layout_height="@dimen/vs_300"
+        android:layout_height="305mm"
         android:layout_marginLeft="@dimen/vs_50"
-        android:layout_marginTop="@dimen/vs_20"
+        android:paddingLeft="2mm"
+        android:layout_marginTop="@dimen/vs_14"
         android:layout_marginBottom="@dimen/vs_10"
         android:layout_marginStart="@dimen/vs_50"/>
 </FrameLayout>
