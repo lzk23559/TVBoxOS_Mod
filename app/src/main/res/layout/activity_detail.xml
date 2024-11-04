@@ -174,7 +174,7 @@
                         android:textColor="@android:color/white"
                         android:gravity="center"
                         android:id="@+id/tvQuickSearch"
-                        android:background="@drawable/button_detail_quick_search"
+                        android:background="@drawable/button_detail_quick_search_1"
                         android:focusable="true"
                         android:layout_width="@dimen/vs_120"
                         android:layout_height="@dimen/vs_40"
