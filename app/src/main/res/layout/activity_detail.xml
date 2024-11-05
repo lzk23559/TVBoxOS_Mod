@@ -25,6 +25,8 @@
                 android:layout_height="302.0mm"
                 android:layout_marginLeft="11.0mm"
                 android:layout_marginBottom="@dimen/vs_0"
+                android:clickable="true"
+                android:focusable="false"
                 android:scaleType="fitXY"/>
             <View
                 android:id="@+id/previewPlayerPlace"
