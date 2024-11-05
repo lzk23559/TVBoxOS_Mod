@@ -247,6 +247,13 @@ public class DetailActivity extends BaseActivity {
 	    }
 	    });
         //xuameng : end
+        ivThumb.setOnClickListener(new View.OnClickListener() {         //xuameng播放窗口点击图片播放视频
+            @Override
+            public void onClick(View v) {
+                FastClickCheckUtil.check(v);
+                jumpToPlay();
+            }
+        });
 
         tvPlay.setOnClickListener(new View.OnClickListener() {
             @Override
