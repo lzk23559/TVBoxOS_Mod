@@ -2251,9 +2251,6 @@ public class LivePlayActivity extends BaseActivity {
             }
             loadChannelGroupDataAndPlay(groupIndex, liveChannelIndex);
         }
-        if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE) {
-            tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
-        }
     }
 
     private void initLiveChannelView() {
@@ -2783,9 +2780,6 @@ public class LivePlayActivity extends BaseActivity {
                 } else {
                     Toast.makeText(App.getInstance(), "密码错误！请重新输入！", Toast.LENGTH_SHORT).show();
                 }
-
-                if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE)
-                    tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单 
             }
 
             @Override
