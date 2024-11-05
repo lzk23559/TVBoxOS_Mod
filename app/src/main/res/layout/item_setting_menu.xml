@@ -15,5 +15,5 @@
         android:padding="@dimen/vs_5"
         android:singleLine="true"
         android:textColor="@color/color_CCFFFFFF"
-        android:textSize="@dimen/ts_24" />
+        android:textSize="100mm" />
 </FrameLayout>
