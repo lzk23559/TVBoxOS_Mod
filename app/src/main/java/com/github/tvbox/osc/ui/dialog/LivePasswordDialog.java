@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;      //xuameng密码不能为空
 
 import androidx.annotation.NonNull;
 
@@ -37,7 +38,9 @@ public class LivePasswordDialog extends BaseDialog {
                 if (!password.isEmpty()) {
                     listener.onChange(password);
                     dismiss();
-                }
+                }else {          //xuameng密码不能为空
+                Toast.makeText(getContext(), "输入内容不能为空", Toast.LENGTH_SHORT).show();
+               }
             }
         });
     }
