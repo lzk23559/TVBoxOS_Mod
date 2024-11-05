@@ -305,6 +305,7 @@
             android:visibility="gone"
             android:clipChildren="false"
             android:clipToPadding="false"
+            android:descendantFocusability="afterDescendants"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvUserHome"
