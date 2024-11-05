@@ -2771,7 +2771,7 @@ public class LivePlayActivity extends BaseActivity {
 
     private void showPasswordDialog(int groupIndex, int liveChannelIndex) {
         if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE)
-            tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
+            tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单，解决密码输入错误重新选择当前频道闪退
 
         LivePasswordDialog dialog = new LivePasswordDialog(this);
         dialog.setOnListener(new LivePasswordDialog.OnListener() {
@@ -2781,7 +2781,7 @@ public class LivePlayActivity extends BaseActivity {
                     channelGroupPasswordConfirmed.add(groupIndex);
                     loadChannelGroupDataAndPlay(groupIndex, liveChannelIndex);
                 } else {
-					showPasswordDialog(groupIndex, liveChannelIndex);
+					showPasswordDialog(groupIndex, liveChannelIndex);         //xuameng 密码错误重新弹出密码输入窗口
                     Toast.makeText(App.getInstance(), "密码错误！请重新输入！", Toast.LENGTH_SHORT).show();
                 } 
             }
