@@ -162,8 +162,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                       }else {
 						jumpActivity(SearchActivity.class, bundle);
 					  }
-		            }
-                } else {
+		              }else {
                         jumpActivity(DetailActivity.class, bundle);
                     }
                 } else {
