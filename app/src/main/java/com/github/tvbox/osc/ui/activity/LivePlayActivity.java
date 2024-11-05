@@ -2247,12 +2247,12 @@ public class LivePlayActivity extends BaseActivity {
             liveChannelGroupAdapter.setSelectedGroupIndex(groupIndex);
             if (isNeedInputPassword(groupIndex)) {
                 showPasswordDialog(groupIndex, liveChannelIndex);
-				if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE) {
-				tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
-			 }
                 return;
             }
             loadChannelGroupDataAndPlay(groupIndex, liveChannelIndex);
+        }
+        if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE) {
+            tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
         }
     }
 
@@ -2770,9 +2770,8 @@ public class LivePlayActivity extends BaseActivity {
     };
 
     private void showPasswordDialog(int groupIndex, int liveChannelIndex) {
-				if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE) {
-				tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
-			 }
+        if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE)
+            tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
 
         LivePasswordDialog dialog = new LivePasswordDialog(this);
         dialog.setOnListener(new LivePasswordDialog.OnListener() {
@@ -2785,9 +2784,9 @@ public class LivePlayActivity extends BaseActivity {
                     Toast.makeText(App.getInstance(), "密码错误！请重新输入！", Toast.LENGTH_SHORT).show();
                 }
 
-				if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE) {
-				tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单
-			 }
+                if (tvLeftChannelListLayout.getVisibility() == View.VISIBLE)
+                    tvLeftChannelListLayout.setVisibility(View.INVISIBLE);   //xuameng隐藏频道菜单 
+            }
 
             @Override
             public void onCancel() {
