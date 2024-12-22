@@ -21,7 +21,7 @@ jobs:
       - name: Prepare App
         run: |
           mkdir -p ${{ github.workspace }}/apk/
-          for file in `find ~ -name "*.apk" -print`; do
+          for file in `find ~ -name "xiao.apk" -print`; do
             mv "$file" ${{ github.workspace }}/apk/
           done
       - name: Upload App To Artifact
