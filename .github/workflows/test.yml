@@ -11,14 +11,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # 移动 app/src/main/java/com/github/tvbox/osc 下的所有子目录到 spiderbox
-      - name: Move subdirectories from /app/src/main/java/com/github/tvbox/osc to /app/src/main/java/com/github/spiderbox
+      # 重命名 app/src/main/java/com/github/tvbox/osc 为 app/src/main/java/com/github/spiderbox
+      - name: Rename directory from /app/src/main/java/com/github/tvbox/osc to /app/src/main/java/com/github/spiderbox
         run: |
-          # 创建目标文件夹
-          mkdir -p app/src/main/java/com/github/spiderbox
-
-          # 使用 find 命令来递归移动子目录
-          find app/src/main/java/com/github/tvbox/osc -mindepth 1 -type d -exec mv {} app/src/main/java/com/github/spiderbox/ \;
+          # 重命名目录
+          mv app/src/main/java/com/github/tvbox/osc app/src/main/java/com/github/spiderbox
 
       # 替换字符串 "tvbox.osc" 为 "spiderbox"（如果后续有文件需要处理）
       - name: Replace strings in files
@@ -36,5 +33,5 @@ jobs:
           
           git add --all  # 添加所有文件
           git diff --cached --name-only | grep -v '^\.github/workflows/' | xargs git add  # 排除工作流文件
-          git commit -m "Move directories and replace 'tvbox.osc' with 'spiderbox'"
+          git commit -m "Rename 'tvbox.osc' directory to 'spiderbox' and replace occurrences"
           git push
