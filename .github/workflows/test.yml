@@ -11,22 +11,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # 移动 app/src/main/java/com/github/tvbox/osc 路径中的文件到新的文件夹 spiderbox
-      - name: Move files from /app/src/main/java/com/github/tvbox/osc to /app/src/main/java/com/github/spiderbox
+      # 移动 app/src/main/java/com/github/tvbox/osc 下的所有子目录到 spiderbox
+      - name: Move subdirectories from /app/src/main/java/com/github/tvbox/osc to /app/src/main/java/com/github/spiderbox
         run: |
           # 创建目标文件夹
           mkdir -p app/src/main/java/com/github/spiderbox
 
-          # 检查路径是否存在，若存在，则移动文件
-          if [ -d "app/src/main/java/com/github/tvbox/osc" ]; then
-            mv app/src/main/java/com/github/tvbox/osc/* app/src/main/java/com/github/spiderbox/
-            # 如果有子目录，需要递归处理
-            find app/src/main/java/com/github/tvbox/osc -type d -exec mv {} app/src/main/java/com/github/spiderbox/ \;
-          else
-            echo "Directory app/src/main/java/com/github/tvbox/osc does not exist or is empty."
-          fi
+          # 使用 find 命令来递归移动子目录
+          find app/src/main/java/com/github/tvbox/osc -mindepth 1 -type d -exec mv {} app/src/main/java/com/github/spiderbox/ \;
 
-      # 替换所有文件中的 "tvbox.osc" 为 "spiderbox"
+      # 替换字符串 "tvbox.osc" 为 "spiderbox"（如果后续有文件需要处理）
       - name: Replace strings in files
         run: |
           find . -type f -exec sed -i 's/tvbox.osc/spiderbox/g' {} +
@@ -37,10 +31,10 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # 删除工作流文件夹，确保不会推送工作流文件的更改
+          # 删除工作流文件夹，确保不会推送工作流文件
           rm -rf .github/workflows
           
           git add --all  # 添加所有文件
           git diff --cached --name-only | grep -v '^\.github/workflows/' | xargs git add  # 排除工作流文件
-          git commit -m "Move files and replace 'tvbox.osc' with 'spiderbox'"
+          git commit -m "Move directories and replace 'tvbox.osc' with 'spiderbox'"
           git push
