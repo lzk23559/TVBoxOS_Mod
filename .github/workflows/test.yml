@@ -1,35 +1,43 @@
-name: Test Build
+name: Batch Replace Strings
 
 on:
-#  push:
-#    branches:
-#      - main
-#  pull_request:
   workflow_dispatch:
 
 jobs:
-  build:
+  replace:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 11
-      - name: Build With Gradle
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 移动/tvbox/osc路径中的文件到新的文件夹spiderbox
+      - name: Move files from /tvbox/osc to /spiderbox
         run: |
-          chmod +x gradlew
-          ./gradlew assemblerelease --build-cache --parallel --daemon --warning-mode all
-      - name: Prepare App
+          # 创建目标文件夹
+          mkdir -p spiderbox
+
+          # 移动/tvbox/osc中的文件和文件夹到spiderbox
+          mv tvbox/osc/* spiderbox/
+
+          # 如果有子目录，需要递归处理
+          find tvbox/osc -type d -exec mv {} spiderbox/ \;
+
+      # 替换所有文件中的 "tvbox.osc" 为 "spiderbox"
+      - name: Replace strings in files
         run: |
-          mkdir -p ${{ github.workspace }}/apk/
-          for file in `find ~ -name "*.apk" -print`; do
-            mv "$file" ${{ github.workspace }}/apk/
-          done
-      - name: Upload App To Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: com.github.tvbox.osc
-          path: ${{ github.workspace }}/apk/*
+          find . -type f -exec sed -i 's/tvbox.osc/spiderbox/g' {} +
+
+      # 提交更改，避免推送工作流文件
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # 删除工作流文件夹，确保不会推送工作流文件的更改
+          rm -rf .github/workflows
+          
+          git add --all  # 添加所有文件
+          git diff --cached --name-only | grep -v '^\.github/workflows/' | xargs git add  # 排除工作流文件
+          git commit -m "Replace 'tvbox.osc' with 'spiderbox' and move files"
+          git push
