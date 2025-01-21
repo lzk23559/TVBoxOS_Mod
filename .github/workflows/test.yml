@@ -12,16 +12,16 @@ jobs:
         uses: actions/checkout@v2
 
       # 移动 app/src/main/java/com/github/tvbox/osc 路径中的文件到新的文件夹 spiderbox
-      - name: Move files from /app/src/main/java/com/github/tvbox/osc to /spiderbox
+      - name: Move files from /app/src/main/java/com/github/tvbox/osc to /app/src/main/java/com/github/spiderbox
         run: |
           # 创建目标文件夹
-          mkdir -p spiderbox
+          mkdir -p app/src/main/java/com/github/spiderbox
 
           # 检查路径是否存在，若存在，则移动文件
           if [ -d "app/src/main/java/com/github/tvbox/osc" ]; then
-            mv app/src/main/java/com/github/tvbox/osc/* spiderbox/
+            mv app/src/main/java/com/github/tvbox/osc/* app/src/main/java/com/github/spiderbox/
             # 如果有子目录，需要递归处理
-            find app/src/main/java/com/github/tvbox/osc -type d -exec mv {} spiderbox/ \;
+            find app/src/main/java/com/github/tvbox/osc -type d -exec mv {} app/src/main/java/com/github/spiderbox/ \;
           else
             echo "Directory app/src/main/java/com/github/tvbox/osc does not exist or is empty."
           fi
