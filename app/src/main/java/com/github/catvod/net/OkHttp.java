@@ -2,8 +2,8 @@ package com.github.catvod.net;
 
 import android.util.ArrayMap;
 
-import com.github.tvbox.osc.util.OkGoHelper;
-import com.github.tvbox.osc.util.urlhttp.BrotliInterceptor;
+import com.github.spiderbox.util.OkGoHelper;
+import com.github.spiderbox.util.urlhttp.BrotliInterceptor;
 
 import java.util.Map;
 import java.util.Objects;
