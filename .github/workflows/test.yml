@@ -11,17 +11,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # 移动/tvbox/osc路径中的文件到新的文件夹spiderbox
-      - name: Move files from /tvbox/osc to /spiderbox
+      # 移动 app/src/main/java/com/github/tvbox/osc 路径中的文件到新的文件夹 spiderbox
+      - name: Move files from /app/src/main/java/com/github/tvbox/osc to /spiderbox
         run: |
           # 创建目标文件夹
           mkdir -p spiderbox
 
-          # 移动/tvbox/osc中的文件和文件夹到spiderbox
-          mv tvbox/osc/* spiderbox/
-
-          # 如果有子目录，需要递归处理
-          find tvbox/osc -type d -exec mv {} spiderbox/ \;
+          # 检查路径是否存在，若存在，则移动文件
+          if [ -d "app/src/main/java/com/github/tvbox/osc" ]; then
+            mv app/src/main/java/com/github/tvbox/osc/* spiderbox/
+            # 如果有子目录，需要递归处理
+            find app/src/main/java/com/github/tvbox/osc -type d -exec mv {} spiderbox/ \;
+          else
+            echo "Directory app/src/main/java/com/github/tvbox/osc does not exist or is empty."
+          fi
 
       # 替换所有文件中的 "tvbox.osc" 为 "spiderbox"
       - name: Replace strings in files
@@ -39,5 +42,5 @@ jobs:
           
           git add --all  # 添加所有文件
           git diff --cached --name-only | grep -v '^\.github/workflows/' | xargs git add  # 排除工作流文件
-          git commit -m "Replace 'tvbox.osc' with 'spiderbox' and move files"
+          git commit -m "Move files and replace 'tvbox.osc' with 'spiderbox'"
           git push
