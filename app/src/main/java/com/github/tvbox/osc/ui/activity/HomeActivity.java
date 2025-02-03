@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -351,39 +352,51 @@ public class HomeActivity extends BaseActivity {
                     });
                     return;
                 }
-                mHandler.post(() -> {
-                    if (dialog == null)
-                        dialog = new TipDialog(HomeActivity.this, msg, "重试", "取消", new TipDialog.OnListener() {
-                            @Override
-                            public void left() {
-                                mHandler.post(() -> {
-                                    initData();
-                                    dialog.hide();
-                                });
-                            }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (dialog == null)
+                            dialog = new TipDialog(HomeActivity.this, msg, "重试", "取消", new TipDialog.OnListener() {
+                                @Override
+                                public void left() {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            initData();
+                                            dialog.hide();
+                                        }
+                                    });
+                                }
 
-                            @Override
-                            public void right() {
-                                dataInitOk = true;
-                                jarInitOk = true;
-                                mHandler.post(() -> {
-                                    initData();
-                                    dialog.hide();
-                                });
-                            }
+                                @Override
+                                public void right() {
+                                    dataInitOk = true;
+                                    jarInitOk = true;
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            initData();
+                                            dialog.hide();
+                                        }
+                                    });
+                                }
 
-                            @Override
-                            public void cancel() {
-                                dataInitOk = true;
-                                jarInitOk = true;
-                                mHandler.post(() -> {
-                                    initData();
-                                    dialog.hide();
-                                });
-                            }
-                        });
-                    if (!dialog.isShowing())
-                        dialog.show();
+                                @Override
+                                public void cancel() {
+                                    dataInitOk = true;
+                                    jarInitOk = true;
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            initData();
+                                            dialog.hide();
+                                        }
+                                    });
+                                }
+                            });
+                        if (!dialog.isShowing())
+                            dialog.show();
+                    }
                 });
             }
         }, this);

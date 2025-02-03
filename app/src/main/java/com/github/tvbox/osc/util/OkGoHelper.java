@@ -1,16 +1,10 @@
 package com.github.tvbox.osc.util;
 
-import static okhttp3.ConnectionSpec.CLEARTEXT;
-import static okhttp3.ConnectionSpec.COMPATIBLE_TLS;
-import static okhttp3.ConnectionSpec.MODERN_TLS;
-import static okhttp3.ConnectionSpec.RESTRICTED_TLS;
-
 import android.graphics.Bitmap;
 
-import com.github.catvod.net.SSLSocketFactoryCompat;
 import com.github.tvbox.osc.base.App;
 import com.github.tvbox.osc.picasso.MyOkhttpDownLoader;
-import com.github.tvbox.osc.util.urlhttp.BrotliInterceptor;
+import com.github.tvbox.osc.util.SSL.SSLSocketFactoryCompat;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
@@ -19,23 +13,25 @@ import com.orhanobut.hawk.Hawk;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
-import okhttp3.ConnectionSpec;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.dnsoverhttps.DnsOverHttps;
+import okhttp3.internal.Version;
 import xyz.doikki.videoplayer.exo.ExoMediaSourceHelper;
 
 public class OkGoHelper {
-    public static final long DEFAULT_MILLISECONDS = 10000;      //默认的超时时间
+    public static final long DEFAULT_MILLISECONDS = 8000;      //默认的超时时间
 
     static void initExoOkHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -48,11 +44,12 @@ public class OkGoHelper {
             loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.NONE);
             loggingInterceptor.setColorLevel(Level.OFF);
         }
-        builder.connectionSpecs(getConnectionSpec());
-        builder.addInterceptor(new BrotliInterceptor());
+        builder.addInterceptor(loggingInterceptor);
+
         builder.retryOnConnectionFailure(true);
         builder.followRedirects(true);
         builder.followSslRedirects(true);
+
 
         try {
             setOkHttpSsl(builder);
@@ -68,9 +65,6 @@ public class OkGoHelper {
 
     public static ArrayList<String> dnsHttpsList = new ArrayList<>();
 
-    public static List<ConnectionSpec> getConnectionSpec() {
-        return Arrays.asList(RESTRICTED_TLS, MODERN_TLS, COMPATIBLE_TLS, CLEARTEXT);
-    }
 
     public static String getDohUrl(int type) {
         switch (type) {
@@ -84,13 +78,9 @@ public class OkGoHelper {
                 return "https://doh.360.cn/dns-query";
             }
             case 4: {
-                // return "https://1.1.1.1/dns-query";   // takagen99 - removed Cloudflare
-                return "https://dns.google/dns-query";
-            }
-            case 5: {
                 return "https://dns.adguard.com/dns-query";
             }
-            case 6: {
+            case 5: {
                 return "https://dns.quad9.net/dns-query";
             }
         }
@@ -102,7 +92,6 @@ public class OkGoHelper {
         dnsHttpsList.add("腾讯");
         dnsHttpsList.add("阿里");
         dnsHttpsList.add("360");
-        dnsHttpsList.add("Google");
         dnsHttpsList.add("AdGuard");
         dnsHttpsList.add("Quad9");
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
@@ -114,18 +103,19 @@ public class OkGoHelper {
             loggingInterceptor.setPrintLevel(HttpLoggingInterceptor.Level.NONE);
             loggingInterceptor.setColorLevel(Level.OFF);
         }
-        builder.addInterceptor(new BrotliInterceptor());
+        builder.addInterceptor(loggingInterceptor);
         try {
             setOkHttpSsl(builder);
         } catch (Throwable th) {
             th.printStackTrace();
         }
-        builder.connectionSpecs(getConnectionSpec());
-        builder.cache(new Cache(new File(App.getInstance().getCacheDir().getAbsolutePath(), "dohcache"), 10 * 1024 * 1024));
+        builder.cache(new Cache(new File(App.getInstance().getCacheDir().getAbsolutePath(), "dohcache"), 100 * 1024 * 1024));
         OkHttpClient dohClient = builder.build();
         String dohUrl = getDohUrl(Hawk.get(HawkConfig.DOH_URL, 0));
         dnsOverHttps = new DnsOverHttps.Builder().client(dohClient).url(dohUrl.isEmpty() ? null : HttpUrl.get(dohUrl)).build();
     }
+
+
     static OkHttpClient defaultClient = null;
     static OkHttpClient noRedirectClient = null;
 
@@ -152,19 +142,21 @@ public class OkGoHelper {
         }
 
         //builder.retryOnConnectionFailure(false);
-        builder.connectionSpecs(getConnectionSpec());
-        builder.addInterceptor(new BrotliInterceptor());
-        builder.readTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .writeTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .dns(dnsOverHttps);
+
+        builder.addInterceptor(loggingInterceptor);
+
+        builder.readTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        builder.writeTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS);
+
+        builder.dns(dnsOverHttps);
         try {
             setOkHttpSsl(builder);
         } catch (Throwable th) {
             th.printStackTrace();
         }
 
-        HttpHeaders.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+        HttpHeaders.setUserAgent(Version.userAgent());
 
         OkHttpClient okHttpClient = builder.build();
         OkGo.getInstance().setOkHttpClient(okHttpClient);
@@ -180,11 +172,10 @@ public class OkGoHelper {
     }
 
     static void initPicasso(OkHttpClient client) {
-        client.dispatcher().setMaxRequestsPerHost(32);
+        client.dispatcher().setMaxRequestsPerHost(10);
         MyOkhttpDownLoader downloader = new MyOkhttpDownLoader(client);
         Picasso picasso = new Picasso.Builder(App.getInstance())
                 .downloader(downloader)
-                .executor(HeavyTaskUtil.getBigTaskExecutorService())
                 .defaultBitmapConfig(Bitmap.Config.RGB_565)
                 .build();
         Picasso.setSingletonInstance(picasso);
@@ -192,14 +183,27 @@ public class OkGoHelper {
 
     private static synchronized void setOkHttpSsl(OkHttpClient.Builder builder) {
         try {
+            // 自定义一个信任所有证书的TrustManager，添加SSLSocketFactory的时候要用到
+            final X509TrustManager trustAllCert =
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
 
-            final SSLSocketFactory sslSocketFactory = new SSLSocketFactoryCompat();
-            builder.sslSocketFactory(sslSocketFactory, SSLSocketFactoryCompat.trustAllCert);
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    };
+            final SSLSocketFactory sslSocketFactory = new SSLSocketFactoryCompat(trustAllCert);
+            builder.sslSocketFactory(sslSocketFactory, trustAllCert);
             builder.hostnameVerifier(HttpsUtils.UnSafeHostnameVerifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }
