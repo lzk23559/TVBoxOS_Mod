@@ -16,7 +16,6 @@
 package androidx.media3.datasource.okhttp;
 
 import static androidx.media3.common.util.Util.castNonNull;
-import static androidx.media3.datasource.HttpUtil.buildRangeRequestHeader;
 import static java.lang.Math.min;
 
 import android.net.Uri;
@@ -341,6 +340,17 @@ public class OkHttpDataSource extends BaseDataSource implements HttpDataSource {
         }
         builder.method(dataSpec.getHttpMethodString(), requestBody);
         return builder.build();
+    }
+
+    public static String buildRangeRequestHeader(long position, long length) {
+        StringBuilder rangeValue = new StringBuilder();
+        rangeValue.append("bytes=");
+        rangeValue.append(position);
+        rangeValue.append("-");
+        if (length != C.LENGTH_UNSET) {
+            rangeValue.append(position + length - 1);
+        }
+        return rangeValue.toString();
     }
 
     /**
