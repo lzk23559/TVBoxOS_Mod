@@ -213,7 +213,15 @@ public class PlayActivity extends BaseActivity {
             @Override
             public void replay(boolean replay) {
                 autoRetryCount = 0;
-                play(replay);
+                if(replay){
+                    play(true);
+                }else {
+                    if(webPlayUrl!=null && !webPlayUrl.isEmpty()) {
+                        playUrl(webPlayUrl,webHeaderMap);
+                    }else {
+                        play(false);
+                    }
+                }
             }
 
             @Override
@@ -501,7 +509,7 @@ public class PlayActivity extends BaseActivity {
     void playUrl(String url, HashMap<String, String> headers) {
         LOG.i("playUrl:" + url);
         if(autoRetryCount>1 && url.contains(".m3u8")){
-            url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
+            //url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
         }
         final String finalUrl = url;
         runOnUiThread(new Runnable() {
@@ -829,9 +837,15 @@ public class PlayActivity extends BaseActivity {
             autoRetryFromLoadFoundVideoUrls();
             return true;
         }
-        if (autoRetryCount < 1) {
+        if (autoRetryCount < 2) {
+            if(autoRetryCount==1){
+                //第二次重试时重新调用接口
+                play(false);
+            }else {
+                //第一次重试直接带着原地址继续播放
+                playUrl(webPlayUrl, webHeaderMap);
+            }
             autoRetryCount++;
-            play(false);
             return true;
         } else {
             autoRetryCount = 0;
