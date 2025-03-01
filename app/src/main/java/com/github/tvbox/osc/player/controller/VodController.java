@@ -398,7 +398,7 @@ public class VodController extends BaseController {
         });
         mPlayerBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onClick(View view) {
+            public void onClick(View view) {
                 myHandle.removeCallbacks(myRunnable);
                 myHandle.postDelayed(myRunnable, myHandleSeconds);
                 FastClickCheckUtil.check(view);
@@ -455,7 +455,6 @@ public class VodController extends BaseController {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                return true;
             }
         });
         mPlayerIJKBtn.setOnClickListener(new OnClickListener() {
