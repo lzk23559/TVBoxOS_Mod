@@ -197,14 +197,16 @@ public class IjkMediaPlayer extends IjkPlayer {
         for (IjkTrackInfo info : trackInfo) {
             if (info.getTrackType() == ITrackInfo.MEDIA_TRACK_TYPE_AUDIO) {//音轨信息
                 TrackInfoBean a = new TrackInfoBean();
-                a.name = info.getInfoInline();
+                String name = processAudioName(info.getInfoInline());
                 a.language = info.getLanguage();
+                if(name.startsWith("aac"))a.language="中文";
+                a.name = name;
                 a.index = index;
                 a.selected = index == audioSelected;
                 // 如果需要，还可以检查轨道的描述或标题以获取更多信息
                 data.addAudio(a);
             }
-            if (info.getTrackType() == ITrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {//内置字幕
+            else if (info.getTrackType() == ITrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT) {//内置字幕
                 TrackInfoBean t = new TrackInfoBean();
                 t.name = info.getInfoInline();
                 t.language = info.getLanguage();
@@ -216,9 +218,19 @@ public class IjkMediaPlayer extends IjkPlayer {
         }
         return data;
     }
+    // 处理音轨名称格式
+    private String processAudioName(String rawName) {
+        return rawName.replace("AUDIO,", "")
+                .replace("N/A,", "")
+                .replace(" ", "");
+    }
 
     public void setTrack(int trackIndex) {
-        mMediaPlayer.selectTrack(trackIndex);
+        int audioSelected = mMediaPlayer.getSelectedTrack(ITrackInfo.MEDIA_TRACK_TYPE_AUDIO);
+        int subtitleSelected = mMediaPlayer.getSelectedTrack(ITrackInfo.MEDIA_TRACK_TYPE_TIMEDTEXT);
+        if (trackIndex!=audioSelected && trackIndex!=subtitleSelected){
+            mMediaPlayer.selectTrack(trackIndex);
+        }
     }
 
     public void setOnTimedTextListener(IMediaPlayer.OnTimedTextListener listener) {

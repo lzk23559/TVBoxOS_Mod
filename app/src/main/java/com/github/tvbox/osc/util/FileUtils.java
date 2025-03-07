@@ -100,24 +100,6 @@ public class FileUtils {
         return jsonString;
     }
 
-    public static String getAssetFile(String assetName) throws IOException {
-        InputStream is = App.getInstance().getAssets().open(assetName);
-        byte[] data = new byte[is.available()];
-        is.read(data);
-        return new String(data, "UTF-8");
-    }
-
-    public static boolean isAssetFile(String name, String path) {
-        try {
-            for(String one : App.getInstance().getAssets().list(path)) {
-                if (one.equals(name)) return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public static String getRootPath() {
         return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
@@ -220,19 +202,27 @@ public class FileUtils {
         return fileName;
     }
 
-    public static String getFileExt(String fileName){
-        if(TextUtils.isEmpty(fileName)) return "";
-        int p = fileName.lastIndexOf('.');
-        if(p != -1) {
-            return fileName.substring(p).toLowerCase();
-        }
-        return "";
-    }
 
     public static boolean hasExtension(String path) {
         int lastDotIndex = path.lastIndexOf(".");
         int lastSlashIndex = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
         // 如果路径中有点号，并且点号在最后一个斜杠之后，认为有后缀
         return lastDotIndex > lastSlashIndex && lastDotIndex < path.length() - 1;
+    }
+
+    public static void saveCache(File cache,String json){
+        try {
+            File cacheDir = cache.getParentFile();
+            if (!cacheDir.exists())
+                cacheDir.mkdirs();
+            if (cache.exists())
+                cache.delete();
+            FileOutputStream fos = new FileOutputStream(cache);
+            fos.write(json.getBytes("UTF-8"));
+            fos.flush();
+            fos.close();
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
     }
 }

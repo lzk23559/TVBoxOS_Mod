@@ -469,7 +469,7 @@
 					android:ellipsize='marquee'
 					android:singleLine="true"
 					android:textColor="@android:color/white"
-					android:textSize="@dimen/vs_60"
+					android:textSize="@dimen/vs_50"
 					android:textStyle="bold"
 					tools:ignore="EllipsizeMaxLines" />
 				<ImageView
@@ -523,6 +523,8 @@
 			android:textColor="@color/color_FFFFFF"
 			android:ellipsize="marquee"
 			android:id="@+id/tv_current_program_time"
+			android:fontFamily="monospace"
+			android:textScaleX="0.95"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="暂无信息"
@@ -572,6 +574,8 @@
 			android:textSize="@dimen/ts_26"
 			android:textColor="@color/color_FFFFFF"
 			android:id="@+id/tv_next_program_time"
+			android:fontFamily="monospace"
+			android:textScaleX="0.95"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="暂无信息"

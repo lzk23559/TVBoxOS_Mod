@@ -42,11 +42,13 @@ public class ApiDialog extends BaseDialog {
     private ImageView ivQRCode;
     private TextView tvAddress;
     private EditText inputApi;
+    private EditText inputApiLive;
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refresh(RefreshEvent event) {
         if (event.type == RefreshEvent.TYPE_API_URL_CHANGE) {
             inputApi.setText((String) event.obj);
+            inputApiLive.setText((String) event.obj);
         }
     }
 
@@ -57,8 +59,10 @@ public class ApiDialog extends BaseDialog {
         ivQRCode = findViewById(R.id.ivQRCode);
         tvAddress = findViewById(R.id.tvAddress);
         inputApi = findViewById(R.id.input);
+        inputApiLive = findViewById(R.id.inputLive);
         //内置网络接口在此处添加
         inputApi.setText(Hawk.get(HawkConfig.API_URL, ""));
+        inputApiLive.setText(Hawk.get(HawkConfig.LIVE_API_URL, Hawk.get(HawkConfig.API_URL)));
         findViewById(R.id.inputSubmit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,34 +74,59 @@ public class ApiDialog extends BaseDialog {
                     if (history.size() > 30)
                         history.remove(30);
                     Hawk.put(HawkConfig.API_HISTORY, history);
-                    listener.onchange(newApi);
-                    dismiss();
+//                    String newLiveApi = inputApi.getText().toString().trim();
+                    if(!newApi.equals(Hawk.get(HawkConfig.API_URL, newApi))){
+                        inputApiLive.setText(newApi);
+                        Hawk.put(HawkConfig.LIVE_API_URL, newApi);
+                    }
                 }
+                listener.onchange(newApi);
+                dismiss();
+            }
+        });
+        findViewById(R.id.inputSubmitLive).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newApi = inputApiLive.getText().toString().trim();
+                if (!newApi.isEmpty()) {
+                    ArrayList<String> history = Hawk.get(HawkConfig.LIVE_API_HISTORY, new ArrayList<String>());
+                    if (!history.contains(newApi)) {
+                        history.add(0, newApi);
+                    }
+                    if (history.size() > 30) {
+                        history.remove(30);
+                    }
+                    Hawk.put(HawkConfig.LIVE_API_HISTORY, history);
+                }
+                Hawk.put(HawkConfig.LIVE_API_URL, newApi);
+                dismiss();
             }
         });
         findViewById(R.id.apiHistory).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> history = Hawk.get(HawkConfig.API_HISTORY, new ArrayList<String>());
-                if (history.isEmpty())
+                ArrayList<String> history = Hawk.get(HawkConfig.LIVE_API_HISTORY, new ArrayList<String>());
+                if (history.isEmpty()){
+                    Toast.makeText(getContext(), "直播历史为空", Toast.LENGTH_SHORT).show();
                     return;
-                String current = Hawk.get(HawkConfig.API_URL, "");
+                }
+                String current = Hawk.get(HawkConfig.LIVE_API_URL, "");
                 int idx = 0;
                 if (history.contains(current))
                     idx = history.indexOf(current);
                 ApiHistoryDialog dialog = new ApiHistoryDialog(getContext());
-                dialog.setTip("历史配置列表");
+                dialog.setTip("直播历史配置");
                 dialog.setAdapter(new ApiHistoryDialogAdapter.SelectDialogInterface() {
                     @Override
                     public void click(String value) {
-                        inputApi.setText(value);
-                        listener.onchange(value);
+                        inputApiLive.setText(value);
+                        Hawk.put(HawkConfig.LIVE_API_URL, value);
                         dialog.dismiss();
                     }
 
                     @Override
                     public void del(String value, ArrayList<String> data) {
-                        Hawk.put(HawkConfig.API_HISTORY, data);
+                        Hawk.put(HawkConfig.LIVE_API_HISTORY, data);
                     }
                 }, history, idx);
                 dialog.show();
@@ -144,9 +173,14 @@ public class ApiDialog extends BaseDialog {
                         if (history.size() > 30)
                             history.remove(30);
                         Hawk.put(HawkConfig.API_HISTORY, history);
-                        listener.onchange(newApi);
-                        dismiss();
+
+                        if(!newApi.equals(Hawk.get(HawkConfig.API_URL, newApi))){
+                            inputApiLive.setText(newApi);
+                            Hawk.put(HawkConfig.LIVE_API_URL, newApi);
+                        }
                     }
+                    listener.onchange(newApi);
+                    dismiss();
                     return true;
                 }
                 return false;

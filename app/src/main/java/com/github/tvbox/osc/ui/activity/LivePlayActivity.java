@@ -408,7 +408,7 @@ public class LivePlayActivity extends BaseActivity {
 
     public void getEpg(Date date) {
         String channelName = channel_Name.getChannelName();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd");
         timeFormat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         String[] epgInfo = EpgUtil.getEpgInfo(channelName);
         String epgTagName = channelName;
@@ -416,9 +416,7 @@ public class LivePlayActivity extends BaseActivity {
         if (epgInfo != null && !epgInfo[1].isEmpty()) {
             epgTagName = epgInfo[1];
         }
-        String finalChannelName = channelName;
         epgListAdapter.CanBack(currentLiveChannelItem.getinclude_back());
-        //epgListAdapter.updateData(date, new ArrayList<>());
 
         String url;
         if(epgStringAddress.contains("{name}") && epgStringAddress.contains("{date}")){
@@ -475,21 +473,19 @@ public class LivePlayActivity extends BaseActivity {
             tv_next_program_name.setText("");
             String savedEpgKey = channel_Name.getChannelName() + "_" + Objects.requireNonNull(liveEpgDateAdapter.getItem(liveEpgDateAdapter.getSelectedIndex())).getDatePresented();
             if (hsEpg.containsKey(savedEpgKey)) {
-                String[] epgInfo = EpgUtil.getEpgInfo(channel_Name.getChannelName());
-                updateChannelIcon(channel_Name.getChannelName(), epgInfo == null ? null : epgInfo[0]);
                 ArrayList arrayList = (ArrayList) hsEpg.get(savedEpgKey);
                 if (arrayList != null && arrayList.size() > 0) {
                     Date date = new Date();
                     int size = arrayList.size() - 1;
                     while (size >= 0) {
                         if (date.after(((Epginfo) arrayList.get(size)).startdateTime) & date.before(((Epginfo) arrayList.get(size)).enddateTime)) {
-                            tip_epg1.setText(((Epginfo) arrayList.get(size)).start + " - " + ((Epginfo) arrayList.get(size)).end);
+                            tip_epg1.setText(((Epginfo) arrayList.get(size)).start + "-" + ((Epginfo) arrayList.get(size)).end);
                             tv_current_program_name.setText(((Epginfo) arrayList.get(size)).title);
                             if (size != arrayList.size() - 1) {
-                                tip_epg2.setText(((Epginfo) arrayList.get(size + 1)).start + " - " + ((Epginfo) arrayList.get(size + 1)).end);
+                                tip_epg2.setText(((Epginfo) arrayList.get(size + 1)).start + "-" + ((Epginfo) arrayList.get(size + 1)).end);
                                 tv_next_program_name.setText(((Epginfo) arrayList.get(size + 1)).title);
                             } else {
-                                tip_epg2.setText("00:00 - 23:59");
+                                tip_epg2.setText("00:00-23:59");
                                 tv_next_program_name.setText("精彩节目-暂无节目预告信息");
                             }
                             break;
@@ -546,6 +542,7 @@ public class LivePlayActivity extends BaseActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateChannelIcon(String channelName, String logoUrl) {
         if (StringUtils.isEmpty(logoUrl)) {
             liveIconNullBg.setVisibility(View.VISIBLE);
@@ -554,7 +551,7 @@ public class LivePlayActivity extends BaseActivity {
             liveIconNullText.setText("" + channel_Name.getChannelNum());
         } else {
             imgLiveIcon.setVisibility(View.VISIBLE);
-            Picasso.get().load(logoUrl).placeholder(R.drawable.app_banner).into(imgLiveIcon);
+            Picasso.get().load(logoUrl).into(imgLiveIcon);
             liveIconNullBg.setVisibility(View.INVISIBLE);
             liveIconNullText.setVisibility(View.INVISIBLE);
         }
@@ -679,18 +676,47 @@ public class LivePlayActivity extends BaseActivity {
             return;
         }
         if (tvLeftChannelListLayout.getVisibility() == View.INVISIBLE) {
-            //重新载入上一次状态
-            liveChannelItemAdapter.setNewData(getLiveChannels(currentChannelGroupIndex));
-            if (currentLiveChannelIndex > -1)
+            refreshChannelList(currentChannelGroupIndex);
+            if (currentLiveChannelIndex > -1){
                 mLiveChannelView.scrollToPosition(currentLiveChannelIndex);
-            mLiveChannelView.setSelection(currentLiveChannelIndex);
-            mChannelGroupView.scrollToPosition(currentChannelGroupIndex);
-            mChannelGroupView.setSelection(currentChannelGroupIndex);
-            mHandler.postDelayed(mFocusCurrentChannelAndShowChannelList, 200);
+                mLiveChannelView.setSelection(currentLiveChannelIndex);
+            }
+//            mChannelGroupView.scrollToPosition(currentChannelGroupIndex);
+//            mChannelGroupView.setSelection(currentChannelGroupIndex);
+            mHandler.postDelayed(mFocusCurrentChannelAndShowChannelList, 50);
         } else {
             mHandler.removeCallbacks(mHideChannelListRun);
             mHandler.post(mHideChannelListRun);
         }
+    }
+
+    private int mLastChannelGroupIndex = -1;
+    private List<LiveChannelItem> mLastChannelList = new ArrayList<>();
+
+    private void refreshChannelList(int currentChannelGroupIndex) {
+        // 1. 获取新数据
+        List<LiveChannelItem> newChannels = getLiveChannels(currentChannelGroupIndex);
+        // 2. 判断数据是否变化（相同组索引且数据内容未变）
+        if (currentChannelGroupIndex == mLastChannelGroupIndex
+                && isSameData(newChannels, mLastChannelList)) {
+            return; // 数据未变化，跳过刷新 解决部分直播频道过多时卡顿
+        }
+        mLastChannelGroupIndex = currentChannelGroupIndex;
+        mLastChannelList = new ArrayList<>(newChannels);
+        liveChannelItemAdapter.setNewData(newChannels);
+    }
+
+    // 对比两个列表内容是否相同
+    private boolean isSameData(List<LiveChannelItem> list1, List<LiveChannelItem> list2) {
+//        return list1.size() == list2.size();
+        if (list1 == list2) return true;
+        if (list1 == null || list2 == null || list1.size() != list2.size()) return false;
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Runnable mFocusCurrentChannelAndShowChannelList = new Runnable() {
@@ -843,7 +869,7 @@ public class LivePlayActivity extends BaseActivity {
             selectSettingGroup(0, false);
             mSettingGroupView.scrollToPosition(0);
             mSettingItemView.scrollToPosition(currentLiveChannelItem.getSourceIndex());
-            mHandler.postDelayed(mFocusAndShowSettingGroup, 200);
+            mHandler.postDelayed(mFocusAndShowSettingGroup, 50);
         } else {
             mHandler.removeCallbacks(mHideSettingLayoutRun);
             mHandler.post(mHideSettingLayoutRun);
@@ -1528,10 +1554,17 @@ public class LivePlayActivity extends BaseActivity {
                 if(position==Hawk.get(HawkConfig.LIVE_GROUP_INDEX, 0))break;
                 JsonArray live_groups=Hawk.get(HawkConfig.LIVE_GROUP_LIST,new JsonArray());
                 JsonObject livesOBJ = live_groups.get(position).getAsJsonObject();
-                String type= livesOBJ.get("type").getAsString();
-                if(!type.equals("0")){
-                    Toast.makeText(App.getInstance(), "暂不支持该直播类型", Toast.LENGTH_SHORT).show();
-                    break;
+                if(livesOBJ.has("type")){
+                    String type= livesOBJ.get("type").getAsString();
+                    if(!type.equals("0")){
+                        Toast.makeText(App.getInstance(), "暂不支持该直播类型", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }else {
+                    if(!livesOBJ.has("channels")){
+                        Toast.makeText(App.getInstance(), "暂不支持该直播类型", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
                 }
                 liveSettingItemAdapter.selectItem(position, true, true);
                 Hawk.put(HawkConfig.LIVE_GROUP_INDEX, position);
@@ -1553,8 +1586,14 @@ public class LivePlayActivity extends BaseActivity {
             if(Hawk.get(HawkConfig.LIVE_GROUP_INDEX, 0)!=0){
                 Hawk.put(HawkConfig.LIVE_GROUP_INDEX, 0);
                 JsonArray live_groups=Hawk.get(HawkConfig.LIVE_GROUP_LIST,new JsonArray());
-                JsonObject livesOBJ = live_groups.get(0).getAsJsonObject();
-                ApiConfig.get().loadLiveApi(livesOBJ);
+                if(!live_groups.isEmpty()){
+                    JsonObject livesOBJ = live_groups.get(0).getAsJsonObject();
+                    ApiConfig.get().loadLiveApi(livesOBJ);
+                }else {
+                    Toast.makeText(App.getInstance(), "频道列表为空", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
+                }
             }else {
                 Toast.makeText(App.getInstance(), "频道列表为空", Toast.LENGTH_SHORT).show();
                 finish();
@@ -1578,9 +1617,11 @@ public class LivePlayActivity extends BaseActivity {
             Uri parsedUrl = Uri.parse(url);
             url = new String(Base64.decode(parsedUrl.getQueryParameter("ext"), Base64.DEFAULT | Base64.URL_SAFE | Base64.NO_WRAP), "UTF-8");
         } catch (Throwable th) {
-            Toast.makeText(App.getInstance(), "直播文件错误", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            if(!url.startsWith("http://127.0.0.1")){
+                Toast.makeText(App.getInstance(), "直播文件错误", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
         }
         showLoading();
 
