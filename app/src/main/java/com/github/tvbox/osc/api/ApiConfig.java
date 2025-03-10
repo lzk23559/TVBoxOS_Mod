@@ -42,6 +42,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -313,51 +315,77 @@ public class ApiConfig {
         }
 
         boolean isJarInImg = jarUrl.startsWith("img+");
+        LOG.i("echo---jar_start");
         jarUrl = jarUrl.replace("img+", "");
         OkGo.<File>get(jarUrl)
                 .headers("User-Agent", userAgent)
                 .headers("Accept", requestAccept)
                 .execute(new AbsCallback<File>() {
 
-            @Override
-            public File convertResponse(okhttp3.Response response) throws Throwable {
-                File cacheDir = cache.getParentFile();
-                if (!cacheDir.exists())
-                    cacheDir.mkdirs();
-                if (cache.exists())
-                    cache.delete();
-                FileOutputStream fos = new FileOutputStream(cache);
-                if(isJarInImg) {
-                    String respData = response.body().string();
-                    byte[] imgJar = getImgJar(respData);
-                    fos.write(imgJar);
-                } else {
-                    fos.write(response.body().bytes());
-                }
-                fos.flush();
-                fos.close();
-                return cache;
-            }
-
-            @Override
-            public void onSuccess(Response<File> response) {
-                if (response.body().exists()) {
-                    if (jarLoader.load(response.body().getAbsolutePath())) {
-                        callback.success();
-                    } else {
-                        callback.error("");
+                    @Override
+                    public File convertResponse(okhttp3.Response response) throws Throwable {
+                        File cacheDir = cache.getParentFile();
+                        assert cacheDir != null;
+                        if (!cacheDir.exists()) cacheDir.mkdirs();
+                        if (cache.exists()) cache.delete();
+                        // 3. 使用 try-with-resources 确保流关闭
+                        assert response.body() != null;
+                        try (FileOutputStream fos = new FileOutputStream(cache)) {
+                            if (isJarInImg) {
+                                String respData = response.body().string();
+                                LOG.i("echo---jar Response: " + respData);
+                                byte[] imgJar = getImgJar(respData);
+                                if (imgJar == null || imgJar.length == 0) {
+                                    throw new IOException("Generated JAR data is empty");
+                                }
+                                fos.write(imgJar);
+                            } else {
+                                // 使用流式传输避免内存溢出
+                                InputStream inputStream = response.body().byteStream();
+                                byte[] buffer = new byte[4096];
+                                int bytesRead;
+                                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                    fos.write(buffer, 0, bytesRead);
+                                }
+                            }
+                            fos.flush();
+                        } catch (IOException e) {
+                            return null;
+                        }
+                        return cache;
                     }
-                } else {
-                    callback.error("");
-                }
-            }
 
-            @Override
-            public void onError(Response<File> response) {
-                super.onError(response);
-                callback.error("");
-            }
-        });
+                    @Override
+                    public void onSuccess(Response<File> response) {
+                        File file = response.body();
+                        if (file != null && file.exists()) {
+                            LOG.i("echo---jar Trying to load: " + file.getAbsolutePath());
+                            try {
+                                if (jarLoader.load(file.getAbsolutePath())) {
+                                    callback.success();
+                                } else {
+                                    LOG.e("echo---jar Loader returned false");
+                                    callback.error("JAR加载失败");
+                                }
+                            } catch (Exception e) {
+                                LOG.e("echo---jar Loader threw exception: " + e.getMessage());
+                                callback.error("加载异常: " + e.getMessage());
+                            }
+                        } else {
+                            LOG.e("echo---jar File not found");
+                            callback.error("文件不存在");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<File> response) {
+                        Throwable ex = response.getException();
+                        if (ex != null) {
+                            LOG.i("echo---jar Request failed: " + ex.getMessage());
+                        }
+                        callback.error(ex != null ? ex.getMessage() : "未知网络错误");
+                    }
+                });
     }
 
     private void parseJson(String apiUrl, File f) throws Throwable {
@@ -659,7 +687,7 @@ public class ApiConfig {
         ArrayList<String> scaleItems = new ArrayList<>(Arrays.asList("默认", "16:9", "4:3", "填充", "原始", "裁剪"));
         ArrayList<String> playerDecoderItems = new ArrayList<>(Arrays.asList("系统", "ijk硬解", "ijk软解", "exo"));
         ArrayList<String> timeoutItems = new ArrayList<>(Arrays.asList("5s", "10s", "15s", "20s", "25s", "30s"));
-        ArrayList<String> personalSettingItems = new ArrayList<>(Arrays.asList("显示时间", "显示网速", "换台反转", "跨选分类", "关闭密码"));
+        ArrayList<String> personalSettingItems = new ArrayList<>(Arrays.asList("显示时间", "显示网速", "换台反转", "跨选分类"));
         ArrayList<String> yumItems = new ArrayList<>();
 
         itemsArrayList.add(sourceItems);
