@@ -252,13 +252,6 @@ public class DetailActivity extends BaseActivity {
         llPlayerFragmentContainerBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ApiConfig.isAli(spId)){
-                    String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-                    if (!endSp.equals("noauto")) {
-                        endSp = sourceKey + "," + spId + "," + vodInfo.name;
-                        Hawk.put(HawkConfig.MY_ENDSP, endSp);
-                    }
-                }
                 toggleFullPreview();
             }
         });
@@ -311,11 +304,10 @@ public class DetailActivity extends BaseActivity {
                 return true;
             }
         });
-        tvPlay.setOnClickListener(new View.OnClickListener() {
+        tvPlay.setOnClickListener(new View.OnClickListener() {//全屏
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
-                Hawk.put(HawkConfig.MY_ENDSP, "");
                 if (showPreview) {
                     toggleFullPreview();
                     if(firstReverse){
@@ -427,6 +419,7 @@ public class DetailActivity extends BaseActivity {
             @Override
             public boolean onLongClick(View v) {
                 String kv = vodInfo.name +" "+spId+" "+ spPic;
+
                 updateData(kv);
                 return true;
             }

@@ -132,6 +132,7 @@ public class PlayActivity extends BaseActivity {
         initView();
         initViewModel();
         initData();
+        Hawk.put(HawkConfig.PLAYER_IS_LIVE,false);
     }
 
     public long getSavedProgress(String url) {
@@ -414,7 +415,9 @@ public class PlayActivity extends BaseActivity {
         }
         List<TrackInfoBean> bean = trackInfo.getSubtitle();
         if (bean.size() < 1) return;
-        bean.get(0).selected=true;
+        TrackInfoBean ti =  bean.get(0);
+        Toast.makeText(mContext, "字幕："+ti.getLanguage(), Toast.LENGTH_SHORT).show();
+        if (ti.getLanguage().equals("zh")bean.get(0).selected=true;
 
         SelectDialog<TrackInfoBean> dialog = new SelectDialog<>(PlayActivity.this);
         dialog.setTip("切换内置字幕");

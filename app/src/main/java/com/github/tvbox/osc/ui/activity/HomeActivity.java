@@ -304,12 +304,6 @@ public class HomeActivity extends BaseActivity {
             } else {
                 LOG.e("无");
             }
-            String endSp = Hawk.get(HawkConfig.MY_ENDSP, "");
-            if(!endSp.isEmpty() &&!endSp.equals("noauto") &&!endSp.startsWith("no")&&!endSp.endsWith("***")){
-                Hawk.put(HawkConfig.MY_ENDSP, endSp+"***");
-                DetailActivity.start(mActivity, endSp);
-                return;
-            }
             return;
         }
 
