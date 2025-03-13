@@ -643,7 +643,7 @@ public class LivePlayActivity extends BaseActivity {
             tvSelectedChannel.setVisibility(View.INVISIBLE);
             tvSelectedChannel.setText("");
             if(channelIndex>=0){
-                playChannel(groupIndex, channelIndex, false);
+                loadChannelGroupDataAndPlay(groupIndex,channelIndex);
             }else {
                 playChannel(currentChannelGroupIndex, currentLiveChannelIndex, false);
             }

@@ -10,6 +10,7 @@ import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.bean.Movie;
 import com.github.tvbox.osc.picasso.RoundTransformation;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.util.ImgUtil;
 import com.github.tvbox.osc.util.MD5;
 import com.orhanobut.hawk.Hawk;
 import com.squareup.picasso.Picasso;
@@ -43,10 +44,10 @@ public class FastSearchAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
                             .roundRadius(AutoSizeUtils.mm2px(mContext, 10), RoundTransformation.RoundType.ALL))
                     .placeholder(R.drawable.img_loading_placeholder)
                     .noFade()
-                    .error(R.drawable.img_loading_placeholder)
+                    .error(ImgUtil.createTextDrawable(item.name))
                     .into(ivThumb);
         } else {
-            ivThumb.setImageResource(R.drawable.img_loading_placeholder);
+            ivThumb.setImageDrawable(ImgUtil.createTextDrawable(item.name));
         }
 
     }
