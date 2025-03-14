@@ -1942,7 +1942,7 @@ public class LivePlayActivity extends BaseActivity {
         @Override
         public void run() {
             Date day=new Date();
-            SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("hh:mm a");
             tvTime.setText(df.format(day));
             mHandler.postDelayed(this, 1000);
         }

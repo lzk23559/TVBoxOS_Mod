@@ -319,7 +319,11 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
     
         FastClickCheckUtil.check(v);
         if (v.getId() == R.id.tvLive) {
-            jumpActivity(LivePlayActivity.class);
+            if(Hawk.get(HawkConfig.LIVE_API_URL,Hawk.get(HawkConfig.API_URL,"")).isEmpty()){
+                Toast.makeText(mContext, "直播配置未设置", Toast.LENGTH_SHORT).show();
+            }else {
+                jumpActivity(LivePlayActivity.class);
+            }
         } else if (v.getId() == R.id.tvSearch) {
             jumpActivity(SearchActivity.class);
         } else if (v.getId() == R.id.tvSetting) {

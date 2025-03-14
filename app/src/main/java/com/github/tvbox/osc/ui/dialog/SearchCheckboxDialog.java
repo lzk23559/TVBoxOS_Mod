@@ -29,7 +29,7 @@ public class SearchCheckboxDialog extends BaseDialog{
 
     private TvRecyclerView mGridView;
     private CheckboxSearchAdapter checkboxSearchAdapter;
-    private final List<SourceBean> mSourceList;
+    public List<SourceBean> mSourceList;
     TextView checkAll;
     TextView clearAll;
 
@@ -83,7 +83,7 @@ public class SearchCheckboxDialog extends BaseDialog{
         mGridView.setAdapter(checkboxSearchAdapter);
         checkboxSearchAdapter.setData(mSourceList, mCheckSourcees);
         int pos = 0;
-        if (mSourceList != null && mCheckSourcees != null) {
+        if (mCheckSourcees != null) {
             for(int i=0; i<mSourceList.size(); i++) {
                 String key = mSourceList.get(i).getKey();
                 if (mCheckSourcees.containsKey(key)) {
@@ -92,19 +92,12 @@ public class SearchCheckboxDialog extends BaseDialog{
                 }
             }
         }
-        final int scrollPosition = pos;
-        mGridView.post(new Runnable() {
-            @Override
-            public void run() {
-                mGridView.smoothScrollToPosition(scrollPosition);
-            }
-        });
+        
         checkAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
                 mCheckSourcees = new HashMap<>();
-                assert mSourceList != null;
                 for(SourceBean sourceBean : mSourceList) {
                     mCheckSourcees.put(sourceBean.getKey(), "1");
                 }
@@ -120,4 +113,8 @@ public class SearchCheckboxDialog extends BaseDialog{
             }
         });
     }
+    public void setMSourceList(List<SourceBean> SourceBeanList) {
+         mSourceList = SourceBeanList;
+         checkboxSearchAdapter.setData(mSourceList, mCheckSourcees);
+     }
 }
