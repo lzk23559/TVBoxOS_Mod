@@ -337,9 +337,9 @@ public class SearchActivity extends BaseActivity {
                 if (mSearchCheckboxDialog == null) {
                     mSearchCheckboxDialog = new SearchCheckboxDialog(SearchActivity.this, searchAbleSource, mCheckSources);
                 }else {
-                   if(searchAbleSource.size()!=mSearchCheckboxDialog.mSourceList.size()){
-                       mSearchCheckboxDialog.setMSourceList(searchAbleSource);
-                   }
+                    if(searchAbleSource.size()!=mSearchCheckboxDialog.mSourceList.size()){
+                        mSearchCheckboxDialog.setMSourceList(searchAbleSource);
+                    }
                 }
                 mSearchCheckboxDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

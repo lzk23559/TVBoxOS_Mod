@@ -92,7 +92,13 @@ public class SearchCheckboxDialog extends BaseDialog{
                 }
             }
         }
-        
+//        final int scrollPosition = pos;
+//        mGridView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mGridView.smoothScrollToPosition(scrollPosition);
+//            }
+//        });
         checkAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,8 +119,9 @@ public class SearchCheckboxDialog extends BaseDialog{
             }
         });
     }
+
     public void setMSourceList(List<SourceBean> SourceBeanList) {
-         mSourceList = SourceBeanList;
-         checkboxSearchAdapter.setData(mSourceList, mCheckSourcees);
-     }
+        mSourceList = SourceBeanList;
+        checkboxSearchAdapter.setData(mSourceList, mCheckSourcees);
+    }
 }

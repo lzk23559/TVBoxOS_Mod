@@ -899,20 +899,20 @@ public class ApiConfig {
         }
         return filteredList;
     }
-    
+
     private List<SourceBean> searchSourceBeanList;
-     public List<SourceBean> getSearchSourceBeanList() {
-         if(searchSourceBeanList.isEmpty()){
-             LOG.i("echo-第一次getSearchSourceBeanList");
-             searchSourceBeanList = new ArrayList<>();
-             for (SourceBean bean : sourceBeanList.values()) {
-                 if (bean.isSearchable()) {
-                     searchSourceBeanList.add(bean);
-                 }
-             }
-         }
-         return searchSourceBeanList;
-     }
+    public List<SourceBean> getSearchSourceBeanList() {
+        if(searchSourceBeanList.isEmpty()){
+            LOG.i("echo-第一次getSearchSourceBeanList");
+            searchSourceBeanList = new ArrayList<>();
+            for (SourceBean bean : sourceBeanList.values()) {
+                if (bean.isSearchable()) {
+                    searchSourceBeanList.add(bean);
+                }
+            }
+        }
+        return searchSourceBeanList;
+    }
 
     public List<ParseBean> getParseBeanList() {
         return parseBeanList;

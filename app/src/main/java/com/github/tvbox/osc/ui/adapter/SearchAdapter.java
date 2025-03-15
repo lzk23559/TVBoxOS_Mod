@@ -44,9 +44,9 @@ public class SearchAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder>
                                 .centerCorp(true)
                                 .override(AutoSizeUtils.mm2px(mContext, 240), AutoSizeUtils.mm2px(mContext, 336))
                                 .roundRadius(AutoSizeUtils.mm2px(mContext, 10), RoundTransformation.RoundType.ALL))
-                        .placeholder(ImgUtil.createTextDrawable(item.name))
+                        .placeholder(R.drawable.img_loading_placeholder)
                         .noFade()
-                        .error(R.drawable.img_loading_placeholder)
+                        .error(ImgUtil.createTextDrawable(item.name))
                         .into(ivThumb);
             } else {
                 ivThumb.setImageDrawable(ImgUtil.createTextDrawable(item.name));

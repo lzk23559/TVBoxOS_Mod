@@ -12,6 +12,7 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.BaseLazyFragment;
 import com.github.tvbox.osc.bean.Movie;
+import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.bean.VodInfo;
 import com.github.tvbox.osc.cache.RoomDataManger;
 import com.github.tvbox.osc.event.ServerEvent;
@@ -73,7 +74,9 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
     }
 
     public UserFragment setArguments(List<Movie.Video> recVod) {
-        this.homeSourceRec = recVod;
+        if(recVod!=null){
+            this.homeSourceRec = recVod.subList(0, Math.min(20, recVod.size()));
+        }
         return this;
     }
 
@@ -90,7 +93,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         }
         super.onFragmentResume();
         if (Hawk.get(HawkConfig.HOME_REC, 0) == 2) {
-            List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(30);
+            List<VodInfo> allVodRecord = RoomDataManger.getAllVodRecord(20);
             List<Movie.Video> vodList = new ArrayList<>();
             for (VodInfo vodInfo : allVodRecord) {
                 Movie.Video vod = new Movie.Video();
@@ -111,6 +114,17 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         return R.layout.fragment_user;
     }
 
+    private void jumpSearch(Movie.Video vod){
+        Intent newIntent;
+        if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
+            newIntent = new Intent(mContext, FastSearchActivity.class);
+        }else {
+            newIntent = new Intent(mContext, SearchActivity.class);
+        }
+        newIntent.putExtra("title", vod.name);
+        newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mActivity.startActivity(newIntent);
+    }
     @Override
     protected void init() {
         EventBus.getDefault().register(this);
@@ -152,17 +166,14 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
                     Bundle bundle = new Bundle();
                     bundle.putString("id", vod.id);
                     bundle.putString("sourceKey", vod.sourceKey);
-                    jumpActivity(DetailActivity.class, bundle);
-                } else {
-                    Intent newIntent;
-                    if(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false)){
-                        newIntent = new Intent(mContext, FastSearchActivity.class);
+                    SourceBean sourceBean = ApiConfig.get().getSource(vod.sourceKey);
+                    if(sourceBean!=null){
+                        jumpActivity(DetailActivity.class, bundle);
                     }else {
-                        newIntent = new Intent(mContext, SearchActivity.class);
+                        jumpSearch(vod);
                     }
-                    newIntent.putExtra("title", vod.name);
-                    newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    mActivity.startActivity(newIntent);
+                } else {
+                    jumpSearch(vod);
                 }
             }
         });
@@ -286,13 +297,18 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         try {
             JsonObject infoJson = new Gson().fromJson(json, JsonObject.class);
             JsonArray array = infoJson.getAsJsonArray("data");
-            for (JsonElement ele : array) {
-                JsonObject obj = (JsonObject) ele;
+            int limit = Math.min(array.size(), 20);
+            for (int i = 0; i < limit; i++) {  // 改用索引循环
+                JsonElement ele = array.get(i);
+                JsonObject obj = ele.getAsJsonObject();
                 Movie.Video vod = new Movie.Video();
                 vod.name = obj.get("title").getAsString();
                 vod.note = obj.get("rate").getAsString();
-                if(!vod.note.isEmpty())vod.note+=" 分";
-                vod.pic = obj.get("cover").getAsString()+"@User-Agent="+ UA.randomOne()+"@Referer=https://www.douban.com/";
+                if (!vod.note.isEmpty()) vod.note += " 分";
+                vod.pic = obj.get("cover").getAsString()
+                        + "@User-Agent=" + UA.randomOne()
+                        + "@Referer=https://www.douban.com/";
+
                 result.add(vod);
             }
         } catch (Throwable th) {
