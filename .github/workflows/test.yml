@@ -1,8 +1,6 @@
 name: Test
 
 on:
-  schedule:
-    - cron: 0 13 1 * *
   workflow_dispatch:
     inputs:
       rebuild:
@@ -21,8 +19,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - userName: q215613905
-            repoName: TVBoxOS
+          - userName: lzk23559
+            repoName: TVBoxOS_Mod
             branchName: main
     steps:
       - name: Checkout
