@@ -84,7 +84,7 @@ def init(ru,extend):
         if sp != None:
             sp.setExtendInfo(sParam[key])
             spoList.append(sp)
-    ru.setExtendInfo(extend)
+#     ru.setExtendInfo(extend)
     ru.init(extend)
 
 def homeContent(ru,filter):
