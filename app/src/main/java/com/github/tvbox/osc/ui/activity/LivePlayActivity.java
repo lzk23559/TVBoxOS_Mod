@@ -1793,6 +1793,11 @@ public class LivePlayActivity extends BaseActivity {
                         select = !Hawk.get(HawkConfig.LIVE_CROSS_GROUP, false);
                         Hawk.put(HawkConfig.LIVE_CROSS_GROUP, select);
                         break;
+                    case 4:
+                        // takagen99 : Added Skip Password Option
+                        select = !Hawk.get(HawkConfig.LIVE_SKIP_PASSWORD, false);
+                        Hawk.put(HawkConfig.LIVE_SKIP_PASSWORD, select);
+                        break;
                 }
                 liveSettingItemAdapter.selectItem(position, select, false);
                 break;
@@ -1822,6 +1827,13 @@ public class LivePlayActivity extends BaseActivity {
                 }
                 recreate();
                 return;
+            case 6:// 退出直播 takagen99 : Added Exit Option
+                switch (position) {
+                    case 0:
+                        finish();
+                        break;
+                }
+                break;
         }
         mHandler.removeCallbacks(mHideSettingLayoutRun);
         mHandler.postDelayed(mHideSettingLayoutRun, postTimeout);
@@ -2048,6 +2060,7 @@ public class LivePlayActivity extends BaseActivity {
         liveSettingGroupList.get(4).getLiveSettingItems().get(1).setItemSelected(Hawk.get(HawkConfig.LIVE_SHOW_NET_SPEED, false));
         liveSettingGroupList.get(4).getLiveSettingItems().get(2).setItemSelected(Hawk.get(HawkConfig.LIVE_CHANNEL_REVERSE, false));
         liveSettingGroupList.get(4).getLiveSettingItems().get(3).setItemSelected(Hawk.get(HawkConfig.LIVE_CROSS_GROUP, false));
+        liveSettingGroupList.get(4).getLiveSettingItems().get(4).setItemSelected(Hawk.get(HawkConfig.LIVE_SKIP_PASSWORD, false));
         liveSettingGroupList.get(5).getLiveSettingItems().get(Hawk.get(HawkConfig.LIVE_GROUP_INDEX, 0)).setItemSelected(true);
     }
 
@@ -2161,11 +2174,15 @@ public class LivePlayActivity extends BaseActivity {
     }
 
     private boolean isPasswordConfirmed(int groupIndex) {
-        for (Integer confirmedNum : channelGroupPasswordConfirmed) {
-            if (confirmedNum == groupIndex)
-                return true;
+        if (Hawk.get(HawkConfig.LIVE_SKIP_PASSWORD, false)) {
+            return true;
+        } else {
+            for (Integer confirmedNum : channelGroupPasswordConfirmed) {
+                if (confirmedNum == groupIndex)
+                    return true;
+            }
+            return false;
         }
-        return false;
     }
 
     private ArrayList<LiveChannelItem> getLiveChannels(int groupIndex) {
