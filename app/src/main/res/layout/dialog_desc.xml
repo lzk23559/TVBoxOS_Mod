@@ -22,7 +22,7 @@
             android:lineSpacingExtra="4dp"
             android:padding="@dimen/vs_20"
             android:textColor="@color/color_text_primary"
-            android:textSize="@dimen/ts_22"
+            android:textSize="@dimen/ts_24"
             android:focusable="true"
             android:focusableInTouchMode="true" />
 
