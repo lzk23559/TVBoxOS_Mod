@@ -130,28 +130,6 @@ public class PythonSpider extends Spider {
         return sb.toString();
     }
 
-//    public Object[] proxyLocal(Map param) {
-//        PyLog.nw("localProxy", map2json(param).toString());
-//        List<PyObject> poList = app.callAttr("localProxy", pySpider, map2json(param).toString()).asList();
-//        PyLog.nw("localProxy" + "-" + name, poList.toString());
-//        int code = poList.get(0).toInt();
-//        String type = poList.get(1).toString();
-//        String Content = poList.get(2).toString();
-//        InputStream stream = new ByteArrayInputStream("".getBytes());
-//        Object extra = null;
-//        try {
-//            if (!Content.isEmpty()) {
-//                stream = new ByteArrayInputStream(Content.getBytes("utf8"));
-//            }
-//            if (poList.size() > 3) {
-//                extra = poList.get(3).toJava(Map.class);
-//            }
-//        } catch (UnsupportedEncodingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return new Object[]{code, type, stream, extra};
-//    }
-
     public Object[] proxyLocal(Map<String,String> params) {
         Log.i("PyLoader","echo-proxyLocal:param"+params.toString());
         List<PyObject> list = app.callAttr("localProxy", pySpider, map2json(params).toString()).asList();
