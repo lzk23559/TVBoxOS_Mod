@@ -256,6 +256,8 @@ public class PlayActivity extends BaseActivity {
             public void startPlayUrl(String url, HashMap<String, String> headers) {
                 goPlayUrl(url, headers);
             }
+            @Override
+            public void setAllowSwitchPlayer(boolean isAllow){allowSwitchPlayer=isAllow;}
         });
         mVideoView.setVideoController(mController);
     }
@@ -869,8 +871,8 @@ public class PlayActivity extends BaseActivity {
     }
 
     private int autoRetryCount = 0;
-
     private long lastRetryTime = 0;  // 记录上次调用时间（毫秒）
+    private boolean allowSwitchPlayer = true;
 
     boolean autoRetry() {
         long currentTime = System.currentTimeMillis();
@@ -878,6 +880,7 @@ public class PlayActivity extends BaseActivity {
         if (currentTime - lastRetryTime > 60_000) {
             LOG.i("echo-reset-autoRetryCount");
             autoRetryCount = 0;
+            allowSwitchPlayer = false;
         }
         lastRetryTime = currentTime;  // 更新上次调用时间
         if (loadFoundVideoUrls != null && !loadFoundVideoUrls.isEmpty()) {
@@ -893,8 +896,13 @@ public class PlayActivity extends BaseActivity {
             }else {
                 //第一次重试直接带着原地址继续播放
                 if(webPlayUrl!=null){
-                    //切换播放器不占用重试次数
-                    if(mController.switchPlayer())autoRetryCount++;
+                    if(allowSwitchPlayer){
+                        //切换播放器不占用重试次数
+                        if(mController.switchPlayer())autoRetryCount++;
+                    }else {
+                        autoRetryCount++;
+                        allowSwitchPlayer=true;
+                    }
                     stopParse();
                     initParseLoadFound();
                     if(mVideoView!=null) mVideoView.release();

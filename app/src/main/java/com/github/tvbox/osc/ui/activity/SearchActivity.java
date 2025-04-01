@@ -103,11 +103,6 @@ public class SearchActivity extends BaseActivity {
         isSearchBack = false;
     }
 
-    public void openSystemKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(this.getCurrentFocus(), InputMethodManager.SHOW_FORCED);
-    }
-
     private List<Runnable> pauseRunnable = null;
 
     @Override
@@ -255,10 +250,7 @@ public class SearchActivity extends BaseActivity {
                             bundle.putString("title", wd);
                             jumpActivity(FastSearchActivity.class, bundle);
                         } else {
-                            InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            if (imm != null) {
-                                imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-                            }
+                            hiddenImm();
                             search(wd);
                         }
                     } else {
@@ -282,6 +274,7 @@ public class SearchActivity extends BaseActivity {
                             bundle.putString("title", wd);
                             jumpActivity(FastSearchActivity.class, bundle);
                         } else {
+                            hiddenImm();
                             search(wd);
                         }
                     } else {
@@ -601,5 +594,13 @@ public class SearchActivity extends BaseActivity {
             th.printStackTrace();
         }
         EventBus.getDefault().unregister(this);
+    }
+
+    private void hiddenImm()
+    {
+        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+        }
     }
 }

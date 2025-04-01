@@ -453,6 +453,7 @@ public class VodController extends BaseController {
                                     updatePlayerCfgView();
                                     listener.updatePlayerCfg();
                                     listener.replay(false);
+                                    listener.setAllowSwitchPlayer(false);
                                     hideBottom();
                                 }
                             } catch (Exception e) {
@@ -752,6 +753,8 @@ public class VodController extends BaseController {
         void selectAudioTrack();
 
         void startPlayUrl(String url, HashMap<String, String> headers);
+
+        void setAllowSwitchPlayer(boolean isAllow);
     }
 
     public void setListener(VodControlListener listener) {

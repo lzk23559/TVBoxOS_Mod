@@ -59,6 +59,7 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".ui.activity.SearchActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".ui.activity.FastSearchActivity"
