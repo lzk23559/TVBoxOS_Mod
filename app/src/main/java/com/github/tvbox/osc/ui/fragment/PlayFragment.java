@@ -522,6 +522,7 @@ public class PlayFragment extends BaseLazyFragment {
     }
 
     void playUrl(String url, HashMap<String, String> headers) {
+        mController.setUrlTitle("视频地址："+url);
         if (!Hawk.get(HawkConfig.M3U8_PURIFY, false)) {
             goPlayUrl(url,headers);
             return;
@@ -1671,7 +1672,6 @@ public class PlayFragment extends BaseLazyFragment {
                         String cookie = CookieManager.getInstance().getCookie(url);
                         if(!TextUtils.isEmpty(cookie))headers.put("Cookie", " " + cookie);//携带cookie
                         playUrl(url, headers);
-                        mController.setUrlTitle("视频地址："+url);
                         stopLoadWebView(false);
                     }
                 }
@@ -1858,7 +1858,6 @@ public class PlayFragment extends BaseLazyFragment {
                         String cookie = CookieManager.getInstance().getCookie(url);
                         if(!TextUtils.isEmpty(cookie))webHeaders.put("Cookie", " " + cookie);//携带cookie
                         playUrl(url, webHeaders);
-                        mController.setUrlTitle("视频地址："+url);
                         stopLoadWebView(false);
                     }
                 }
