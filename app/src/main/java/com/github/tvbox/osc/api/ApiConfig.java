@@ -713,14 +713,15 @@ public class ApiConfig {
 
     private final List<LiveSettingGroup> liveSettingGroupList = new ArrayList<>();
     private void initLiveSettings() {
-        ArrayList<String> groupNames = new ArrayList<>(Arrays.asList("线路选择", "画面比例", "播放解码", "超时换源", "偏好设置", "多源切换"));
+        ArrayList<String> groupNames = new ArrayList<>(Arrays.asList("线路选择", "画面比例", "播放解码", "超时换源", "偏好设置", "多源切换", "退出直播"));
         ArrayList<ArrayList<String>> itemsArrayList = new ArrayList<>();
         ArrayList<String> sourceItems = new ArrayList<>();
         ArrayList<String> scaleItems = new ArrayList<>(Arrays.asList("默认", "16:9", "4:3", "填充", "原始", "裁剪"));
         ArrayList<String> playerDecoderItems = new ArrayList<>(Arrays.asList("系统", "ijk硬解", "ijk软解", "exo"));
         ArrayList<String> timeoutItems = new ArrayList<>(Arrays.asList("5s", "10s", "15s", "20s", "25s", "30s"));
-        ArrayList<String> personalSettingItems = new ArrayList<>(Arrays.asList("显示时间", "显示网速", "换台反转", "跨选分类"));
+        ArrayList<String> personalSettingItems = new ArrayList<>(Arrays.asList("显示时间", "显示网速", "换台反转", "跨选分类", "关闭密码"));
         ArrayList<String> yumItems = new ArrayList<>();
+        ArrayList<String> exitConfirm = new ArrayList<>(Arrays.asList("确定"));
 
         itemsArrayList.add(sourceItems);
         itemsArrayList.add(scaleItems);
@@ -728,6 +729,7 @@ public class ApiConfig {
         itemsArrayList.add(timeoutItems);
         itemsArrayList.add(personalSettingItems);
         itemsArrayList.add(yumItems);
+        itemsArrayList.add(exitConfirm);
 
         liveSettingGroupList.clear();
         for (int i = 0; i < groupNames.size(); i++) {
@@ -850,6 +852,7 @@ public class ApiConfig {
                     }
                     LOG.i("echo-live-proxy-url:"+url);
                 }else {
+                    liveChannelGroupList.clear();
                     return;
                 }
             }

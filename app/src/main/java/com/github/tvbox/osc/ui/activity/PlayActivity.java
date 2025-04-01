@@ -844,13 +844,8 @@ public class PlayActivity extends BaseActivity {
             hasNext = mVodInfo.playIndex + 1 < mVodInfo.seriesMap.get(mVodInfo.playFlag).size();
         }
         if (!hasNext) {
-            if(isProgress && mVodInfo!=null){
-                mVodInfo.playIndex=0;
-                Toast.makeText(this, "已经是最后一集了!,即将跳到第一集继续播放", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, "已经是最后一集了!", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            Toast.makeText(this, "已经是最后一集了!", Toast.LENGTH_SHORT).show();
+            return;
         }else {
             mVodInfo.playIndex++;
         }
@@ -1617,6 +1612,7 @@ public class PlayActivity extends BaseActivity {
                         String cookie = CookieManager.getInstance().getCookie(url);
                         if(!TextUtils.isEmpty(cookie))headers.put("Cookie", " " + cookie);//携带cookie
                         playUrl(url, headers);
+                        mController.setUrlTitle("视频地址："+url);
                         stopLoadWebView(false);
                     }
                 }
@@ -1800,6 +1796,7 @@ public class PlayActivity extends BaseActivity {
                         String cookie = CookieManager.getInstance().getCookie(url);
                         if(!TextUtils.isEmpty(cookie))webHeaders.put("Cookie", " " + cookie);//携带cookie
                         playUrl(url, webHeaders);
+                        mController.setUrlTitle("视频地址："+url);
                         stopLoadWebView(false);
                     }
                 }
