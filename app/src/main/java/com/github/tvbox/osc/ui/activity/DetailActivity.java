@@ -191,6 +191,7 @@ public class DetailActivity extends BaseActivity {
             getSupportFragmentManager().beginTransaction().show(playFragment).commitAllowingStateLoss();
             tvPlay.setText("全屏");
         }
+        llPlayerFragmentContainerBlock.setFocusable(showPreview);
 
         mSeriesGroupView = findViewById(R.id.mSeriesGroupView);
         tvSeriesGroup = findViewById(R.id.mSeriesGroupTv);
@@ -353,6 +354,16 @@ public class DetailActivity extends BaseActivity {
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
             }
         });
+        mGridView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && vodInfo.playIndex != -1) {
+                    // 当获得焦点且有目标位置时，执行滚动和聚焦
+                    LOG.i("echo-onFocusChange");
+                    mGridView.setSelection(vodInfo.playIndex);
+                }
+            }
+        });
         mGridViewFlag.setOnItemListener(new TvRecyclerView.OnItemListener() {
             private void refresh(View itemView, int position) {
                 String newFlag = seriesFlagAdapter.getData().get(position).name;
@@ -374,6 +385,7 @@ public class DetailActivity extends BaseActivity {
                     vodInfo.playFlag = newFlag;
                     seriesFlagAdapter.notifyItemChanged(position);
                     refreshList();
+                    mGridView.clearFocus();
                 }
                 seriesFlagFocus = itemView;
             }
@@ -475,7 +487,6 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
-        llPlayerFragmentContainerBlock.setFocusable(showPreview);
         if(showPreview){
             llPlayerFragmentContainerBlock.requestFocus();
         }else {

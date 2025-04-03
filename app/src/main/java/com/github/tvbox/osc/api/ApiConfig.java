@@ -181,6 +181,7 @@ public class ApiConfig {
                 parseLiveJson(liveApiUrl,defaultLiveObjString);
             }else {
                 File live_cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/" + MD5.encode(liveApiUrl));
+                LOG.i("echo-加载独立直播");
                 if (useCache && live_cache.exists()) {
                     try {
                         parseLiveJson(liveApiUrl, live_cache);
@@ -334,6 +335,7 @@ public class ApiConfig {
 
         boolean isJarInImg = jarUrl.startsWith("img+");
         jarUrl = jarUrl.replace("img+", "");
+        LOG.i("echo-load jar start:"+jarUrl);
         OkGo.<File>get(jarUrl)
                 .headers("User-Agent", userAgent)
                 .headers("Accept", requestAccept)
@@ -354,7 +356,7 @@ public class ApiConfig {
                                 byte[] imgJar = getImgJar(respData);
                                 if (imgJar == null || imgJar.length == 0) {
                                     LOG.e("echo---Generated JAR data is empty");
-                                    callback.error("JAR data is empty");
+                                    callback.error("JAR 是空的");
                                 }
                                 fos.write(imgJar);
                             } else {
@@ -387,7 +389,7 @@ public class ApiConfig {
                                 }
                             } catch (Exception e) {
                                 LOG.e("echo---jar Loader threw exception: " + e.getMessage());
-                                callback.error("JAR加载异常: " + e.getMessage());
+                                callback.error("JAR加载异常: ");
                             }
                         } else {
                             LOG.e("echo---jar File not found");
@@ -401,7 +403,7 @@ public class ApiConfig {
                         if (ex != null) {
                             LOG.i("echo---jar Request failed: " + ex.getMessage());
                         }
-                        callback.error(ex != null ? ex.getMessage() : "未知网络错误");
+                        callback.error("网络错误");
                     }
                 });
     }
@@ -849,7 +851,6 @@ public class ApiConfig {
                             jarLoader.loadLiveJar(liveSpider);
                         }
                     }
-                    LOG.i("echo-live-proxy-url:"+url);
                 }else {
                     liveChannelGroupList.clear();
                     return;
