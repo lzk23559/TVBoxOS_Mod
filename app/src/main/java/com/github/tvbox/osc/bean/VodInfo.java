@@ -100,12 +100,19 @@ public class VodInfo implements Serializable {
         return 0;
     }
     private boolean isReverse(List<VodInfo.VodSeries> list) {
-        // 循环比较相邻元素
-        for (int i = 0; i < Math.min(list.size()-1,4); i++) {
+        int ascCount = 0, descCount = 0;
+        // 比较最多前 6 个相邻元素对
+        int limit = Math.min(list.size() - 1, 6);
+        for (int i = 0; i < limit; i++) {
             int current = extractNumber(list.get(i).name);
             int next = extractNumber(list.get(i + 1).name);
-            if (current < next) return false;
-            if (current > next) return true;
+            if (current < next) {
+                ascCount++;
+                if (ascCount == 2) return false;
+            } else if (current > next) {
+                descCount++;
+                if (descCount == 2) return true;
+            }
         }
         return false;
     }
