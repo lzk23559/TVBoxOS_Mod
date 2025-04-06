@@ -219,7 +219,7 @@ public class DetailActivity extends BaseActivity {
                 TextView tvSeries = helper.getView(R.id.tvSeriesGroup);
                 tvSeries.setText(item);
                 if (helper.getLayoutPosition() == getData().size() - 1) {
-                    helper.itemView.setNextFocusRightId(R.id.tvPlay);
+                    helper.itemView.setNextFocusRightId(View.NO_ID);
                 }
             }
         };
@@ -233,21 +233,6 @@ public class DetailActivity extends BaseActivity {
             }
         });
 
-//        tvSort.setOnClickListener(new View.OnClickListener() {
-//            @SuppressLint("NotifyDataSetChanged")
-//            @Override
-//            public void onClick(View v) {
-//                if (vodInfo != null && vodInfo.seriesMap.size() > 0) {
-//                    vodInfo.reverseSort = !vodInfo.reverseSort;
-//                    isReverse = !isReverse;
-//                    vodInfo.reverse();
-//                    vodInfo.playIndex=(vodInfo.seriesMap.get(vodInfo.playFlag).size()-1)-vodInfo.playIndex;
-//                    firstReverse = true;
-//                    setSeriesGroupOptions();
-//                    seriesAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        });
         tvPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -374,16 +359,6 @@ public class DetailActivity extends BaseActivity {
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
             }
         });
-//        mGridView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus && vodInfo.playIndex != -1) {
-//                    // 当获得焦点且有目标位置时，执行滚动和聚焦
-//                    LOG.i("echo-onFocusChange");
-//                    mGridView.setSelection(vodInfo.playIndex);
-//                }
-//            }
-//        });
         mGridViewFlag.setOnItemListener(new TvRecyclerView.OnItemListener() {
             private void refresh(View itemView, int position) {
                 String newFlag = seriesFlagAdapter.getData().get(position).name;
@@ -492,8 +467,11 @@ public class DetailActivity extends BaseActivity {
             if (hasFocus) {
                 tvSeriesSort.setTextColor(mContext.getResources().getColor(R.color.color_02F8E1));
                 if (vodInfo != null && Objects.requireNonNull(vodInfo.seriesMap.get(vodInfo.playFlag)).size() > 0) {
-//                    mGridView.smoothScrollToPosition(vodInfo.playIndex);
-                    customSeriesScrollPos(vodInfo.playIndex);
+                    int firstVisible = mGridView.getFirstVisiblePosition();
+                    int lastVisible = mGridView.getLastVisiblePosition();
+                    if (vodInfo.playIndex < firstVisible || vodInfo.playIndex > lastVisible) {
+                        customSeriesScrollPos(vodInfo.playIndex);
+                    }
                 }
             } else {
                 tvSeriesSort.setTextColor(Color.WHITE);
@@ -1079,17 +1057,6 @@ public class DetailActivity extends BaseActivity {
         mGridView.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
         mGridViewFlag.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
         tvSeriesGroup.setVisibility(fullWindows ? View.GONE : View.VISIBLE);
-
-        //全屏下禁用详情页几个按键的焦点 防止上键跑过来
-//        tvPlay.setFocusable(!fullWindows);
-//        tvDesc.setFocusable(!fullWindows);
-//        tvCollect.setFocusable(!fullWindows);
-//        tvQuickSearch.setFocusable(!fullWindows);
-//        llPlayerFragmentContainerBlock.setFocusable(!fullWindows);
-//        mGridViewFlag.setFocusable(!fullWindows);
-//        tvSeriesSort.setFocusable(!fullWindows);
-//        mSeriesGroupView.setFocusable(!fullWindows);
-//        mGridView.setFocusable(!fullWindows);
         toggleSubtitleTextSize();
     }
 
