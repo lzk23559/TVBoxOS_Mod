@@ -86,7 +86,9 @@ public class VodInfo implements Serializable {
             for (VodSeriesFlag flag : seriesFlags) {
                 List<VodSeries> list = tempSeriesMap.get(flag.name);
                 assert list != null;
-                if(isReverse(list))Collections.reverse(list);
+                if(seriesFlags.size()<=5){
+                    if(isReverse(list))Collections.reverse(list);
+                }
                 seriesMap.put(flag.name, list);
             }
         }

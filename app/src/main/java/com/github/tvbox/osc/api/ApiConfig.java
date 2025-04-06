@@ -403,6 +403,7 @@ public class ApiConfig {
                         if (ex != null) {
                             LOG.i("echo---jar Request failed: " + ex.getMessage());
                         }
+                        if(cache.exists())jarLoader.load(cache.getAbsolutePath());
                         callback.error("网络错误");
                     }
                 });

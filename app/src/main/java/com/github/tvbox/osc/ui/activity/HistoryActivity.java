@@ -103,7 +103,7 @@ public class HistoryActivity extends BaseActivity {
 
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
-                itemView.animate().scaleX(1.1f).scaleY(1.1f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
+                itemView.animate().scaleX(1.05f).scaleY(1.05f).setDuration(300).setInterpolator(new BounceInterpolator()).start();
             }
 
             @Override
@@ -144,10 +144,6 @@ public class HistoryActivity extends BaseActivity {
         historyAdapter.setOnItemLongClickListener(new BaseQuickAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
-//                FastClickCheckUtil.check(view);
-//                VodInfo vodInfo = historyAdapter.getData().get(position);
-//                historyAdapter.remove(position);
-//                RoomDataManger.deleteVodRecord(vodInfo.sourceKey, vodInfo);
                 tvDelete.setFocusable(true);
                 toggleDelMode();
                 return true;

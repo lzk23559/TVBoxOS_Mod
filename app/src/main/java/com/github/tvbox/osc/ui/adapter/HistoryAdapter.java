@@ -35,7 +35,6 @@ public class HistoryAdapter extends BaseQuickAdapter<VodInfo, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, VodInfo item) {
-    	// takagen99: Add Delete Mode
         FrameLayout tvDel = helper.getView(R.id.delFrameLayout);
         if (HawkConfig.hotVodDelete) {
             tvDel.setVisibility(View.VISIBLE);
@@ -44,12 +43,6 @@ public class HistoryAdapter extends BaseQuickAdapter<VodInfo, BaseViewHolder> {
         }
     
         TextView tvYear = helper.getView(R.id.tvYear);
-        /*if (item.year <= 0) {
-            tvYear.setVisibility(View.GONE);
-        } else {
-            tvYear.setText(String.valueOf(item.year));
-            tvYear.setVisibility(View.VISIBLE);
-        }*/
         SourceBean bean =  ApiConfig.get().getSource(item.sourceKey);
         if(bean!=null){
             tvYear.setText(bean.getName());
@@ -57,28 +50,6 @@ public class HistoryAdapter extends BaseQuickAdapter<VodInfo, BaseViewHolder> {
             tvYear.setText("搜");
 //            tvYear.setVisibility(View.GONE);
         }
-        /*TextView tvLang = helper.getView(R.id.tvLang);
-        if (TextUtils.isEmpty(item.lang)) {
-            tvLang.setVisibility(View.GONE);
-        } else {
-            tvLang.setText(item.lang);
-            tvLang.setVisibility(View.VISIBLE);
-        }
-        TextView tvArea = helper.getView(R.id.tvArea);
-        if (TextUtils.isEmpty(item.area)) {
-            tvArea.setVisibility(View.GONE);
-        } else {
-            tvArea.setText(item.area);
-            tvArea.setVisibility(View.VISIBLE);
-        }
-
-        TextView tvNote = helper.getView(R.id.tvNote);
-        if (TextUtils.isEmpty(item.note)) {
-            tvNote.setVisibility(View.GONE);
-        } else {
-            tvNote.setText(item.note);
-            tvNote.setVisibility(View.VISIBLE);
-        }*/
         helper.setVisible(R.id.tvLang, false);
         helper.setVisible(R.id.tvArea, false);
         if (item.note == null || item.note.isEmpty()) {

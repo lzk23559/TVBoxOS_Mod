@@ -31,7 +31,7 @@ android {
         python {
             dimension "mode"
             // 配置Python打包特有的设置（如有需要）
-            minSdkVersion 16
+            minSdkVersion 19
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'proguard-python.pro'
         }
     }
@@ -72,12 +72,12 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-    dexOptions {
-        javaMaxHeapSize "4g"
-        additionalParameters += '--multi-dex'
-        additionalParameters += '--set-max-idx-number=48000'
-        additionalParameters += '--minimal-main-dex'
-    }
+//    dexOptions {
+//        javaMaxHeapSize "4g"
+//        additionalParameters += '--multi-dex'
+//        additionalParameters += '--set-max-idx-number=48000'
+//        additionalParameters += '--minimal-main-dex'
+//    }
 }
 
 repositories {
