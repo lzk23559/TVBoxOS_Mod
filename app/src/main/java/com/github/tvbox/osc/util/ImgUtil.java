@@ -27,6 +27,8 @@ public class ImgUtil {
     public static boolean isBase64Image(String picUrl) {
         return picUrl.startsWith("data:image");
     }
+    public static int defaultWidth = 244;
+    public static int defaultHeight = 320;
 
     public static Bitmap decodeBase64ToBitmap(String base64Str) {
         // 去掉 Base64 数据的头部前缀，例如 "data:image/png;base64,"
@@ -36,13 +38,13 @@ public class ImgUtil {
     }
 
     public static Drawable createTextDrawable(String text) {
-        if(text.isEmpty())text="J";
+        if(text.isEmpty())text="TVBox";
         text=text.substring(0, 1);
         // 如果缓存中已存在，直接返回
         if (drawableCache.containsKey(text)) {
             return drawableCache.get(text);
         }
-        int width = 150, height = 200; // 设定图片大小
+        int width = 180, height = 240; // 设定图片大小
         int randomColor = getRandomColor();
         float cornerRadius = AutoSizeUtils.mm2px(App.getInstance(), 5); // 圆角半径
 

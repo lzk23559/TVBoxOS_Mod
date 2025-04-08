@@ -26,7 +26,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
  */
 public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
     private boolean mShowList ;
-    private final int defaultWidth = 340;
+    private int defaultWidth = 280;
     private final Style style; // 动态风格，传入时调整图片宽高比
 
     /**
@@ -48,7 +48,11 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
     public GridAdapter(boolean showList, Style style) {
         super( showList ? R.layout.item_list:R.layout.item_grid, new ArrayList<>());
         this.mShowList = showList;
-        if(style!=null && style.type.equals("list"))this.mShowList=true;
+        if(style!=null ){
+            if(style.type.equals("list"))this.mShowList=true;
+            if(style.ratio<1)this.defaultWidth=214;
+            if(style.ratio>1.7)this.defaultWidth=340;
+        }
         this.style = style;
     }
 
@@ -116,8 +120,8 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
         helper.setText(R.id.tvActor, item.actor);
         ImageView ivThumb = helper.getView(R.id.ivThumb);
 
-        int newWidth = 240;
-        int newHeight = 336;
+        int newWidth = ImgUtil.defaultWidth;
+        int newHeight = ImgUtil.defaultHeight;
         if(style!=null){
             newWidth = defaultWidth;
             newHeight = (int)(newWidth / style.ratio);
@@ -152,9 +156,9 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
      * 根据传入的 style 动态设置 ImageView 的高度：高度 = 宽度 / ratio
      */
     private void applyStyleToImage(final ImageView ivThumb) {
-        ViewGroup container = (ViewGroup) ivThumb.getParent();
-        int width = defaultWidth;
         if(style!=null){
+            ViewGroup container = (ViewGroup) ivThumb.getParent();
+            int width = defaultWidth;
             int height = (int) (width / style.ratio);
             ViewGroup.LayoutParams containerParams = container.getLayoutParams();
             containerParams.height = AutoSizeUtils.mm2px(mContext, height); // 高度

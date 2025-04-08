@@ -147,6 +147,8 @@ public class GridFragment extends BaseLazyFragment {
         if(mGridView != null) mGridView.requestFocus();
         return true;
     }
+
+    private GridAdapter.Style style;
     // 更改当前页面
     private void createView() {
         this.saveCurrentView(); // 保存当前页面
@@ -165,7 +167,6 @@ public class GridFragment extends BaseLazyFragment {
         }
         mGridView.setHasFixedSize(true);
 
-        GridAdapter.Style style = null;
         if(!bStyle.isEmpty()){
             try {
                 JSONObject jsonObject = new JSONObject(bStyle);
@@ -188,7 +189,19 @@ public class GridFragment extends BaseLazyFragment {
         if(isFolederMode()){
             mGridView.setLayoutManager(new V7LinearLayoutManager(this.mContext, 1, false));
         }else{
-            mGridView.setLayoutManager(new V7GridLayoutManager(this.mContext, bStyle.isEmpty()?(isBaseOnWidth()?5:6):3));
+            int spanCount = isBaseOnWidth()?5:6;
+            if(!bStyle.isEmpty() && style!=null){
+                if ("rect".equals(style.type)) {
+                    if (style.ratio >= 1.7) {
+                        spanCount = 3; // 横图
+                    } else if (style.ratio >= 1.3) {
+                        spanCount = 4; // 4:3
+                    }
+                } else if ("list".equals(style.type)) {
+                    spanCount = 1;
+                }
+            }
+            mGridView.setLayoutManager(new V7GridLayoutManager(this.mContext, spanCount));
         }
 
         gridAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
