@@ -215,6 +215,9 @@
 -keep class com.google.net.cronet.**{*;}
 -keep class org.chromium.net.**{*;}
 
+# Nano
+-keep class fi.iki.elonen.** { *; }
+
 # Python支持
 #-keep public class com.undcover.freedom.pyramid.** { *; }
 #-dontwarn com.undcover.freedom.pyramid.**
