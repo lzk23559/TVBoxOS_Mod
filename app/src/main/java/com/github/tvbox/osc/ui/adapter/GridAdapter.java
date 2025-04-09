@@ -26,32 +26,20 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
  */
 public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
     private boolean mShowList ;
-    private int defaultWidth = 280;
-    private final Style style; // 动态风格，传入时调整图片宽高比
+    private int defaultWidth;
+    public ImgUtil.Style style; // 动态风格，传入时调整图片宽高比
 
-    /**
-     * style 数据结构：ratio 指定宽高比（宽 / 高），type 表示风格（例如 rect、list）
-     */
-    public static class Style {
-        public float ratio;
-        public String type;
 
-        public Style(float ratio, String type) {
-            this.ratio = ratio;
-            this.type = type;
-        }
-    }
 
     /**
      * 如果 style 传 null，则采用 item_grid.xml 中的默认尺寸
      */
-    public GridAdapter(boolean showList, Style style) {
+    public GridAdapter(boolean showList, ImgUtil.Style style) {
         super( showList ? R.layout.item_list:R.layout.item_grid, new ArrayList<>());
         this.mShowList = showList;
         if(style!=null ){
             if(style.type.equals("list"))this.mShowList=true;
-            if(style.ratio<1)this.defaultWidth=214;
-            if(style.ratio>1.7)this.defaultWidth=340;
+            this.defaultWidth=ImgUtil.getStyleDefaultWidth(style);
         }
         this.style = style;
     }
@@ -146,7 +134,6 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
                         .into(ivThumb);
             }
         } else {
-//            ivThumb.setImageResource(R.drawable.img_loading_placeholder);
             ivThumb.setImageDrawable(ImgUtil.createTextDrawable(item.name));
         }
         applyStyleToImage(ivThumb);//动态设置宽高

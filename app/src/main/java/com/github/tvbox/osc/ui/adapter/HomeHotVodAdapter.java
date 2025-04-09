@@ -2,6 +2,7 @@ package com.github.tvbox.osc.ui.adapter;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,14 +26,24 @@ import java.util.ArrayList;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
+    private int defaultWidth;
+    private final ImgUtil.Style style;
+    private String  tvRateValue;
 
-    public HomeHotVodAdapter() {
+    /**
+     * style 数据结构：ratio 指定宽高比（宽 / 高），type 表示风格（例如 rect、list）
+     */
+    public HomeHotVodAdapter(ImgUtil.Style style,String tvRate) {
         super(R.layout.item_user_hot_vod, new ArrayList<>());
+        if(style!=null){
+            this.defaultWidth=ImgUtil.getStyleDefaultWidth(style);
+        }
+        this.style=style;
+        this.tvRateValue=tvRate;
     }
 
     @Override
     protected void convert(BaseViewHolder helper, Movie.Video item) {
-    	// takagen99: Add Delete Mode
         FrameLayout tvDel = helper.getView(R.id.delFrameLayout);
         if (HawkConfig.hotVodDelete) {
             tvDel.setVisibility(View.VISIBLE);
@@ -44,15 +55,12 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
         if (Hawk.get(HawkConfig.HOME_REC, 0) == 2){
             SourceBean bean =  ApiConfig.get().getSource(item.sourceKey);
             if(bean!=null){
-                tvRate.setText(bean.getName());
+                tvRateValue=bean.getName();
             }else {
-                tvRate.setText("搜");
+                tvRateValue="搜";
             }
-        }else if(Hawk.get(HawkConfig.HOME_REC, 0) == 0){
-            tvRate.setText("豆瓣热播");
-        }else {
-            tvRate.setVisibility(View.GONE);
         }
+        tvRate.setText(tvRateValue);
 
         TextView tvNote = helper.getView(R.id.tvNote);
         if (item.note == null || item.note.isEmpty()) {
@@ -63,6 +71,14 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
         }
         helper.setText(R.id.tvName, item.name);
         ImageView ivThumb = helper.getView(R.id.ivThumb);
+
+        int newWidth = ImgUtil.defaultWidth;
+        int newHeight = ImgUtil.defaultHeight;
+        if(style!=null){
+            newWidth = defaultWidth;
+            newHeight = (int)(newWidth / style.ratio);
+        }
+
         //由于部分电视机使用glide报错
         if (!TextUtils.isEmpty(item.pic)) {
             item.pic=item.pic.trim();
@@ -74,7 +90,7 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
                         .load(DefaultConfig.checkReplaceProxy(item.pic))
                         .transform(new RoundTransformation(MD5.string2MD5(item.pic))
                                 .centerCorp(true)
-                                .override(AutoSizeUtils.mm2px(mContext, ImgUtil.defaultWidth), AutoSizeUtils.mm2px(mContext, ImgUtil.defaultHeight))
+                                .override(AutoSizeUtils.mm2px(mContext, newWidth), AutoSizeUtils.mm2px(mContext, newHeight))
                                 .roundRadius(AutoSizeUtils.mm2px(mContext, 10), RoundTransformation.RoundType.ALL))
                         .placeholder(R.drawable.img_loading_placeholder)
                         .noFade()
@@ -83,6 +99,21 @@ public class HomeHotVodAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHol
             }
         } else {
             ivThumb.setImageDrawable(ImgUtil.createTextDrawable(item.name));
+        }
+        applyStyleToImage(ivThumb);//动态设置宽高
+    }
+    /**
+     * 根据传入的 style 动态设置 ImageView 的高度：高度 = 宽度 / ratio
+     */
+    private void applyStyleToImage(final ImageView ivThumb) {
+        if(style!=null){
+            ViewGroup container = (ViewGroup) ivThumb.getParent();
+            int width = defaultWidth;
+            int height = (int) (width / style.ratio);
+            ViewGroup.LayoutParams containerParams = container.getLayoutParams();
+            containerParams.height = AutoSizeUtils.mm2px(mContext, height); // 高度
+            containerParams.width = AutoSizeUtils.mm2px(mContext, width); // 宽度
+            container.setLayoutParams(containerParams);
         }
     }
 }

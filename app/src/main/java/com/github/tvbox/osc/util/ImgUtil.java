@@ -10,7 +10,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.base.App;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +23,7 @@ import java.util.Random;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 /**
- *base64图片
+ * 图片工具
  * @version 1.0.0 <br/>
  */
 public class ImgUtil {
@@ -29,6 +33,56 @@ public class ImgUtil {
     }
     public static int defaultWidth = 244;
     public static int defaultHeight = 320;
+
+    /**
+     * style 数据结构：ratio 指定宽高比（宽 / 高），type 表示风格（例如 rect、list）
+     */
+    public static class Style {
+        public float ratio;
+        public String type;
+
+        public Style(float ratio, String type) {
+            this.ratio = ratio;
+            this.type = type;
+        }
+    }
+
+    public static Style initStyle()
+    {
+        String bStyle = ApiConfig.get().getHomeSourceBean().getStyle();
+        if(!bStyle.isEmpty()){
+            try {
+                JSONObject jsonObject = new JSONObject(bStyle);
+                float ratio = (float) jsonObject.getDouble("ratio");
+                String type = jsonObject.getString("type");
+                return new Style(ratio, type);
+            }catch (JSONException e){
+
+            }
+        }
+        return null;
+    }
+
+    public static int spanCountByStyle(Style style,int defaultCount){
+        int spanCount=defaultCount;
+        if ("rect".equals(style.type)) {
+            if (style.ratio >= 1.7) {
+                spanCount = 3; // 横图
+            } else if (style.ratio >= 1.3) {
+                spanCount = 4; // 4:3
+            }
+        } else if ("list".equals(style.type)) {
+            spanCount = 1;
+        }
+        return spanCount;
+    }
+
+    public static int getStyleDefaultWidth(Style style){
+        int styleDefaultWidth = 280;
+        if(style.ratio<1)styleDefaultWidth=214;
+        if(style.ratio>1.7)styleDefaultWidth=380;
+        return styleDefaultWidth;
+    }
 
     public static Bitmap decodeBase64ToBitmap(String base64Str) {
         // 去掉 Base64 数据的头部前缀，例如 "data:image/png;base64,"

@@ -1005,6 +1005,7 @@ public class DetailActivity extends BaseActivity {
                 return;
             }
         }
+        if(showPreview && playFragment!=null)playFragment.setPlayTitle(false);
         super.onBackPressed();
     }
 

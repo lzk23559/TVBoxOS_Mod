@@ -28,6 +28,7 @@ import com.github.tvbox.osc.ui.activity.SettingActivity;
 import com.github.tvbox.osc.ui.adapter.HomeHotVodAdapter;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.util.ImgUtil;
 import com.github.tvbox.osc.util.UA;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -84,7 +85,9 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         if (Hawk.get(HawkConfig.HOME_REC_STYLE, false)) {
             tvHotList.setVisibility(View.VISIBLE);
             tvHotList.setHasFixedSize(true);
-            tvHotList.setLayoutManager(new V7GridLayoutManager(this.mContext, 5));
+            int spanCount = 5;
+            if(style!=null && Hawk.get(HawkConfig.HOME_REC, 0) == 1)spanCount=ImgUtil.spanCountByStyle(style,spanCount);
+            tvHotList.setLayoutManager(new V7GridLayoutManager(this.mContext, spanCount));
             int paddingLeft = getResources().getDimensionPixelSize(R.dimen.vs_15);
             int paddingTop = getResources().getDimensionPixelSize(R.dimen.vs_10);
             int paddingRight = getResources().getDimensionPixelSize(R.dimen.vs_15);
@@ -132,6 +135,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mActivity.startActivity(newIntent);
     }
+    private ImgUtil.Style style;
     @Override
     protected void init() {
         EventBus.getDefault().register(this);
@@ -154,7 +158,16 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvPush.setOnFocusChangeListener(focusChangeListener);
         tvCollect.setOnFocusChangeListener(focusChangeListener);
         tvHotList = findViewById(R.id.tvHotList);
-        homeHotVodAdapter = new HomeHotVodAdapter();
+        if (Hawk.get(HawkConfig.HOME_REC, 0) == 1 && homeSourceRec!=null) {
+            style=ImgUtil.initStyle();
+        }
+        String tvRate="";
+        if(Hawk.get(HawkConfig.HOME_REC, 0) == 0){
+            tvRate="豆瓣热播";
+        }else if(Hawk.get(HawkConfig.HOME_REC, 0) == 1){
+          tvRate= homeSourceRec!=null?"站点推荐":"豆瓣热播";
+        }
+        homeHotVodAdapter = new HomeHotVodAdapter(style,tvRate);
         homeHotVodAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
