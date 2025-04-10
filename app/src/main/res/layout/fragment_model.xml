@@ -20,6 +20,7 @@
                 android:clipToPadding="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
+                android:layout_marginTop="@dimen/vs_10"
                 android:orientation="vertical">
 
             <LinearLayout
