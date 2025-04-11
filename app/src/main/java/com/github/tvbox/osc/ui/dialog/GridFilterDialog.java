@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,9 @@ public class GridFilterDialog extends BaseDialog {
         boolean isTv = uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION
                 || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEVISION)
                 || !context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            isTv=isTv || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK);
+        }
         if(!isTv){
             View rootView = findViewById(R.id.root);
             rootView.setOnClickListener(new View.OnClickListener() {
