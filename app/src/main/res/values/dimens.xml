@@ -65,11 +65,13 @@
     <dimen name="vs_190">190mm</dimen>
     <dimen name="vs_200">200mm</dimen>
     <dimen name="vs_214">214mm</dimen>
+    <dimen name="vs_204">204mm</dimen>
     <dimen name="vs_220">220mm</dimen>
     <dimen name="vs_230">230mm</dimen>
     <dimen name="vs_240">240mm</dimen>
     <dimen name="vs_250">250mm</dimen>
     <dimen name="vs_270">270mm</dimen>
+    <dimen name="vs_272">272mm</dimen>
     <dimen name="vs_280">280mm</dimen>
     <dimen name="vs_300">300mm</dimen>
     <dimen name="vs_320">320mm</dimen>
